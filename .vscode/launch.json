@@ -1,0 +1,38 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "request": "launch",
+      "name": "Debug",
+      "type": "cppdbg",
+      "MIMode": "gdb",
+      "program": "${workspaceFolder}/build/7drl18.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ],
+      "windows": {
+        "request": "launch",
+        "name": "Debug",
+        "type": "cppdbg",
+        "program": "${workspaceFolder}/build/7drl18.exe",
+      },
+      "osx": {
+        "request": "launch",
+        "name": "Debug",
+        "type": "cppdbg",
+        "MIMode": "lldb",
+        "program": "${workspaceFolder}/build/7drl18",
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
+}
