@@ -7,9 +7,8 @@
     {
       "request": "launch",
       "name": "Debug",
-      "type": "cppdbg",
-      "MIMode": "gdb",
-      "program": "${workspaceFolder}/build/7drl18.exe",
+      "type": "lldb",
+      "program": "${workspaceFolder}/build/7DRLx18.exe",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -20,15 +19,12 @@
       "windows": {
         "request": "launch",
         "name": "Debug",
-        "type": "cppdbg",
-        "program": "${workspaceFolder}/build/7drl18.exe",
+        "program": "${workspaceFolder}/build/7DRLx18.exe",
       },
       "osx": {
         "request": "launch",
         "name": "Debug",
-        "type": "cppdbg",
-        "MIMode": "lldb",
-        "program": "${workspaceFolder}/build/7drl18",
+        "program": "${workspaceFolder}/build/7DRLx18",
       },
       "args": [],
       "cwd": "${workspaceFolder}",

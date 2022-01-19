@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.7)
-project(7drl18 VERSION 1.0.0)
+project(7DRLx18 VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -35,7 +35,7 @@ file(GLOB_RECURSE SRC_Generated
 
 # Main game source
 
-file(GLOB_RECURSE SRC_7drl18
+file(GLOB_RECURSE SRC_7DRLx18
     "src/*.cpp"
     "src/*.h"
     "src/*.c"
@@ -45,7 +45,7 @@ file(GLOB_RECURSE SRC_7drl18
 
 # Create executable
 add_executable(${PROJECT_NAME}
-    ${SRC_7drl18}
+    ${SRC_7DRLx18}
     ${SRC_Generated}
 )
 
