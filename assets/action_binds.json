@@ -1,0 +1,6 @@
+{
+    "action_binds": [
+        {"action": "QUIT",              "bind": "KEY_ESCAPE"},
+        {"action": "DEBUG_HUD",         "bind": "KEY_F1"}
+    ]
+}
