@@ -1,0 +1,8 @@
+{
+    "room_count": 36,
+    "min_room_size": 6,
+    "max_room_size": 12,
+    "map_width": 128,
+    "map_height": 128,
+    "expand_chance": 33
+}

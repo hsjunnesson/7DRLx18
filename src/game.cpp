@@ -1,5 +1,6 @@
 #include "game.h"
 #include "action_binds.h"
+#include "dungen.h"
 
 #include <engine/atlas.h>
 #include <engine/config.inl>
@@ -33,8 +34,8 @@ Game::Game(Allocator &allocator)
 , action_binds(nullptr)
 , game_state(GameState::None)
 , background_sprites(nullptr)
-, mapgen_mutex(nullptr)
-, mapgen_thread(nullptr)
+, dungen_mutex(nullptr)
+, dungen_thread(nullptr)
 , present_hud(false) {
     // Default assets paths
     const char *params_path = "assets/game_params.json";
@@ -57,7 +58,7 @@ Game::Game(Allocator &allocator)
         background_sprites = MAKE_NEW(allocator, foundation::Array<engine::Sprite *>, allocator);
     }
 
-    mapgen_mutex = MAKE_NEW(allocator, std::mutex);
+    dungen_mutex = MAKE_NEW(allocator, std::mutex);
 }
 
 Game::~Game() {
@@ -73,13 +74,13 @@ Game::~Game() {
         MAKE_DELETE(allocator, Array, background_sprites);
     }
 
-    if (mapgen_thread) {
-        std::scoped_lock lock(*mapgen_mutex);
-        MAKE_DELETE(allocator, thread, mapgen_thread);
+    if (dungen_thread) {
+        std::scoped_lock lock(*dungen_mutex);
+        MAKE_DELETE(allocator, thread, dungen_thread);
     }
 
-    if (mapgen_mutex) {
-        MAKE_DELETE(allocator, mutex, mapgen_mutex);
+    if (dungen_mutex) {
+        MAKE_DELETE(allocator, mutex, dungen_mutex);
     }
 }
 
@@ -95,7 +96,7 @@ void update(engine::Engine &engine, void *game_object, float t, float dt) {
         transition(engine, game_object, GameState::Initializing);
         break;
     }
-    case GameState::Mapgen: {
+    case GameState::Dungen: {
         break;
     }
     case GameState::Playing: {
@@ -145,7 +146,7 @@ void render(engine::Engine &engine, void *game_object) {
     }
 
     Game *game = (Game *)game_object;
-    std::scoped_lock lock(*game->mapgen_mutex);
+    std::scoped_lock lock(*game->dungen_mutex);
 
     switch (game->game_state) {
     case GameState::Menus: {
@@ -164,7 +165,7 @@ void render_imgui(engine::Engine &engine, void *game_object) {
     (void)engine;
 
     Game *game = (Game *)game_object;
-    std::scoped_lock lock(*game->mapgen_mutex);
+    std::scoped_lock lock(*game->dungen_mutex);
 
     TempAllocator128 ta;
 
@@ -189,10 +190,10 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
 
     // When leaving a game state
     switch (game->game_state) {
-    case GameState::Mapgen: {
-        if (game->mapgen_thread) {
-            MAKE_DELETE(game->allocator, thread, game->mapgen_thread);
-            game->mapgen_thread = nullptr;
+    case GameState::Dungen: {
+        if (game->dungen_thread) {
+            MAKE_DELETE(game->allocator, thread, game->dungen_thread);
+            game->dungen_thread = nullptr;
         }
         break;
     }
@@ -218,14 +219,14 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     }
     case GameState::Menus: {
         log_info("Menus");
-        transition(engine, game_object, GameState::Mapgen);
+        transition(engine, game_object, GameState::Dungen);
 
         break;
     }
-    case GameState::Mapgen: {
-        log_info("Mapgen");
-        // game->mapgen_thread = MAKE_NEW(game->allocator, std::thread, game::mapgen, &engine, game, "foo");
-        // game->mapgen_thread->detach();
+    case GameState::Dungen: {
+        log_info("Dungen");
+        game->dungen_thread = MAKE_NEW(game->allocator, std::thread, game::dungen, &engine, game, "foo");
+        game->dungen_thread->detach();
         transition(engine, game_object, GameState::Playing);
         break;
     }

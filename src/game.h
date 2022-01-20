@@ -35,8 +35,8 @@ enum class GameState {
     // In menus
     Menus,
 
-    // Generating a map
-    Mapgen,
+    // Generating a dungeon
+    Dungen,
 
     // Playing the game.
     Playing,
@@ -60,8 +60,8 @@ struct Game {
     
     Array<engine::Sprite *> *background_sprites;
 
-    std::mutex *mapgen_mutex;
-    std::thread *mapgen_thread;
+    std::mutex *dungen_mutex;
+    std::thread *dungen_thread;
 
     bool present_hud;
 };

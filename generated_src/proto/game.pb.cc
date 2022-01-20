@@ -24,6 +24,10 @@ class GameParamsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<GameParams> _instance;
 } _GameParams_default_instance_;
+class DunGenParamsDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DunGenParams> _instance;
+} _DunGenParams_default_instance_;
 class ActionBindsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ActionBinds> _instance;
@@ -56,6 +60,19 @@ static void InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto}, {
       &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,}};
 
+static void InitDefaultsscc_info_DunGenParams_proto_2fgame_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::game::_DunGenParams_default_instance_;
+    new (ptr) ::game::DunGenParams();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DunGenParams_proto_2fgame_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DunGenParams_proto_2fgame_2eproto}, {}};
+
 static void InitDefaultsscc_info_GameParams_proto_2fgame_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -69,7 +86,7 @@ static void InitDefaultsscc_info_GameParams_proto_2fgame_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_GameParams_proto_2fgame_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_GameParams_proto_2fgame_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_proto_2fgame_2eproto[3];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_proto_2fgame_2eproto[4];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_proto_2fgame_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_proto_2fgame_2eproto = nullptr;
 
@@ -88,6 +105,17 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::GameParams, game_atlas_filename_),
   ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, room_count_),
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, min_room_size_),
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, max_room_size_),
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, map_width_),
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, map_height_),
+  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, expand_chance_),
+  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::ActionBinds, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -97,12 +125,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::game::ActionBindEntry)},
   { 7, -1, sizeof(::game::GameParams)},
-  { 13, -1, sizeof(::game::ActionBinds)},
+  { 13, -1, sizeof(::game::DunGenParams)},
+  { 24, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_ActionBindEntry_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_GameParams_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_DunGenParams_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_ActionBinds_default_instance_),
 };
 
@@ -159,23 +189,28 @@ const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VAR
   "LT\020\326\002\022\023\n\016KEY_LEFT_SUPER\020\327\002\022\024\n\017KEY_RIGHT_"
   "SHIFT\020\330\002\022\026\n\021KEY_RIGHT_CONTROL\020\331\002\022\022\n\rKEY_"
   "RIGHT_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333\002\")\n\nGa"
-  "meParams\022\033\n\023game_atlas_filename\030\001 \001(\t\":\n"
-  "\013ActionBinds\022+\n\014action_binds\030\001 \003(\0132\025.gam"
-  "e.ActionBindEntryb\006proto3"
+  "meParams\022\033\n\023game_atlas_filename\030\001 \001(\t\"\216\001"
+  "\n\014DunGenParams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmi"
+  "n_room_size\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005"
+  "\022\021\n\tmap_width\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022"
+  "\025\n\rexpand_chance\030\006 \001(\005\":\n\013ActionBinds\022+\n"
+  "\014action_binds\030\001 \003(\0132\025.game.ActionBindEnt"
+  "ryb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fgame_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fgame_2eproto_sccs[3] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fgame_2eproto_sccs[4] = {
   &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,
   &scc_info_ActionBinds_proto_2fgame_2eproto.base,
+  &scc_info_DunGenParams_proto_2fgame_2eproto.base,
   &scc_info_GameParams_proto_2fgame_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2185,
-  &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 3, 0,
+  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2330,
+  &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 4, 0,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
-  file_level_metadata_proto_2fgame_2eproto, 3, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
+  file_level_metadata_proto_2fgame_2eproto, 4, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
@@ -911,6 +946,327 @@ void GameParams::InternalSwap(GameParams* other) {
 
 // ===================================================================
 
+class DunGenParams::_Internal {
+ public:
+};
+
+DunGenParams::DunGenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:game.DunGenParams)
+}
+DunGenParams::DunGenParams(const DunGenParams& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::memcpy(&room_count_, &from.room_count_,
+    static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
+    reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
+  // @@protoc_insertion_point(copy_constructor:game.DunGenParams)
+}
+
+void DunGenParams::SharedCtor() {
+  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+      reinterpret_cast<char*>(&room_count_) - reinterpret_cast<char*>(this)),
+      0, static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
+      reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
+}
+
+DunGenParams::~DunGenParams() {
+  // @@protoc_insertion_point(destructor:game.DunGenParams)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void DunGenParams::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+}
+
+void DunGenParams::ArenaDtor(void* object) {
+  DunGenParams* _this = reinterpret_cast< DunGenParams* >(object);
+  (void)_this;
+}
+void DunGenParams::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void DunGenParams::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const DunGenParams& DunGenParams::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DunGenParams_proto_2fgame_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void DunGenParams::Clear() {
+// @@protoc_insertion_point(message_clear_start:game.DunGenParams)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  ::memset(&room_count_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&expand_chance_) -
+      reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* DunGenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // int32 room_count = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          room_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 min_room_size = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          min_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 max_room_size = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          max_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 map_width = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          map_width_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 map_height = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+          map_height_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 expand_chance = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+          expand_chance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* DunGenParams::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:game.DunGenParams)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 room_count = 1;
+  if (this->room_count() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_room_count(), target);
+  }
+
+  // int32 min_room_size = 2;
+  if (this->min_room_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_min_room_size(), target);
+  }
+
+  // int32 max_room_size = 3;
+  if (this->max_room_size() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_max_room_size(), target);
+  }
+
+  // int32 map_width = 4;
+  if (this->map_width() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_map_width(), target);
+  }
+
+  // int32 map_height = 5;
+  if (this->map_height() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->_internal_map_height(), target);
+  }
+
+  // int32 expand_chance = 6;
+  if (this->expand_chance() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->_internal_expand_chance(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:game.DunGenParams)
+  return target;
+}
+
+size_t DunGenParams::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:game.DunGenParams)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // int32 room_count = 1;
+  if (this->room_count() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_room_count());
+  }
+
+  // int32 min_room_size = 2;
+  if (this->min_room_size() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_min_room_size());
+  }
+
+  // int32 max_room_size = 3;
+  if (this->max_room_size() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_max_room_size());
+  }
+
+  // int32 map_width = 4;
+  if (this->map_width() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_map_width());
+  }
+
+  // int32 map_height = 5;
+  if (this->map_height() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_map_height());
+  }
+
+  // int32 expand_chance = 6;
+  if (this->expand_chance() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_expand_chance());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void DunGenParams::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:game.DunGenParams)
+  GOOGLE_DCHECK_NE(&from, this);
+  const DunGenParams* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DunGenParams>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.DunGenParams)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.DunGenParams)
+    MergeFrom(*source);
+  }
+}
+
+void DunGenParams::MergeFrom(const DunGenParams& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:game.DunGenParams)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.room_count() != 0) {
+    _internal_set_room_count(from._internal_room_count());
+  }
+  if (from.min_room_size() != 0) {
+    _internal_set_min_room_size(from._internal_min_room_size());
+  }
+  if (from.max_room_size() != 0) {
+    _internal_set_max_room_size(from._internal_max_room_size());
+  }
+  if (from.map_width() != 0) {
+    _internal_set_map_width(from._internal_map_width());
+  }
+  if (from.map_height() != 0) {
+    _internal_set_map_height(from._internal_map_height());
+  }
+  if (from.expand_chance() != 0) {
+    _internal_set_expand_chance(from._internal_expand_chance());
+  }
+}
+
+void DunGenParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:game.DunGenParams)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void DunGenParams::CopyFrom(const DunGenParams& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:game.DunGenParams)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool DunGenParams::IsInitialized() const {
+  return true;
+}
+
+void DunGenParams::InternalSwap(DunGenParams* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(DunGenParams, expand_chance_)
+      + sizeof(DunGenParams::expand_chance_)
+      - PROTOBUF_FIELD_OFFSET(DunGenParams, room_count_)>(
+          reinterpret_cast<char*>(&room_count_),
+          reinterpret_cast<char*>(&other->room_count_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata DunGenParams::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
+
+// ===================================================================
+
 class ActionBinds::_Internal {
  public:
 };
@@ -1117,6 +1473,9 @@ template<> PROTOBUF_NOINLINE ::game::ActionBindEntry* Arena::CreateMaybeMessage<
 }
 template<> PROTOBUF_NOINLINE ::game::GameParams* Arena::CreateMaybeMessage< ::game::GameParams >(Arena* arena) {
   return Arena::CreateMessageInternal< ::game::GameParams >(arena);
+}
+template<> PROTOBUF_NOINLINE ::game::DunGenParams* Arena::CreateMaybeMessage< ::game::DunGenParams >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::game::DunGenParams >(arena);
 }
 template<> PROTOBUF_NOINLINE ::game::ActionBinds* Arena::CreateMaybeMessage< ::game::ActionBinds >(Arena* arena) {
   return Arena::CreateMessageInternal< ::game::ActionBinds >(arena);

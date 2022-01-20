@@ -146,7 +146,16 @@ message ActionBindEntry {
 }
 
 message GameParams {
-    string game_atlas_filename  = 1;
+    string game_atlas_filename = 1;
+}
+
+message DunGenParams {
+    int32 room_count    = 1;
+    int32 min_room_size = 2;
+    int32 max_room_size = 3;
+    int32 map_width     = 4;
+    int32 map_height    = 5;
+    int32 expand_chance = 6; // Expressed as a percentage 0-100
 }
 
 message ActionBinds {
