@@ -99,7 +99,7 @@ void update(engine::Engine &engine, void *game_object, float t, float dt) {
         break;
     }
     case GameState::Playing: {
-//        game_state_playing_update(engine, *game, t, dt);
+       game_state_playing_update(engine, *game, t, dt);
         break;
     }
     case GameState::Quitting: {
@@ -128,7 +128,7 @@ void on_input(engine::Engine &engine, void *game_object, engine::InputCommand &i
 
     switch (game->game_state) {
         case GameState::Playing: {
-            // game_state_playing_on_input(engine, *game, input_command);
+            game_state_playing_on_input(engine, *game, input_command);
             break;
         }
         default: {
@@ -152,7 +152,7 @@ void render(engine::Engine &engine, void *game_object) {
         break;
     }
     case GameState::Playing: {
-        // game_state_playing_render(engine, *game);
+        game_state_playing_render(engine, *game);
         break;
     }
     default:
@@ -223,8 +223,10 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         break;
     }
     case GameState::Mapgen: {
+        log_info("Mapgen");
         // game->mapgen_thread = MAKE_NEW(game->allocator, std::thread, game::mapgen, &engine, game, "foo");
         // game->mapgen_thread->detach();
+        transition(engine, game_object, GameState::Playing);
         break;
     }
     case GameState::Playing: {
