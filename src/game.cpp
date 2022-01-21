@@ -1,6 +1,7 @@
 #include "game.h"
 #include "action_binds.h"
 #include "dungen.h"
+#include "grid.hpp"
 
 #include <engine/atlas.h>
 #include <engine/config.inl>
@@ -27,11 +28,6 @@ namespace game {
 void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::InputCommand &input_command);
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt);
 void game_state_playing_render(engine::Engine &engine, Game &game);
-
-Level::Level(Allocator &allocator)
-: tiles(allocator)
-, sprite_ids(allocator)
-, rooms(allocator) {}
 
 Game::Game(Allocator &allocator)
 : allocator(allocator)
@@ -230,15 +226,34 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     }
     case GameState::Dungen: {
         log_info("Dungen");
-        game->dungen_thread = MAKE_NEW(game->allocator, std::thread, game::dungen, &engine, game, "foo");
+        game->dungen_thread = MAKE_NEW(game->allocator, std::thread, game::dungen, &engine, game);
         game->dungen_thread->detach();
-        transition(engine, game_object, GameState::Playing);
         break;
     }
     case GameState::Playing: {
         log_info("Playing");
 
-//		engine::move_camera(engine, -engine.window_rect.size.x / 2, -engine.window_rect.size.y / 2);
+        hash::clear(game->level->tiles_sprite_ids);
+
+        for (auto iter = hash::begin(game->level->tiles); iter != hash::end(game->level->tiles); ++iter) {
+            uint64_t pos = iter->key;
+
+            Tile tile = static_cast<Tile>(iter->value);
+            const char *sprite_name = tile_sprite_name(tile);
+            const engine::Sprite sprite = engine::add_sprite(*engine.sprites, sprite_name);
+
+            int32_t x, y;
+            grid::coord(pos, x, y, game->level->max_width);
+
+            glm::mat4 transform = glm::mat4(1.0f);
+            transform = glm::translate(transform, {x * sprite.atlas_rect->size.x, y * sprite.atlas_rect->size.y, -1});
+            transform = glm::scale(transform, glm::vec3((float)sprite.atlas_rect->size.x, (float)sprite.atlas_rect->size.y, 1.0f));
+            engine::transform_sprite(*engine.sprites, sprite.id, transform);
+
+            hash::set(game->level->tiles_sprite_ids, pos, sprite.id);
+        }
+
+		engine::move_camera(engine, -engine.window_rect.size.x / 2, -engine.window_rect.size.y / 2);
 
         break;
     }

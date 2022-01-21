@@ -189,16 +189,20 @@
             <key type="filename">sprites/bee.png</key>
             <key type="filename">sprites/crab.png</key>
             <key type="filename">sprites/farmer.png</key>
+            <key type="filename">sprites/floor.png</key>
             <key type="filename">sprites/ghost.png</key>
             <key type="filename">sprites/ghost2.png</key>
             <key type="filename">sprites/goblin.png</key>
             <key type="filename">sprites/man.png</key>
             <key type="filename">sprites/marauder.png</key>
+            <key type="filename">sprites/missing.png</key>
             <key type="filename">sprites/monk.png</key>
+            <key type="filename">sprites/none.png</key>
             <key type="filename">sprites/orc.png</key>
             <key type="filename">sprites/orc2.png</key>
             <key type="filename">sprites/peasant.png</key>
             <key type="filename">sprites/peasant2.png</key>
+            <key type="filename">sprites/question_mark.png</key>
             <key type="filename">sprites/scorpion.png</key>
             <key type="filename">sprites/skeleton.png</key>
             <key type="filename">sprites/spearman.png</key>
@@ -485,8 +489,6 @@
             <key type="filename">sprites/sprite-292.png</key>
             <key type="filename">sprites/sprite-293.png</key>
             <key type="filename">sprites/sprite-294.png</key>
-            <key type="filename">sprites/sprite-295.png</key>
-            <key type="filename">sprites/sprite-296.png</key>
             <key type="filename">sprites/sprite-297.png</key>
             <key type="filename">sprites/sprite-298.png</key>
             <key type="filename">sprites/sprite-299.png</key>
@@ -899,7 +901,6 @@
             <key type="filename">sprites/sprite-670.png</key>
             <key type="filename">sprites/sprite-671.png</key>
             <key type="filename">sprites/sprite-672.png</key>
-            <key type="filename">sprites/sprite-673.png</key>
             <key type="filename">sprites/sprite-674.png</key>
             <key type="filename">sprites/sprite-675.png</key>
             <key type="filename">sprites/sprite-676.png</key>
@@ -1256,6 +1257,8 @@
             <key type="filename">sprites/sprite-997.png</key>
             <key type="filename">sprites/sprite-998.png</key>
             <key type="filename">sprites/sprite-999.png</key>
+            <key type="filename">sprites/stairs_down.png</key>
+            <key type="filename">sprites/stairs_up.png</key>
             <key type="filename">sprites/swordsman.png</key>
             <key type="filename">sprites/swordsman2.png</key>
             <key type="filename">sprites/wall.png</key>
@@ -1558,8 +1561,6 @@
             <filename>sprites/sprite-292.png</filename>
             <filename>sprites/sprite-293.png</filename>
             <filename>sprites/sprite-294.png</filename>
-            <filename>sprites/sprite-295.png</filename>
-            <filename>sprites/sprite-296.png</filename>
             <filename>sprites/sprite-297.png</filename>
             <filename>sprites/sprite-298.png</filename>
             <filename>sprites/sprite-299.png</filename>
@@ -1972,7 +1973,6 @@
             <filename>sprites/sprite-670.png</filename>
             <filename>sprites/sprite-671.png</filename>
             <filename>sprites/sprite-672.png</filename>
-            <filename>sprites/sprite-673.png</filename>
             <filename>sprites/sprite-674.png</filename>
             <filename>sprites/sprite-675.png</filename>
             <filename>sprites/sprite-676.png</filename>
@@ -2356,6 +2356,12 @@
             <filename>sprites/wall2.png</filename>
             <filename>sprites/wall3.png</filename>
             <filename>sprites/wizard.png</filename>
+            <filename>sprites/missing.png</filename>
+            <filename>sprites/question_mark.png</filename>
+            <filename>sprites/floor.png</filename>
+            <filename>sprites/none.png</filename>
+            <filename>sprites/stairs_down.png</filename>
+            <filename>sprites/stairs_up.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
