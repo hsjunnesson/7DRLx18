@@ -28,12 +28,17 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt);
 void game_state_playing_render(engine::Engine &engine, Game &game);
 
+Level::Level(Allocator &allocator)
+: tiles(allocator)
+, sprite_ids(allocator)
+, rooms(allocator) {}
+
 Game::Game(Allocator &allocator)
 : allocator(allocator)
 , params(nullptr)
 , action_binds(nullptr)
 , game_state(GameState::None)
-, background_sprites(nullptr)
+, level(nullptr)
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
 , present_hud(false) {
@@ -53,9 +58,9 @@ Game::Game(Allocator &allocator)
         }
     }
 
-    // background sprites
+    // level
     {
-        background_sprites = MAKE_NEW(allocator, foundation::Array<engine::Sprite *>, allocator);
+        level = MAKE_NEW(allocator, Level, allocator);
     }
 
     dungen_mutex = MAKE_NEW(allocator, std::mutex);
@@ -70,10 +75,10 @@ Game::~Game() {
         MAKE_DELETE(allocator, ActionBinds, action_binds);
     }
 
-    if (background_sprites) {
-        MAKE_DELETE(allocator, Array, background_sprites);
+    if (level) {
+        MAKE_DELETE(allocator, Level, level);
     }
-
+    
     if (dungen_thread) {
         std::scoped_lock lock(*dungen_mutex);
         MAKE_DELETE(allocator, thread, dungen_thread);

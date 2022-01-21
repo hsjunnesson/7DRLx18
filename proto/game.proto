@@ -11,11 +11,6 @@ message ActionBindEntry {
         DEBUG_HUD         = 3;
         EXAMPLE_HUD       = 4;
         DEBUG_DRAW        = 5;
-        
-        THRUST_FORWARD    = 10;
-        THRUST_BACKWARD   = 11;
-        STEER_LEFT        = 12;
-        STEER_RIGHT       = 13;
     }
 
     // These correspond to glfw keycodes https://www.glfw.org/docs/3.3/group__keys.html
@@ -146,10 +141,11 @@ message ActionBindEntry {
 }
 
 message GameParams {
-    string game_atlas_filename = 1;
+    string game_atlas_filename    = 1;
+    string dungen_params_filename = 2;
 }
 
-message DunGenParams {
+message DungenParams {
     int32 room_count    = 1;
     int32 min_room_size = 2;
     int32 max_room_size = 3;

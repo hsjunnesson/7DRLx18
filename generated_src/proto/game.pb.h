@@ -61,9 +61,9 @@ extern ActionBindEntryDefaultTypeInternal _ActionBindEntry_default_instance_;
 class ActionBinds;
 class ActionBindsDefaultTypeInternal;
 extern ActionBindsDefaultTypeInternal _ActionBinds_default_instance_;
-class DunGenParams;
-class DunGenParamsDefaultTypeInternal;
-extern DunGenParamsDefaultTypeInternal _DunGenParams_default_instance_;
+class DungenParams;
+class DungenParamsDefaultTypeInternal;
+extern DungenParamsDefaultTypeInternal _DungenParams_default_instance_;
 class GameParams;
 class GameParamsDefaultTypeInternal;
 extern GameParamsDefaultTypeInternal _GameParams_default_instance_;
@@ -71,7 +71,7 @@ extern GameParamsDefaultTypeInternal _GameParams_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template<> ::game::ActionBindEntry* Arena::CreateMaybeMessage<::game::ActionBindEntry>(Arena*);
 template<> ::game::ActionBinds* Arena::CreateMaybeMessage<::game::ActionBinds>(Arena*);
-template<> ::game::DunGenParams* Arena::CreateMaybeMessage<::game::DunGenParams>(Arena*);
+template<> ::game::DungenParams* Arena::CreateMaybeMessage<::game::DungenParams>(Arena*);
 template<> ::game::GameParams* Arena::CreateMaybeMessage<::game::GameParams>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace game {
@@ -83,16 +83,12 @@ enum ActionBindEntry_Action : int {
   ActionBindEntry_Action_DEBUG_HUD = 3,
   ActionBindEntry_Action_EXAMPLE_HUD = 4,
   ActionBindEntry_Action_DEBUG_DRAW = 5,
-  ActionBindEntry_Action_THRUST_FORWARD = 10,
-  ActionBindEntry_Action_THRUST_BACKWARD = 11,
-  ActionBindEntry_Action_STEER_LEFT = 12,
-  ActionBindEntry_Action_STEER_RIGHT = 13,
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool ActionBindEntry_Action_IsValid(int value);
 constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MIN = ActionBindEntry_Action_ACTION_UNKNOWN;
-constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_STEER_RIGHT;
+constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_DEBUG_DRAW;
 constexpr int ActionBindEntry_Action_Action_ARRAYSIZE = ActionBindEntry_Action_Action_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ActionBindEntry_Action_descriptor();
@@ -374,14 +370,6 @@ class ActionBindEntry PROTOBUF_FINAL :
     ActionBindEntry_Action_EXAMPLE_HUD;
   static constexpr Action DEBUG_DRAW =
     ActionBindEntry_Action_DEBUG_DRAW;
-  static constexpr Action THRUST_FORWARD =
-    ActionBindEntry_Action_THRUST_FORWARD;
-  static constexpr Action THRUST_BACKWARD =
-    ActionBindEntry_Action_THRUST_BACKWARD;
-  static constexpr Action STEER_LEFT =
-    ActionBindEntry_Action_STEER_LEFT;
-  static constexpr Action STEER_RIGHT =
-    ActionBindEntry_Action_STEER_RIGHT;
   static inline bool Action_IsValid(int value) {
     return ActionBindEntry_Action_IsValid(value);
   }
@@ -820,6 +808,7 @@ class GameParams PROTOBUF_FINAL :
 
   enum : int {
     kGameAtlasFilenameFieldNumber = 1,
+    kDungenParamsFilenameFieldNumber = 2,
   };
   // string game_atlas_filename = 1;
   void clear_game_atlas_filename();
@@ -837,6 +826,22 @@ class GameParams PROTOBUF_FINAL :
   std::string* _internal_mutable_game_atlas_filename();
   public:
 
+  // string dungen_params_filename = 2;
+  void clear_dungen_params_filename();
+  const std::string& dungen_params_filename() const;
+  void set_dungen_params_filename(const std::string& value);
+  void set_dungen_params_filename(std::string&& value);
+  void set_dungen_params_filename(const char* value);
+  void set_dungen_params_filename(const char* value, size_t size);
+  std::string* mutable_dungen_params_filename();
+  std::string* release_dungen_params_filename();
+  void set_allocated_dungen_params_filename(std::string* dungen_params_filename);
+  private:
+  const std::string& _internal_dungen_params_filename() const;
+  void _internal_set_dungen_params_filename(const std::string& value);
+  std::string* _internal_mutable_dungen_params_filename();
+  public:
+
   // @@protoc_insertion_point(class_scope:game.GameParams)
  private:
   class _Internal;
@@ -845,28 +850,29 @@ class GameParams PROTOBUF_FINAL :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_atlas_filename_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungen_params_filename_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fgame_2eproto;
 };
 // -------------------------------------------------------------------
 
-class DunGenParams PROTOBUF_FINAL :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:game.DunGenParams) */ {
+class DungenParams PROTOBUF_FINAL :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:game.DungenParams) */ {
  public:
-  inline DunGenParams() : DunGenParams(nullptr) {}
-  virtual ~DunGenParams();
+  inline DungenParams() : DungenParams(nullptr) {}
+  virtual ~DungenParams();
 
-  DunGenParams(const DunGenParams& from);
-  DunGenParams(DunGenParams&& from) noexcept
-    : DunGenParams() {
+  DungenParams(const DungenParams& from);
+  DungenParams(DungenParams&& from) noexcept
+    : DungenParams() {
     *this = ::std::move(from);
   }
 
-  inline DunGenParams& operator=(const DunGenParams& from) {
+  inline DungenParams& operator=(const DungenParams& from) {
     CopyFrom(from);
     return *this;
   }
-  inline DunGenParams& operator=(DunGenParams&& from) noexcept {
+  inline DungenParams& operator=(DungenParams&& from) noexcept {
     if (GetArena() == from.GetArena()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -884,19 +890,19 @@ class DunGenParams PROTOBUF_FINAL :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return GetMetadataStatic().reflection;
   }
-  static const DunGenParams& default_instance();
+  static const DungenParams& default_instance();
 
-  static inline const DunGenParams* internal_default_instance() {
-    return reinterpret_cast<const DunGenParams*>(
-               &_DunGenParams_default_instance_);
+  static inline const DungenParams* internal_default_instance() {
+    return reinterpret_cast<const DungenParams*>(
+               &_DungenParams_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     2;
 
-  friend void swap(DunGenParams& a, DunGenParams& b) {
+  friend void swap(DungenParams& a, DungenParams& b) {
     a.Swap(&b);
   }
-  inline void Swap(DunGenParams* other) {
+  inline void Swap(DungenParams* other) {
     if (other == this) return;
     if (GetArena() == other->GetArena()) {
       InternalSwap(other);
@@ -904,7 +910,7 @@ class DunGenParams PROTOBUF_FINAL :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(DunGenParams* other) {
+  void UnsafeArenaSwap(DungenParams* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetArena() == other->GetArena());
     InternalSwap(other);
@@ -912,17 +918,17 @@ class DunGenParams PROTOBUF_FINAL :
 
   // implements Message ----------------------------------------------
 
-  inline DunGenParams* New() const final {
-    return CreateMaybeMessage<DunGenParams>(nullptr);
+  inline DungenParams* New() const final {
+    return CreateMaybeMessage<DungenParams>(nullptr);
   }
 
-  DunGenParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<DunGenParams>(arena);
+  DungenParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<DungenParams>(arena);
   }
   void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
   void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const DunGenParams& from);
-  void MergeFrom(const DunGenParams& from);
+  void CopyFrom(const DungenParams& from);
+  void MergeFrom(const DungenParams& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -936,13 +942,13 @@ class DunGenParams PROTOBUF_FINAL :
   inline void SharedCtor();
   inline void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(DunGenParams* other);
+  void InternalSwap(DungenParams* other);
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "game.DunGenParams";
+    return "game.DungenParams";
   }
   protected:
-  explicit DunGenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  explicit DungenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena);
   private:
   static void ArenaDtor(void* object);
   inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
@@ -1023,7 +1029,7 @@ class DunGenParams PROTOBUF_FINAL :
   void _internal_set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // @@protoc_insertion_point(class_scope:game.DunGenParams)
+  // @@protoc_insertion_point(class_scope:game.DungenParams)
  private:
   class _Internal;
 
@@ -1300,128 +1306,189 @@ inline void GameParams::set_allocated_game_atlas_filename(std::string* game_atla
   // @@protoc_insertion_point(field_set_allocated:game.GameParams.game_atlas_filename)
 }
 
+// string dungen_params_filename = 2;
+inline void GameParams::clear_dungen_params_filename() {
+  dungen_params_filename_.ClearToEmpty();
+}
+inline const std::string& GameParams::dungen_params_filename() const {
+  // @@protoc_insertion_point(field_get:game.GameParams.dungen_params_filename)
+  return _internal_dungen_params_filename();
+}
+inline void GameParams::set_dungen_params_filename(const std::string& value) {
+  _internal_set_dungen_params_filename(value);
+  // @@protoc_insertion_point(field_set:game.GameParams.dungen_params_filename)
+}
+inline std::string* GameParams::mutable_dungen_params_filename() {
+  // @@protoc_insertion_point(field_mutable:game.GameParams.dungen_params_filename)
+  return _internal_mutable_dungen_params_filename();
+}
+inline const std::string& GameParams::_internal_dungen_params_filename() const {
+  return dungen_params_filename_.Get();
+}
+inline void GameParams::_internal_set_dungen_params_filename(const std::string& value) {
+  
+  dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+}
+inline void GameParams::set_dungen_params_filename(std::string&& value) {
+  
+  dungen_params_filename_.Set(
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:game.GameParams.dungen_params_filename)
+}
+inline void GameParams::set_dungen_params_filename(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:game.GameParams.dungen_params_filename)
+}
+inline void GameParams::set_dungen_params_filename(const char* value,
+    size_t size) {
+  
+  dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:game.GameParams.dungen_params_filename)
+}
+inline std::string* GameParams::_internal_mutable_dungen_params_filename() {
+  
+  return dungen_params_filename_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+}
+inline std::string* GameParams::release_dungen_params_filename() {
+  // @@protoc_insertion_point(field_release:game.GameParams.dungen_params_filename)
+  return dungen_params_filename_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void GameParams::set_allocated_dungen_params_filename(std::string* dungen_params_filename) {
+  if (dungen_params_filename != nullptr) {
+    
+  } else {
+    
+  }
+  dungen_params_filename_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), dungen_params_filename,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:game.GameParams.dungen_params_filename)
+}
+
 // -------------------------------------------------------------------
 
-// DunGenParams
+// DungenParams
 
 // int32 room_count = 1;
-inline void DunGenParams::clear_room_count() {
+inline void DungenParams::clear_room_count() {
   room_count_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_room_count() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_room_count() const {
   return room_count_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::room_count() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.room_count)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::room_count() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.room_count)
   return _internal_room_count();
 }
-inline void DunGenParams::_internal_set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   room_count_ = value;
 }
-inline void DunGenParams::set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_room_count(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.room_count)
+  // @@protoc_insertion_point(field_set:game.DungenParams.room_count)
 }
 
 // int32 min_room_size = 2;
-inline void DunGenParams::clear_min_room_size() {
+inline void DungenParams::clear_min_room_size() {
   min_room_size_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_min_room_size() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_min_room_size() const {
   return min_room_size_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::min_room_size() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.min_room_size)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::min_room_size() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.min_room_size)
   return _internal_min_room_size();
 }
-inline void DunGenParams::_internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   min_room_size_ = value;
 }
-inline void DunGenParams::set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_min_room_size(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.min_room_size)
+  // @@protoc_insertion_point(field_set:game.DungenParams.min_room_size)
 }
 
 // int32 max_room_size = 3;
-inline void DunGenParams::clear_max_room_size() {
+inline void DungenParams::clear_max_room_size() {
   max_room_size_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_max_room_size() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_max_room_size() const {
   return max_room_size_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::max_room_size() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.max_room_size)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::max_room_size() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.max_room_size)
   return _internal_max_room_size();
 }
-inline void DunGenParams::_internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   max_room_size_ = value;
 }
-inline void DunGenParams::set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_max_room_size(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.max_room_size)
+  // @@protoc_insertion_point(field_set:game.DungenParams.max_room_size)
 }
 
 // int32 map_width = 4;
-inline void DunGenParams::clear_map_width() {
+inline void DungenParams::clear_map_width() {
   map_width_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_map_width() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_map_width() const {
   return map_width_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::map_width() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.map_width)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::map_width() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.map_width)
   return _internal_map_width();
 }
-inline void DunGenParams::_internal_set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   map_width_ = value;
 }
-inline void DunGenParams::set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_map_width(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.map_width)
+  // @@protoc_insertion_point(field_set:game.DungenParams.map_width)
 }
 
 // int32 map_height = 5;
-inline void DunGenParams::clear_map_height() {
+inline void DungenParams::clear_map_height() {
   map_height_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_map_height() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_map_height() const {
   return map_height_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::map_height() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.map_height)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::map_height() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.map_height)
   return _internal_map_height();
 }
-inline void DunGenParams::_internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   map_height_ = value;
 }
-inline void DunGenParams::set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_map_height(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.map_height)
+  // @@protoc_insertion_point(field_set:game.DungenParams.map_height)
 }
 
 // int32 expand_chance = 6;
-inline void DunGenParams::clear_expand_chance() {
+inline void DungenParams::clear_expand_chance() {
   expand_chance_ = 0;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::_internal_expand_chance() const {
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_expand_chance() const {
   return expand_chance_;
 }
-inline ::PROTOBUF_NAMESPACE_ID::int32 DunGenParams::expand_chance() const {
-  // @@protoc_insertion_point(field_get:game.DunGenParams.expand_chance)
+inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::expand_chance() const {
+  // @@protoc_insertion_point(field_get:game.DungenParams.expand_chance)
   return _internal_expand_chance();
 }
-inline void DunGenParams::_internal_set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::_internal_set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
   
   expand_chance_ = value;
 }
-inline void DunGenParams::set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
+inline void DungenParams::set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value) {
   _internal_set_expand_chance(value);
-  // @@protoc_insertion_point(field_set:game.DunGenParams.expand_chance)
+  // @@protoc_insertion_point(field_set:game.DungenParams.expand_chance)
 }
 
 // -------------------------------------------------------------------

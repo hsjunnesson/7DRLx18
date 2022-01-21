@@ -1,3 +1,4 @@
 {
-    "game_atlas_filename": "assets/atlas.json"
+    "game_atlas_filename": "assets/atlas.json",
+    "dungen_params_filename": "assets/dungen_params.json"
 }

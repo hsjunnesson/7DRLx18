@@ -1,42 +1,71 @@
 #include "dungen.h"
-
-#include <random>
-
-#pragma warning(push, 0)
-#include "array.h"
-#include "hash.h"
-#include "memory.h"
-#include "queue.h"
-#pragma warning(pop)
-
+#include "grid.hpp"
 #include "game.h"
 #include "line.hpp"
 #include "proto/game.pb.h"
+#include "engine/engine.h"
 #include "engine/config.inl"
 #include "engine/log.h"
+#include "engine/sprites.h"
 
+#include <array.h>
+#include <memory.h>
+#include <temp_allocator.h>
 #include <murmur_hash.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <mutex>
 #include <random>
 #include <thread>
+#include <cassert>
 
 namespace game {
 using namespace foundation;
 
 void dungen(engine::Engine *engine, game::Game *game, const char *seed) {
-    foundation::Allocator &allocator = foundation::memory_globals::default_allocator();
+    assert(engine);
+    assert(game);
+    assert(seed);
+
+    TempAllocator1024 ta;
+
+    DungenParams *params = nullptr;
+    params = MAKE_NEW(ta, DungenParams);
+    engine::config::read(game->params->dungen_params_filename().c_str(), params);
+    uint32_t dungen_width = params->map_width();
+    uint32_t dungen_height = params->map_height();
 
     uint64_t seed_hash = foundation::murmur_hash_64(seed, strlen(seed), 0);
 
-    bool done = false;
-
     log_info("Dungen started for seed %llu", seed_hash);
+
+    Array<Tile> tiles(ta);
+    Array<Room> rooms(ta);
+
+    for (uint32_t i = 0; i < dungen_width * dungen_height; ++i) {
+        array::push_back(tiles, Tile::Wall);
+    }
 
     {
         std::scoped_lock lock(*game->dungen_mutex);
-//        *game->map = hexes;
-//        trim(*game->map);
+        game->level->rooms = rooms;
+        game->level->tiles = tiles;
+        array::clear(game->level->sprite_ids);
+
+        for (uint32_t i = 0; i < array::size(tiles); ++i) {
+            const engine::Sprite sprite = engine::add_sprite(*engine->sprites, "orc");
+            int32_t x, y;
+            grid::coord(i, x, y, dungen_width);
+
+            glm::mat4 transform = glm::mat4(1.0f);
+            transform = glm::translate(transform, {x * sprite.atlas_rect->size.x, y * sprite.atlas_rect->size.y, -1});
+            transform = glm::scale(transform, glm::vec3((float)sprite.atlas_rect->size.x, (float)sprite.atlas_rect->size.y, 1.0f));
+            engine::transform_sprite(*engine->sprites, sprite.id, transform);
+
+            array::push_back(game->level->sprite_ids, sprite.id);
+        }
     }
 
     game::transition(*engine, game, GameState::Playing);

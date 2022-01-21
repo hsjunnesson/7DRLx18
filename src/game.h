@@ -22,6 +22,40 @@ class GameParams;
 class ActionBinds;
 
 /**
+ * @brief A room in the dungeon.
+ * 
+ */
+struct Room {
+    int32_t room_index;
+    int32_t x, y;
+    int32_t w, h;
+    bool start_room = false;
+    bool boss_room = false;
+};
+
+/**
+ * @brief A tile in the dungeon.
+ * 
+ */
+enum class Tile {
+    None,
+    Wall,
+};
+
+/**
+ * @brief A level in the dungeon.
+ * 
+ */
+struct Level {
+    Level(Allocator &allocator);
+
+    Array<Tile> tiles;
+    Array<uint64_t> sprite_ids;
+    Array<Room> rooms;
+    int32_t depth;
+};
+
+/**
  * @brief An enum that describes a specific game state.
  * 
  */
@@ -57,8 +91,7 @@ struct Game {
     GameParams *params;
     ActionBinds *action_binds;
     GameState game_state;
-    
-    Array<engine::Sprite *> *background_sprites;
+    Level *level;
 
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;

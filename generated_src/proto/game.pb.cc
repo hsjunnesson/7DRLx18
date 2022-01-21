@@ -24,10 +24,10 @@ class GameParamsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<GameParams> _instance;
 } _GameParams_default_instance_;
-class DunGenParamsDefaultTypeInternal {
+class DungenParamsDefaultTypeInternal {
  public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DunGenParams> _instance;
-} _DunGenParams_default_instance_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DungenParams> _instance;
+} _DungenParams_default_instance_;
 class ActionBindsDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ActionBinds> _instance;
@@ -60,18 +60,18 @@ static void InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto() {
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto}, {
       &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,}};
 
-static void InitDefaultsscc_info_DunGenParams_proto_2fgame_2eproto() {
+static void InitDefaultsscc_info_DungenParams_proto_2fgame_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::game::_DunGenParams_default_instance_;
-    new (ptr) ::game::DunGenParams();
+    void* ptr = &::game::_DungenParams_default_instance_;
+    new (ptr) ::game::DungenParams();
     ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
   }
 }
 
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DunGenParams_proto_2fgame_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DunGenParams_proto_2fgame_2eproto}, {}};
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DungenParams_proto_2fgame_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DungenParams_proto_2fgame_2eproto}, {}};
 
 static void InitDefaultsscc_info_GameParams_proto_2fgame_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -104,17 +104,18 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::GameParams, game_atlas_filename_),
+  PROTOBUF_FIELD_OFFSET(::game::GameParams, dungen_params_filename_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, room_count_),
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, min_room_size_),
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, max_room_size_),
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, map_width_),
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, map_height_),
-  PROTOBUF_FIELD_OFFSET(::game::DunGenParams, expand_chance_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, room_count_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, min_room_size_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, max_room_size_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, map_width_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, map_height_),
+  PROTOBUF_FIELD_OFFSET(::game::DungenParams, expand_chance_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::ActionBinds, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -125,89 +126,88 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::game::ActionBindEntry)},
   { 7, -1, sizeof(::game::GameParams)},
-  { 13, -1, sizeof(::game::DunGenParams)},
-  { 24, -1, sizeof(::game::ActionBinds)},
+  { 14, -1, sizeof(::game::DungenParams)},
+  { 25, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_ActionBindEntry_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_GameParams_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_DunGenParams_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_DungenParams_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::game::_ActionBinds_default_instance_),
 };
 
 const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\020proto/game.proto\022\004game\"\377\017\n\017ActionBindE"
+  "\n\020proto/game.proto\022\004game\"\264\017\n\017ActionBindE"
   "ntry\022,\n\006action\030\001 \001(\0162\034.game.ActionBindEn"
   "try.Action\022(\n\004bind\030\002 \001(\0162\032.game.ActionBi"
-  "ndEntry.Bind\"\252\001\n\006Action\022\022\n\016ACTION_UNKNOW"
-  "N\020\000\022\010\n\004QUIT\020\001\022\010\n\004MENU\020\002\022\r\n\tDEBUG_HUD\020\003\022\017"
-  "\n\013EXAMPLE_HUD\020\004\022\016\n\nDEBUG_DRAW\020\005\022\022\n\016THRUS"
-  "T_FORWARD\020\n\022\023\n\017THRUST_BACKWARD\020\013\022\016\n\nSTEE"
-  "R_LEFT\020\014\022\017\n\013STEER_RIGHT\020\r\"\346\r\n\004Bind\022\020\n\014BI"
-  "ND_UNKNOWN\020\000\022\r\n\tKEY_SPACE\020 \022\022\n\016KEY_APOST"
-  "ROPHE\020\'\022\r\n\tKEY_COMMA\020,\022\r\n\tKEY_MINUS\020-\022\016\n"
-  "\nKEY_PERIOD\020.\022\r\n\tKEY_SLASH\020/\022\t\n\005KEY_0\0200\022"
-  "\t\n\005KEY_1\0201\022\t\n\005KEY_2\0202\022\t\n\005KEY_3\0203\022\t\n\005KEY_"
-  "4\0204\022\t\n\005KEY_5\0205\022\t\n\005KEY_6\0206\022\t\n\005KEY_7\0207\022\t\n\005"
-  "KEY_8\0208\022\t\n\005KEY_9\0209\022\021\n\rKEY_SEMICOLON\020;\022\r\n"
-  "\tKEY_EQUAL\020=\022\t\n\005KEY_A\020A\022\t\n\005KEY_B\020B\022\t\n\005KE"
-  "Y_C\020C\022\t\n\005KEY_D\020D\022\t\n\005KEY_E\020E\022\t\n\005KEY_F\020F\022\t"
-  "\n\005KEY_G\020G\022\t\n\005KEY_H\020H\022\t\n\005KEY_I\020I\022\t\n\005KEY_J"
-  "\020J\022\t\n\005KEY_K\020K\022\t\n\005KEY_L\020L\022\t\n\005KEY_M\020M\022\t\n\005K"
-  "EY_N\020N\022\t\n\005KEY_O\020O\022\t\n\005KEY_P\020P\022\t\n\005KEY_Q\020Q\022"
-  "\t\n\005KEY_R\020R\022\t\n\005KEY_S\020S\022\t\n\005KEY_T\020T\022\t\n\005KEY_"
-  "U\020U\022\t\n\005KEY_V\020V\022\t\n\005KEY_W\020W\022\t\n\005KEY_X\020X\022\t\n\005"
-  "KEY_Y\020Y\022\t\n\005KEY_Z\020Z\022\024\n\020KEY_LEFT_BRACKET\020["
-  "\022\021\n\rKEY_BACKSLASH\020\\\022\025\n\021KEY_RIGHT_BRACKET"
-  "\020]\022\024\n\020KEY_GRAVE_ACCENT\020`\022\017\n\nKEY_ESCAPE\020\200"
-  "\002\022\016\n\tKEY_ENTER\020\201\002\022\014\n\007KEY_TAB\020\202\002\022\022\n\rKEY_B"
-  "ACKSPACE\020\203\002\022\017\n\nKEY_INSERT\020\204\002\022\017\n\nKEY_DELE"
-  "TE\020\205\002\022\016\n\tKEY_RIGHT\020\206\002\022\r\n\010KEY_LEFT\020\207\002\022\r\n\010"
-  "KEY_DOWN\020\210\002\022\013\n\006KEY_UP\020\211\002\022\020\n\013KEY_PAGE_UP\020"
-  "\212\002\022\022\n\rKEY_PAGE_DOWN\020\213\002\022\r\n\010KEY_HOME\020\214\002\022\014\n"
-  "\007KEY_END\020\215\002\022\022\n\rKEY_CAPS_LOCK\020\230\002\022\024\n\017KEY_S"
-  "CROLL_LOCK\020\231\002\022\021\n\014KEY_NUM_LOCK\020\232\002\022\025\n\020KEY_"
-  "PRINT_SCREEN\020\233\002\022\016\n\tKEY_PAUSE\020\234\002\022\013\n\006KEY_F"
-  "1\020\242\002\022\013\n\006KEY_F2\020\243\002\022\013\n\006KEY_F3\020\244\002\022\013\n\006KEY_F4"
-  "\020\245\002\022\013\n\006KEY_F5\020\246\002\022\013\n\006KEY_F6\020\247\002\022\013\n\006KEY_F7\020"
-  "\250\002\022\013\n\006KEY_F8\020\251\002\022\013\n\006KEY_F9\020\252\002\022\014\n\007KEY_F10\020"
-  "\253\002\022\014\n\007KEY_F11\020\254\002\022\014\n\007KEY_F12\020\255\002\022\014\n\007KEY_F1"
-  "3\020\256\002\022\014\n\007KEY_F14\020\257\002\022\014\n\007KEY_F15\020\260\002\022\014\n\007KEY_"
-  "F16\020\261\002\022\014\n\007KEY_F17\020\262\002\022\014\n\007KEY_F18\020\263\002\022\014\n\007KE"
-  "Y_F19\020\264\002\022\014\n\007KEY_F20\020\265\002\022\014\n\007KEY_F21\020\266\002\022\014\n\007"
-  "KEY_F22\020\267\002\022\014\n\007KEY_F23\020\270\002\022\014\n\007KEY_F24\020\271\002\022\014"
-  "\n\007KEY_F25\020\272\002\022\r\n\010KEY_KP_0\020\300\002\022\r\n\010KEY_KP_1\020"
-  "\301\002\022\r\n\010KEY_KP_2\020\302\002\022\r\n\010KEY_KP_3\020\303\002\022\r\n\010KEY_"
-  "KP_4\020\304\002\022\r\n\010KEY_KP_5\020\305\002\022\r\n\010KEY_KP_6\020\306\002\022\r\n"
-  "\010KEY_KP_7\020\307\002\022\r\n\010KEY_KP_8\020\310\002\022\r\n\010KEY_KP_9\020"
-  "\311\002\022\023\n\016KEY_KP_DECIMAL\020\312\002\022\022\n\rKEY_KP_DIVIDE"
-  "\020\313\002\022\024\n\017KEY_KP_MULTIPLY\020\314\002\022\024\n\017KEY_KP_SUBT"
-  "RACT\020\315\002\022\017\n\nKEY_KP_ADD\020\316\002\022\021\n\014KEY_KP_ENTER"
-  "\020\317\002\022\021\n\014KEY_KP_EQUAL\020\320\002\022\023\n\016KEY_LEFT_SHIFT"
-  "\020\324\002\022\025\n\020KEY_LEFT_CONTROL\020\325\002\022\021\n\014KEY_LEFT_A"
-  "LT\020\326\002\022\023\n\016KEY_LEFT_SUPER\020\327\002\022\024\n\017KEY_RIGHT_"
-  "SHIFT\020\330\002\022\026\n\021KEY_RIGHT_CONTROL\020\331\002\022\022\n\rKEY_"
-  "RIGHT_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333\002\")\n\nGa"
-  "meParams\022\033\n\023game_atlas_filename\030\001 \001(\t\"\216\001"
-  "\n\014DunGenParams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmi"
-  "n_room_size\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005"
-  "\022\021\n\tmap_width\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022"
-  "\025\n\rexpand_chance\030\006 \001(\005\":\n\013ActionBinds\022+\n"
-  "\014action_binds\030\001 \003(\0132\025.game.ActionBindEnt"
-  "ryb\006proto3"
+  "ndEntry.Bind\"`\n\006Action\022\022\n\016ACTION_UNKNOWN"
+  "\020\000\022\010\n\004QUIT\020\001\022\010\n\004MENU\020\002\022\r\n\tDEBUG_HUD\020\003\022\017\n"
+  "\013EXAMPLE_HUD\020\004\022\016\n\nDEBUG_DRAW\020\005\"\346\r\n\004Bind\022"
+  "\020\n\014BIND_UNKNOWN\020\000\022\r\n\tKEY_SPACE\020 \022\022\n\016KEY_"
+  "APOSTROPHE\020\'\022\r\n\tKEY_COMMA\020,\022\r\n\tKEY_MINUS"
+  "\020-\022\016\n\nKEY_PERIOD\020.\022\r\n\tKEY_SLASH\020/\022\t\n\005KEY"
+  "_0\0200\022\t\n\005KEY_1\0201\022\t\n\005KEY_2\0202\022\t\n\005KEY_3\0203\022\t\n"
+  "\005KEY_4\0204\022\t\n\005KEY_5\0205\022\t\n\005KEY_6\0206\022\t\n\005KEY_7\020"
+  "7\022\t\n\005KEY_8\0208\022\t\n\005KEY_9\0209\022\021\n\rKEY_SEMICOLON"
+  "\020;\022\r\n\tKEY_EQUAL\020=\022\t\n\005KEY_A\020A\022\t\n\005KEY_B\020B\022"
+  "\t\n\005KEY_C\020C\022\t\n\005KEY_D\020D\022\t\n\005KEY_E\020E\022\t\n\005KEY_"
+  "F\020F\022\t\n\005KEY_G\020G\022\t\n\005KEY_H\020H\022\t\n\005KEY_I\020I\022\t\n\005"
+  "KEY_J\020J\022\t\n\005KEY_K\020K\022\t\n\005KEY_L\020L\022\t\n\005KEY_M\020M"
+  "\022\t\n\005KEY_N\020N\022\t\n\005KEY_O\020O\022\t\n\005KEY_P\020P\022\t\n\005KEY"
+  "_Q\020Q\022\t\n\005KEY_R\020R\022\t\n\005KEY_S\020S\022\t\n\005KEY_T\020T\022\t\n"
+  "\005KEY_U\020U\022\t\n\005KEY_V\020V\022\t\n\005KEY_W\020W\022\t\n\005KEY_X\020"
+  "X\022\t\n\005KEY_Y\020Y\022\t\n\005KEY_Z\020Z\022\024\n\020KEY_LEFT_BRAC"
+  "KET\020[\022\021\n\rKEY_BACKSLASH\020\\\022\025\n\021KEY_RIGHT_BR"
+  "ACKET\020]\022\024\n\020KEY_GRAVE_ACCENT\020`\022\017\n\nKEY_ESC"
+  "APE\020\200\002\022\016\n\tKEY_ENTER\020\201\002\022\014\n\007KEY_TAB\020\202\002\022\022\n\r"
+  "KEY_BACKSPACE\020\203\002\022\017\n\nKEY_INSERT\020\204\002\022\017\n\nKEY"
+  "_DELETE\020\205\002\022\016\n\tKEY_RIGHT\020\206\002\022\r\n\010KEY_LEFT\020\207"
+  "\002\022\r\n\010KEY_DOWN\020\210\002\022\013\n\006KEY_UP\020\211\002\022\020\n\013KEY_PAG"
+  "E_UP\020\212\002\022\022\n\rKEY_PAGE_DOWN\020\213\002\022\r\n\010KEY_HOME\020"
+  "\214\002\022\014\n\007KEY_END\020\215\002\022\022\n\rKEY_CAPS_LOCK\020\230\002\022\024\n\017"
+  "KEY_SCROLL_LOCK\020\231\002\022\021\n\014KEY_NUM_LOCK\020\232\002\022\025\n"
+  "\020KEY_PRINT_SCREEN\020\233\002\022\016\n\tKEY_PAUSE\020\234\002\022\013\n\006"
+  "KEY_F1\020\242\002\022\013\n\006KEY_F2\020\243\002\022\013\n\006KEY_F3\020\244\002\022\013\n\006K"
+  "EY_F4\020\245\002\022\013\n\006KEY_F5\020\246\002\022\013\n\006KEY_F6\020\247\002\022\013\n\006KE"
+  "Y_F7\020\250\002\022\013\n\006KEY_F8\020\251\002\022\013\n\006KEY_F9\020\252\002\022\014\n\007KEY"
+  "_F10\020\253\002\022\014\n\007KEY_F11\020\254\002\022\014\n\007KEY_F12\020\255\002\022\014\n\007K"
+  "EY_F13\020\256\002\022\014\n\007KEY_F14\020\257\002\022\014\n\007KEY_F15\020\260\002\022\014\n"
+  "\007KEY_F16\020\261\002\022\014\n\007KEY_F17\020\262\002\022\014\n\007KEY_F18\020\263\002\022"
+  "\014\n\007KEY_F19\020\264\002\022\014\n\007KEY_F20\020\265\002\022\014\n\007KEY_F21\020\266"
+  "\002\022\014\n\007KEY_F22\020\267\002\022\014\n\007KEY_F23\020\270\002\022\014\n\007KEY_F24"
+  "\020\271\002\022\014\n\007KEY_F25\020\272\002\022\r\n\010KEY_KP_0\020\300\002\022\r\n\010KEY_"
+  "KP_1\020\301\002\022\r\n\010KEY_KP_2\020\302\002\022\r\n\010KEY_KP_3\020\303\002\022\r\n"
+  "\010KEY_KP_4\020\304\002\022\r\n\010KEY_KP_5\020\305\002\022\r\n\010KEY_KP_6\020"
+  "\306\002\022\r\n\010KEY_KP_7\020\307\002\022\r\n\010KEY_KP_8\020\310\002\022\r\n\010KEY_"
+  "KP_9\020\311\002\022\023\n\016KEY_KP_DECIMAL\020\312\002\022\022\n\rKEY_KP_D"
+  "IVIDE\020\313\002\022\024\n\017KEY_KP_MULTIPLY\020\314\002\022\024\n\017KEY_KP"
+  "_SUBTRACT\020\315\002\022\017\n\nKEY_KP_ADD\020\316\002\022\021\n\014KEY_KP_"
+  "ENTER\020\317\002\022\021\n\014KEY_KP_EQUAL\020\320\002\022\023\n\016KEY_LEFT_"
+  "SHIFT\020\324\002\022\025\n\020KEY_LEFT_CONTROL\020\325\002\022\021\n\014KEY_L"
+  "EFT_ALT\020\326\002\022\023\n\016KEY_LEFT_SUPER\020\327\002\022\024\n\017KEY_R"
+  "IGHT_SHIFT\020\330\002\022\026\n\021KEY_RIGHT_CONTROL\020\331\002\022\022\n"
+  "\rKEY_RIGHT_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333\002\""
+  "I\n\nGameParams\022\033\n\023game_atlas_filename\030\001 \001"
+  "(\t\022\036\n\026dungen_params_filename\030\002 \001(\t\"\216\001\n\014D"
+  "ungenParams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_r"
+  "oom_size\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021\n"
+  "\tmap_width\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022\025\n\r"
+  "expand_chance\030\006 \001(\005\":\n\013ActionBinds\022+\n\014ac"
+  "tion_binds\030\001 \003(\0132\025.game.ActionBindEntryb"
+  "\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fgame_2eproto_deps[1] = {
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fgame_2eproto_sccs[4] = {
   &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,
   &scc_info_ActionBinds_proto_2fgame_2eproto.base,
-  &scc_info_DunGenParams_proto_2fgame_2eproto.base,
+  &scc_info_DungenParams_proto_2fgame_2eproto.base,
   &scc_info_GameParams_proto_2fgame_2eproto.base,
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2330,
+  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2287,
   &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 4, 0,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
   file_level_metadata_proto_2fgame_2eproto, 4, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
@@ -228,10 +228,6 @@ bool ActionBindEntry_Action_IsValid(int value) {
     case 3:
     case 4:
     case 5:
-    case 10:
-    case 11:
-    case 12:
-    case 13:
       return true;
     default:
       return false;
@@ -245,10 +241,6 @@ constexpr ActionBindEntry_Action ActionBindEntry::MENU;
 constexpr ActionBindEntry_Action ActionBindEntry::DEBUG_HUD;
 constexpr ActionBindEntry_Action ActionBindEntry::EXAMPLE_HUD;
 constexpr ActionBindEntry_Action ActionBindEntry::DEBUG_DRAW;
-constexpr ActionBindEntry_Action ActionBindEntry::THRUST_FORWARD;
-constexpr ActionBindEntry_Action ActionBindEntry::THRUST_BACKWARD;
-constexpr ActionBindEntry_Action ActionBindEntry::STEER_LEFT;
-constexpr ActionBindEntry_Action ActionBindEntry::STEER_RIGHT;
 constexpr ActionBindEntry_Action ActionBindEntry::Action_MIN;
 constexpr ActionBindEntry_Action ActionBindEntry::Action_MAX;
 constexpr int ActionBindEntry::Action_ARRAYSIZE;
@@ -758,12 +750,18 @@ GameParams::GameParams(const GameParams& from)
     game_atlas_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_game_atlas_filename(), 
       GetArena());
   }
+  dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_dungen_params_filename().empty()) {
+    dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_dungen_params_filename(), 
+      GetArena());
+  }
   // @@protoc_insertion_point(copy_constructor:game.GameParams)
 }
 
 void GameParams::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_GameParams_proto_2fgame_2eproto.base);
   game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 GameParams::~GameParams() {
@@ -775,6 +773,7 @@ GameParams::~GameParams() {
 void GameParams::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
   game_atlas_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  dungen_params_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void GameParams::ArenaDtor(void* object) {
@@ -799,6 +798,7 @@ void GameParams::Clear() {
   (void) cached_has_bits;
 
   game_atlas_filename_.ClearToEmpty();
+  dungen_params_filename_.ClearToEmpty();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -815,6 +815,15 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           auto str = _internal_mutable_game_atlas_filename();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.game_atlas_filename"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // string dungen_params_filename = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+          auto str = _internal_mutable_dungen_params_filename();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.dungen_params_filename"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -856,6 +865,16 @@ failure:
         1, this->_internal_game_atlas_filename(), target);
   }
 
+  // string dungen_params_filename = 2;
+  if (this->dungen_params_filename().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_dungen_params_filename().data(), static_cast<int>(this->_internal_dungen_params_filename().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "game.GameParams.dungen_params_filename");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_dungen_params_filename(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -877,6 +896,13 @@ size_t GameParams::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_game_atlas_filename());
+  }
+
+  // string dungen_params_filename = 2;
+  if (this->dungen_params_filename().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_dungen_params_filename());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -913,6 +939,9 @@ void GameParams::MergeFrom(const GameParams& from) {
   if (from.game_atlas_filename().size() > 0) {
     _internal_set_game_atlas_filename(from._internal_game_atlas_filename());
   }
+  if (from.dungen_params_filename().size() > 0) {
+    _internal_set_dungen_params_filename(from._internal_dungen_params_filename());
+  }
 }
 
 void GameParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -937,6 +966,7 @@ void GameParams::InternalSwap(GameParams* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   game_atlas_filename_.Swap(&other->game_atlas_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  dungen_params_filename_.Swap(&other->dungen_params_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GameParams::GetMetadata() const {
@@ -946,59 +976,59 @@ void GameParams::InternalSwap(GameParams* other) {
 
 // ===================================================================
 
-class DunGenParams::_Internal {
+class DungenParams::_Internal {
  public:
 };
 
-DunGenParams::DunGenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+DungenParams::DungenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
   SharedCtor();
   RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:game.DunGenParams)
+  // @@protoc_insertion_point(arena_constructor:game.DungenParams)
 }
-DunGenParams::DunGenParams(const DunGenParams& from)
+DungenParams::DungenParams(const DungenParams& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::memcpy(&room_count_, &from.room_count_,
     static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
     reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
-  // @@protoc_insertion_point(copy_constructor:game.DunGenParams)
+  // @@protoc_insertion_point(copy_constructor:game.DungenParams)
 }
 
-void DunGenParams::SharedCtor() {
+void DungenParams::SharedCtor() {
   ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
       reinterpret_cast<char*>(&room_count_) - reinterpret_cast<char*>(this)),
       0, static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
       reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
 }
 
-DunGenParams::~DunGenParams() {
-  // @@protoc_insertion_point(destructor:game.DunGenParams)
+DungenParams::~DungenParams() {
+  // @@protoc_insertion_point(destructor:game.DungenParams)
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void DunGenParams::SharedDtor() {
+void DungenParams::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
-void DunGenParams::ArenaDtor(void* object) {
-  DunGenParams* _this = reinterpret_cast< DunGenParams* >(object);
+void DungenParams::ArenaDtor(void* object) {
+  DungenParams* _this = reinterpret_cast< DungenParams* >(object);
   (void)_this;
 }
-void DunGenParams::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+void DungenParams::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 }
-void DunGenParams::SetCachedSize(int size) const {
+void DungenParams::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const DunGenParams& DunGenParams::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DunGenParams_proto_2fgame_2eproto.base);
+const DungenParams& DungenParams::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DungenParams_proto_2fgame_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void DunGenParams::Clear() {
-// @@protoc_insertion_point(message_clear_start:game.DunGenParams)
+void DungenParams::Clear() {
+// @@protoc_insertion_point(message_clear_start:game.DungenParams)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1009,7 +1039,7 @@ void DunGenParams::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* DunGenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+const char* DungenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
@@ -1080,9 +1110,9 @@ failure:
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* DunGenParams::_InternalSerialize(
+::PROTOBUF_NAMESPACE_ID::uint8* DungenParams::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:game.DunGenParams)
+  // @@protoc_insertion_point(serialize_to_array_start:game.DungenParams)
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1126,12 +1156,12 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:game.DunGenParams)
+  // @@protoc_insertion_point(serialize_to_array_end:game.DungenParams)
   return target;
 }
 
-size_t DunGenParams::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:game.DunGenParams)
+size_t DungenParams::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:game.DungenParams)
   size_t total_size = 0;
 
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -1189,23 +1219,23 @@ size_t DunGenParams::ByteSizeLong() const {
   return total_size;
 }
 
-void DunGenParams::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:game.DunGenParams)
+void DungenParams::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:game.DungenParams)
   GOOGLE_DCHECK_NE(&from, this);
-  const DunGenParams* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DunGenParams>(
+  const DungenParams* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DungenParams>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.DunGenParams)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.DungenParams)
     ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.DunGenParams)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.DungenParams)
     MergeFrom(*source);
   }
 }
 
-void DunGenParams::MergeFrom(const DunGenParams& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:game.DunGenParams)
+void DungenParams::MergeFrom(const DungenParams& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:game.DungenParams)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
@@ -1231,36 +1261,36 @@ void DunGenParams::MergeFrom(const DunGenParams& from) {
   }
 }
 
-void DunGenParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:game.DunGenParams)
+void DungenParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:game.DungenParams)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void DunGenParams::CopyFrom(const DunGenParams& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:game.DunGenParams)
+void DungenParams::CopyFrom(const DungenParams& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:game.DungenParams)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool DunGenParams::IsInitialized() const {
+bool DungenParams::IsInitialized() const {
   return true;
 }
 
-void DunGenParams::InternalSwap(DunGenParams* other) {
+void DungenParams::InternalSwap(DungenParams* other) {
   using std::swap;
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(DunGenParams, expand_chance_)
-      + sizeof(DunGenParams::expand_chance_)
-      - PROTOBUF_FIELD_OFFSET(DunGenParams, room_count_)>(
+      PROTOBUF_FIELD_OFFSET(DungenParams, expand_chance_)
+      + sizeof(DungenParams::expand_chance_)
+      - PROTOBUF_FIELD_OFFSET(DungenParams, room_count_)>(
           reinterpret_cast<char*>(&room_count_),
           reinterpret_cast<char*>(&other->room_count_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata DunGenParams::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata DungenParams::GetMetadata() const {
   return GetMetadataStatic();
 }
 
@@ -1474,8 +1504,8 @@ template<> PROTOBUF_NOINLINE ::game::ActionBindEntry* Arena::CreateMaybeMessage<
 template<> PROTOBUF_NOINLINE ::game::GameParams* Arena::CreateMaybeMessage< ::game::GameParams >(Arena* arena) {
   return Arena::CreateMessageInternal< ::game::GameParams >(arena);
 }
-template<> PROTOBUF_NOINLINE ::game::DunGenParams* Arena::CreateMaybeMessage< ::game::DunGenParams >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::game::DunGenParams >(arena);
+template<> PROTOBUF_NOINLINE ::game::DungenParams* Arena::CreateMaybeMessage< ::game::DungenParams >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::game::DungenParams >(arena);
 }
 template<> PROTOBUF_NOINLINE ::game::ActionBinds* Arena::CreateMaybeMessage< ::game::ActionBinds >(Arena* arena) {
   return Arena::CreateMessageInternal< ::game::ActionBinds >(arena);
