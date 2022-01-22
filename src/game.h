@@ -60,6 +60,9 @@ struct Game {
     GameState game_state;
     Level *level;
 
+    int32_t player_pos;
+    uint64_t player_sprite_id;
+
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
 
