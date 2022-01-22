@@ -1,6 +1,16 @@
 {
     "action_binds": [
         {"action": "QUIT",              "bind": "KEY_ESCAPE"},
-        {"action": "DEBUG_HUD",         "bind": "KEY_F1"}
+        {"action": "DEBUG_HUD",         "bind": "KEY_F1"},
+        {"action": "MOVE_N",            "bind": "KEY_KP_8"},
+        {"action": "MOVE_N",            "bind": "KEY_UP"},
+        {"action": "MOVE_NE",           "bind": "KEY_KP_9"},
+        {"action": "MOVE_E",            "bind": "KEY_KP_6"},
+        {"action": "MOVE_SE",           "bind": "KEY_KP_3"},
+        {"action": "MOVE_S",            "bind": "KEY_KP_2"},
+        {"action": "MOVE_SW",           "bind": "KEY_KP_1"},
+        {"action": "MOVE_W",            "bind": "KEY_KP_4"},
+        {"action": "MOVE_NW",           "bind": "KEY_KP_7"},
+        {"action": "INTERACT",          "bind": "KEY_KP_5"}
     ]
 }

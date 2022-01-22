@@ -9,8 +9,11 @@
 #include <imgui.h>
 #include <limits>
 #include <proto/game.pb.h>
+#include <engine/log.h>
 
 namespace game {
+
+void player_move(int32_t x, int32_t y);
 
 void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::InputCommand &input_command) {
     assert(game.action_binds != nullptr);
@@ -36,7 +39,7 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
     if (input_command.input_type == engine::InputType::Key) {
         bool pressed = input_command.key_state.trigger_state == engine::TriggerState::Pressed;
         // bool released = input_command.key_state.trigger_state == engine::TriggerState::Released;
-        // bool repeated = input_command.key_state.trigger_state == engine::TriggerState::Repeated;
+        bool repeated = input_command.key_state.trigger_state == engine::TriggerState::Repeated;
 
         ActionBindEntry_Action action = action_for_bind(*game.action_binds, (ActionBindEntry_Bind)input_command.key_state.keycode);
         switch (action) {
@@ -46,10 +49,66 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
             }
             break;
         }
+        case ActionBindEntry::MENU: {
+            log_debug("Not implemented action MENU");
+            break;
+        }
         case ActionBindEntry::DEBUG_HUD: {
             if (pressed) {
                 game.present_hud = !game.present_hud;
             }
+            break;
+        }
+        case ActionBindEntry::MOVE_N: {
+            if (pressed || repeated) {
+                player_move(0, 1);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_NE: {
+            if (pressed || repeated) {
+                player_move(1, 1);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_E: {
+            if (pressed || repeated) {
+                player_move(1, 0);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_SE: {
+            if (pressed || repeated) {
+                player_move(1, -1);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_S: {
+            if (pressed || repeated) {
+                player_move(0, -1);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_SW: {
+            if (pressed || repeated) {
+                player_move(-1, -1);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_W: {
+            if (pressed || repeated) {
+                player_move(-1, 0);
+            }
+            break;
+        }
+        case ActionBindEntry::MOVE_NW: {
+            if (pressed || repeated) {
+                player_move(-1, 1);
+            }
+            break;
+        }
+        case ActionBindEntry::INTERACT: {
+            log_debug("Not implemented action INTERACT");
             break;
         }
         default:
@@ -81,6 +140,10 @@ void game_state_playing_render(engine::Engine &engine, Game &game) {
 
     if (game.present_hud) {
     }
+}
+
+void player_move(int32_t x, int32_t y) {
+
 }
 
 } // namespace game

@@ -83,12 +83,21 @@ enum ActionBindEntry_Action : int {
   ActionBindEntry_Action_DEBUG_HUD = 3,
   ActionBindEntry_Action_EXAMPLE_HUD = 4,
   ActionBindEntry_Action_DEBUG_DRAW = 5,
+  ActionBindEntry_Action_MOVE_N = 6,
+  ActionBindEntry_Action_MOVE_NE = 7,
+  ActionBindEntry_Action_MOVE_E = 8,
+  ActionBindEntry_Action_MOVE_SE = 9,
+  ActionBindEntry_Action_MOVE_S = 10,
+  ActionBindEntry_Action_MOVE_SW = 11,
+  ActionBindEntry_Action_MOVE_W = 12,
+  ActionBindEntry_Action_MOVE_NW = 13,
+  ActionBindEntry_Action_INTERACT = 14,
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool ActionBindEntry_Action_IsValid(int value);
 constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MIN = ActionBindEntry_Action_ACTION_UNKNOWN;
-constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_DEBUG_DRAW;
+constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_INTERACT;
 constexpr int ActionBindEntry_Action_Action_ARRAYSIZE = ActionBindEntry_Action_Action_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ActionBindEntry_Action_descriptor();
@@ -370,6 +379,24 @@ class ActionBindEntry PROTOBUF_FINAL :
     ActionBindEntry_Action_EXAMPLE_HUD;
   static constexpr Action DEBUG_DRAW =
     ActionBindEntry_Action_DEBUG_DRAW;
+  static constexpr Action MOVE_N =
+    ActionBindEntry_Action_MOVE_N;
+  static constexpr Action MOVE_NE =
+    ActionBindEntry_Action_MOVE_NE;
+  static constexpr Action MOVE_E =
+    ActionBindEntry_Action_MOVE_E;
+  static constexpr Action MOVE_SE =
+    ActionBindEntry_Action_MOVE_SE;
+  static constexpr Action MOVE_S =
+    ActionBindEntry_Action_MOVE_S;
+  static constexpr Action MOVE_SW =
+    ActionBindEntry_Action_MOVE_SW;
+  static constexpr Action MOVE_W =
+    ActionBindEntry_Action_MOVE_W;
+  static constexpr Action MOVE_NW =
+    ActionBindEntry_Action_MOVE_NW;
+  static constexpr Action INTERACT =
+    ActionBindEntry_Action_INTERACT;
   static inline bool Action_IsValid(int value) {
     return ActionBindEntry_Action_IsValid(value);
   }

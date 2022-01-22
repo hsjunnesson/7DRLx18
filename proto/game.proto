@@ -9,8 +9,15 @@ message ActionBindEntry {
         QUIT              = 1;
         MENU              = 2;
         DEBUG_HUD         = 3;
-        EXAMPLE_HUD       = 4;
-        DEBUG_DRAW        = 5;
+        MOVE_N            = 4;
+        MOVE_NE           = 5;
+        MOVE_E            = 6;
+        MOVE_SE           = 7;
+        MOVE_S            = 8;
+        MOVE_SW           = 9;
+        MOVE_W            = 10;
+        MOVE_NW           = 11;
+        INTERACT          = 12;
     }
 
     // These correspond to glfw keycodes https://www.glfw.org/docs/3.3/group__keys.html
