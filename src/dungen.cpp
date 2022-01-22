@@ -1,12 +1,12 @@
 #include "dungen.h"
 #include "game.h"
-#include "grid.hpp"
 #include "line.hpp"
 
 #include "engine/config.inl"
 #include "engine/engine.h"
 #include "engine/log.h"
 #include "engine/sprites.h"
+#include "engine/math.inl"
 #include "proto/game.pb.h"
 
 #include <array.h>
@@ -26,7 +26,8 @@
 
 namespace game {
 using namespace foundation;
-using namespace grid;
+using engine::coord;
+using engine::index;
 
 Level::Level(Allocator &allocator)
 : rooms(allocator)
@@ -48,11 +49,11 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     Hash<Tile> terrain_tiles = Hash<Tile>(allocator);
 
-    const int32_t map_width = params.map_width();
-    const int32_t rooms_count_wide = (int32_t)ceil(sqrt(params.room_count()));
-    const int32_t rooms_count_tall = (int32_t)ceil(sqrt(params.room_count()));
-    const int32_t section_width = map_width / rooms_count_wide;
-    const int32_t section_height = map_width / rooms_count_tall;
+    const uint32_t map_width = params.map_width();
+    const uint32_t rooms_count_wide = (uint32_t)ceil(sqrt(params.room_count()));
+    const uint32_t rooms_count_tall = (uint32_t)ceil(sqrt(params.room_count()));
+    const uint32_t section_width = map_width / rooms_count_wide;
+    const uint32_t section_height = map_width / rooms_count_tall;
 
     log_debug("Dungen rooms count wide %u", rooms_count_wide);
     log_debug("Dungen rooms count tall %u", rooms_count_tall);
@@ -133,7 +134,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     // Place rooms in grids sections, referenced by their index.
     {
         for (int32_t room_index = 0; room_index < params.room_count(); ++room_index) {
-            int32_t room_index_x, room_index_y;
+            uint32_t room_index_x, room_index_y;
             coord(room_index, room_index_x, room_index_y, rooms_count_wide);
 
             const int32_t section_min_x = room_index_x * section_width;
@@ -166,10 +167,10 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Place corridors
     {
-        int32_t start_room_x, start_room_y;
+        uint32_t start_room_x, start_room_y;
         coord(start_room_index, start_room_x, start_room_y, rooms_count_wide);
 
-        int32_t boss_room_x, boss_room_y;
+        uint32_t boss_room_x, boss_room_y;
         coord(boss_room_index, boss_room_x, boss_room_y, rooms_count_wide);
 
         Array<line::Coordinate> shortest_line_path = line::zig_zag(allocator, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
@@ -178,8 +179,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             line::Coordinate from = shortest_line_path[i];
             line::Coordinate to = shortest_line_path[i + 1];
 
-            int32_t from_room_index = index(from.x, from.y, rooms_count_wide);
-            int32_t to_room_index = index(to.x, to.y, rooms_count_wide);
+            uint32_t from_room_index = index((uint32_t)from.x, (uint32_t)from.y, rooms_count_wide);
+            uint32_t to_room_index = index((uint32_t)to.x, (uint32_t)to.y, rooms_count_wide);
 
             array::push_back(corridors, Corridor{from_room_index, to_room_index});
         }
@@ -190,25 +191,25 @@ void dungen(engine::Engine *engine, game::Game *game) {
         Array<Corridor> branches = Array<Corridor>(allocator);
 
         // Returns a corridor to a random adjacent room, which isn't already connected to this room.
-        auto expand = [&](int32_t room_index) {
-            int32_t room_x, room_y;
+        auto expand = [&](uint32_t room_index) {
+            uint32_t room_x, room_y;
             coord(room_index, room_x, room_y, rooms_count_wide);
 
-            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(allocator);
+            Array<uint32_t> available_adjacent_room_indices = Array<uint32_t>(allocator);
 
             auto adjacent_coordinates = {
-                line::Coordinate{room_x + 1, room_y},
-                line::Coordinate{room_x, room_y + 1},
-                line::Coordinate{room_x - 1, room_y},
-                line::Coordinate{room_x, room_y - 1}};
+                line::Coordinate{(int32_t)room_x + 1, (int32_t)room_y},
+                line::Coordinate{(int32_t)room_x,     (int32_t)room_y + 1},
+                line::Coordinate{(int32_t)room_x - 1, (int32_t)room_y},
+                line::Coordinate{(int32_t)room_x,     (int32_t)room_y - 1}};
 
             // For each orthogonally adjacent room. Check if it's a valid location.
             for (line::Coordinate next_coordinate : adjacent_coordinates) {
                 if (next_coordinate.x >= 0 &&
-                    next_coordinate.x < rooms_count_wide &&
+                    next_coordinate.x < (int32_t)rooms_count_wide &&
                     next_coordinate.y >= 0 &&
-                    next_coordinate.y < rooms_count_tall) {
-                    int32_t next_room_index = index(next_coordinate.x, next_coordinate.y, rooms_count_wide);
+                    next_coordinate.y < (int32_t)rooms_count_tall) {
+                    uint32_t next_room_index = index((uint32_t)next_coordinate.x, (uint32_t)next_coordinate.y, rooms_count_wide);
                     bool found = false;
 
                     // Check to make sure no other corridor exists that connect these two rooms.
@@ -229,13 +230,13 @@ void dungen(engine::Engine *engine, game::Game *game) {
             if (array::size(available_adjacent_room_indices) > 0) {
                 std::uniform_int_distribution<int> random_distribution(0, array::size(available_adjacent_room_indices) - 1);
                 int random_selection = random_distribution(random_engine);
-                int32_t next_room_index = available_adjacent_room_indices[random_selection];
+                uint32_t next_room_index = available_adjacent_room_indices[random_selection];
                 Corridor branching_corridor = Corridor{room_index, next_room_index};
                 array::push_back(corridors, branching_corridor);
                 return next_room_index;
             }
 
-            return -1;
+            return (uint32_t)0;
         };
 
         for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
@@ -245,12 +246,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
 
             Corridor corridor = *iter;
-            int32_t room_index = corridor.from_room_index;
+            uint32_t room_index = corridor.from_room_index;
 
             // Expand branches, perhaps multiple times
             bool expansion_done = percentage(random_engine) > params.expand_chance();
             while (!expansion_done) {
-                int32_t next_room_index = expand(room_index);
+                uint32_t next_room_index = expand(room_index);
                 if (next_room_index >= 0) {
                     room_index = next_room_index;
                     expansion_done = percentage(random_engine) > params.expand_chance();
@@ -268,8 +269,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Prune disconnected rooms
     {
-        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(allocator);
-        for (int32_t i = 0; i < params.room_count(); ++i) {
+        Queue<uint32_t> disconnected_room_indices = Queue<uint32_t>(allocator);
+        for (uint32_t i = 0; i < params.room_count(); ++i) {
             bool found = false;
 
             for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
@@ -281,20 +282,20 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
 
             if (!found) {
-                queue::push_front(disconnected_room_indices, (int32_t)i);
+                queue::push_front(disconnected_room_indices, i);
             }
         }
 
-        for (int32_t i = 0; i < (int32_t)queue::size(disconnected_room_indices); ++i) {
-            int32_t index = disconnected_room_indices[i];
+        for (uint32_t i = 0; i < (uint32_t)queue::size(disconnected_room_indices); ++i) {
+            uint32_t index = disconnected_room_indices[i];
             hash::remove(rooms, index);
         }
     }
 
     // Move map to origin
     {
-        int32_t min_x = INT32_MAX;
-        int32_t min_y = INT32_MAX;
+        uint32_t min_x = INT32_MAX;
+        uint32_t min_y = INT32_MAX;
 
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             Room &room = iter->value;
@@ -447,8 +448,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             // Valid next and prev
             if (prev.x >= 0 && next.x >= 0) {
                 if (prev.x != next.x && prev.y == next.y) { // Horizontal line
-                    int32_t above = index(coord.x, coord.y - 1, map_width);
-                    int32_t below = index(coord.x, coord.y + 1, map_width);
+                    uint32_t above = index(coord.x, coord.y - 1, map_width);
+                    uint32_t below = index(coord.x, coord.y + 1, map_width);
 
                     if (!hash::has(terrain_tiles, above) || hash::get(terrain_tiles, above, Tile::None) != Tile::Floor) {
                         hash::set(placeholder_walls, above, true);
@@ -458,8 +459,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
                         hash::set(placeholder_walls, below, true);
                     }
                 } else if (prev.x == next.x && prev.y != next.y) { // Vertical line
-                    int32_t left = index(coord.x - 1, coord.y, map_width);
-                    int32_t right = index(coord.x + 1, coord.y, map_width);
+                    uint32_t left = index(coord.x - 1, coord.y, map_width);
+                    uint32_t right = index(coord.x + 1, coord.y, map_width);
 
                     if (!hash::has(terrain_tiles, left) || hash::get(terrain_tiles, left, Tile::None) != Tile::Floor) {
                         hash::set(placeholder_walls, left, true);
@@ -480,7 +481,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
                                 continue;
                             }
 
-                            int32_t adjacent_index = index(coord.x - x, coord.y - y, map_width);
+                            uint32_t adjacent_index = index(coord.x - x, coord.y - y, map_width);
 
                             if (!hash::has(terrain_tiles, adjacent_index) || hash::get(terrain_tiles, adjacent_index, Tile::None) != Tile::Floor) {
                                 hash::set(placeholder_walls, adjacent_index, true);
@@ -492,18 +493,18 @@ void dungen(engine::Engine *engine, game::Game *game) {
         });
 
         // Function to update the correct wall tile on a coordinate. Depends on surrounding walls and placeholder walls.
-        auto place_wall = [&](int32_t index_wall) {
-            int32_t coord_x, coord_y;
+        auto place_wall = [&](uint32_t index_wall) {
+            uint32_t coord_x, coord_y;
             coord(index_wall, coord_x, coord_y, map_width);
 
-            const int32_t index_nw = index(coord_x - 1, coord_y - 1, map_width);
-            const int32_t index_n = index(coord_x, coord_y - 1, map_width);
-            const int32_t index_ne = index(coord_x + 1, coord_y - 1, map_width);
-            const int32_t index_w = index(coord_x - 1, coord_y, map_width);
-            const int32_t index_e = index(coord_x + 1, coord_y, map_width);
-            const int32_t index_sw = index(coord_x - 1, coord_y + 1, map_width);
-            const int32_t index_s = index(coord_x, coord_y + 1, map_width);
-            const int32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
+            const uint32_t index_nw = index(coord_x - 1, coord_y - 1, map_width);
+            const uint32_t index_n = index(coord_x, coord_y - 1, map_width);
+            const uint32_t index_ne = index(coord_x + 1, coord_y - 1, map_width);
+            const uint32_t index_w = index(coord_x - 1, coord_y, map_width);
+            const uint32_t index_e = index(coord_x + 1, coord_y, map_width);
+            const uint32_t index_sw = index(coord_x - 1, coord_y + 1, map_width);
+            const uint32_t index_s = index(coord_x, coord_y + 1, map_width);
+            const uint32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
@@ -579,7 +580,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
         // Update placeholder walls
         for (auto iter = hash::begin(placeholder_walls); iter != hash::end(placeholder_walls); ++iter) {
-            int32_t index = (int32_t)iter->key;
+            uint32_t index = (uint32_t)iter->key;
             place_wall(index);
         }
     }

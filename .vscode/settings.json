@@ -113,7 +113,6 @@
     "cwd": "${workspaceFolder}"
   },
   "cmake.configureArgs" : [
-    "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake",
-    "-DStackWalker_DISABLE_TESTS=on"
+    "-DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake"
   ]
 }

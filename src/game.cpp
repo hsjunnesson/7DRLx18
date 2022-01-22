@@ -1,7 +1,6 @@
 #include "game.h"
 #include "action_binds.h"
 #include "dungen.h"
-#include "grid.hpp"
 
 #include <engine/atlas.h>
 #include <engine/config.inl>
@@ -9,6 +8,7 @@
 #include <engine/input.h>
 #include <engine/log.h>
 #include <engine/sprites.h>
+#include <engine/math.inl>
 #include <proto/game.pb.h>
 
 #include <array.h>
@@ -36,11 +36,11 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
 void game_state_playing_render(engine::Engine &engine, Game &game);
 
 /// Utility to add a sprite to the world.
-uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, const uint32_t pos, const int32_t max_width, const float z_layer) {
+uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, const uint32_t pos, const uint32_t max_width, const float z_layer) {
     const engine::Sprite sprite = engine::add_sprite(sprites, sprite_name);
 
-    int32_t x, y;
-    grid::coord(pos, x, y, max_width);
+    uint32_t x, y;
+    engine::coord(pos, x, y, max_width);
 
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, {x * sprite.atlas_rect->size.x, y * sprite.atlas_rect->size.y, z_layer});
@@ -272,7 +272,6 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         // Create player
         {
             game->player_pos = game->level->stairs_up_pos;
-
             uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game->player_pos, game->level->max_width, MOB_Z_LAYER);
             game->player_sprite_id = sprite_id;
         }

@@ -28,8 +28,8 @@ struct Room {
  * 
  */
 struct Corridor {
-    int32_t from_room_index;
-    int32_t to_room_index;
+    uint32_t from_room_index;
+    uint32_t to_room_index;
 };
 
 /**

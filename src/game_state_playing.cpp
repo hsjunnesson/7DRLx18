@@ -56,6 +56,17 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
             break;
         }
     }
+
+    if (input_command.input_type == engine::InputType::Scroll) {
+        // Zoom
+        if (fabs(input_command.scroll_state.y_offset) > FLT_EPSILON) {
+            if (input_command.scroll_state.y_offset > 0.0f) {
+                engine::zoom_camera(engine, engine.camera_zoom * 2.0f);
+            } else {
+                engine::zoom_camera(engine, engine.camera_zoom * 0.5f);
+            }
+        }
+    }
 }
 
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt) {
