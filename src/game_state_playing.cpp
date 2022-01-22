@@ -13,7 +13,13 @@
 
 namespace game {
 
-void player_move(int32_t x, int32_t y);
+void player_move(int32_t x, int32_t y) {
+
+}
+
+void player_wait() {
+
+}
 
 void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::InputCommand &input_command) {
     assert(game.action_binds != nullptr);
@@ -111,6 +117,12 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
             log_debug("Not implemented action INTERACT");
             break;
         }
+        case ActionBindEntry::WAIT: {
+            if (pressed || repeated) {
+                player_wait();
+            }
+            break;
+        }
         default:
             break;
         }
@@ -140,10 +152,6 @@ void game_state_playing_render(engine::Engine &engine, Game &game) {
 
     if (game.present_hud) {
     }
-}
-
-void player_move(int32_t x, int32_t y) {
-
 }
 
 } // namespace game

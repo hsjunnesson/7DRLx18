@@ -11,6 +11,9 @@
         {"action": "MOVE_SW",           "bind": "KEY_KP_1"},
         {"action": "MOVE_W",            "bind": "KEY_KP_4"},
         {"action": "MOVE_NW",           "bind": "KEY_KP_7"},
-        {"action": "INTERACT",          "bind": "KEY_KP_5"}
+        {"action": "INTERACT",          "bind": "KEY_KP_ENTER"},
+        {"action": "INTERACT",          "bind": "KEY_ENTER"},
+        {"action": "WAIT",              "bind": "KEY_KP_5"},
+        {"action": "WAIT",              "bind": "KEY_COMMA"}
     ]
 }

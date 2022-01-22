@@ -90,12 +90,13 @@ enum ActionBindEntry_Action : int {
   ActionBindEntry_Action_MOVE_W = 10,
   ActionBindEntry_Action_MOVE_NW = 11,
   ActionBindEntry_Action_INTERACT = 12,
+  ActionBindEntry_Action_WAIT = 13,
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool ActionBindEntry_Action_IsValid(int value);
 constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MIN = ActionBindEntry_Action_ACTION_UNKNOWN;
-constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_INTERACT;
+constexpr ActionBindEntry_Action ActionBindEntry_Action_Action_MAX = ActionBindEntry_Action_WAIT;
 constexpr int ActionBindEntry_Action_Action_ARRAYSIZE = ActionBindEntry_Action_Action_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ActionBindEntry_Action_descriptor();
@@ -391,6 +392,8 @@ class ActionBindEntry PROTOBUF_FINAL :
     ActionBindEntry_Action_MOVE_NW;
   static constexpr Action INTERACT =
     ActionBindEntry_Action_INTERACT;
+  static constexpr Action WAIT =
+    ActionBindEntry_Action_WAIT;
   static inline bool Action_IsValid(int value) {
     return ActionBindEntry_Action_IsValid(value);
   }
