@@ -1,6 +1,7 @@
 #include "game.h"
 #include "action_binds.h"
 #include "dungen.h"
+#include "color.inl"
 
 #include <engine/atlas.h>
 #include <engine/config.inl>
@@ -55,7 +56,7 @@ void center_view_to_pos(engine::Engine &engine, const Game &game, const uint32_t
 }
 
 /// Utility to add a sprite to the world.
-uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t pos, const uint32_t max_width, const float z_layer) {
+uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t pos, const uint32_t max_width, const float z_layer, Color4f color = color::white) {
     const engine::Sprite sprite = engine::add_sprite(sprites, sprite_name);
 
     uint32_t x, y;
@@ -65,6 +66,7 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t 
     transform = glm::translate(transform, {x * tilesize, y * tilesize, z_layer});
     transform = glm::scale(transform, glm::vec3((float)sprite.atlas_rect->size.x, (float)sprite.atlas_rect->size.y, 1.0f));
     engine::transform_sprite(sprites, sprite.id, transform);
+    engine::color_sprite(sprites, sprite.id, color);
 
     return sprite.id;
 }
@@ -291,7 +293,7 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         // Create player
         {
             game->player_pos = game->level->stairs_up_pos;
-            uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game->params->tilesize(), game->player_pos, game->level->max_width, MOB_Z_LAYER);
+            uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game->params->tilesize(), game->player_pos, game->level->max_width, MOB_Z_LAYER, color::peach);
             game->player_sprite_id = sprite_id;
             center_view_to_pos(engine, *game, game->player_pos);
         }
