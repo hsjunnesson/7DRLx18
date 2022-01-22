@@ -46,5 +46,4 @@ constexpr int32_t index_offset(int32_t const idx, int32_t const xoffset, int32_t
     return index(x + xoffset, y + yoffset, max_width);
 }
 
-
 } // namespace grid

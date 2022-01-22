@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glm/fwd.hpp>
 #include <collection_types.h>
+#include <glm/fwd.hpp>
 
 namespace std {
 class thread;

@@ -66,31 +66,36 @@ enum class Tile {
 /// Returns the name of the sprite of the tile.
 constexpr const char *tile_sprite_name(const Tile tile) {
     switch (tile) {
-        case Tile::None: return "none";
-        case Tile::Missing: return "missing";
-        case Tile::Floor: return "floor";
-        case Tile::Wall:
-        case Tile::WallCornerTopLeft:
-        case Tile::WallCornerTopRight:
-        case Tile::WallCornerBottomLeft:
-        case Tile::WallCornerBottomRight:
-        case Tile::WallTop:
-        case Tile::WallBottom:
-        case Tile::WallLeft:
-        case Tile::WallRight:
-        case Tile::WallLeftRight:
-        case Tile::WallTopBottom:
-        case Tile::WallCapRight:
-        case Tile::WallCapTop:
-        case Tile::WallCapLeft:
-        case Tile::WallCapBottom:
-        case Tile::CorridorCornerUpRight:
-        case Tile::CorridorCornerUpLeft:
-        case Tile::CorridorCornerDownRight:
-        case Tile::CorridorCornerDownLeft:
-            return "wall";
-        case Tile::StairsDown: return "stairs_down";
-        case Tile::StairsUp: return "stairs_up";
+    case Tile::None:
+        return "none";
+    case Tile::Missing:
+        return "missing";
+    case Tile::Floor:
+        return "floor";
+    case Tile::Wall:
+    case Tile::WallCornerTopLeft:
+    case Tile::WallCornerTopRight:
+    case Tile::WallCornerBottomLeft:
+    case Tile::WallCornerBottomRight:
+    case Tile::WallTop:
+    case Tile::WallBottom:
+    case Tile::WallLeft:
+    case Tile::WallRight:
+    case Tile::WallLeftRight:
+    case Tile::WallTopBottom:
+    case Tile::WallCapRight:
+    case Tile::WallCapTop:
+    case Tile::WallCapLeft:
+    case Tile::WallCapBottom:
+    case Tile::CorridorCornerUpRight:
+    case Tile::CorridorCornerUpLeft:
+    case Tile::CorridorCornerDownRight:
+    case Tile::CorridorCornerDownLeft:
+        return "wall";
+    case Tile::StairsDown:
+        return "stairs_down";
+    case Tile::StairsUp:
+        return "stairs_up";
     }
 }
 

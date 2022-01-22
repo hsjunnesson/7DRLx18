@@ -1,29 +1,28 @@
 #include "dungen.h"
-#include "grid.hpp"
 #include "game.h"
-#include "line.hpp"
 #include "grid.hpp"
+#include "line.hpp"
 
-#include "proto/game.pb.h"
-#include "engine/engine.h"
 #include "engine/config.inl"
+#include "engine/engine.h"
 #include "engine/log.h"
 #include "engine/sprites.h"
+#include "proto/game.pb.h"
 
 #include <array.h>
 #include <hash.h>
-#include <queue.h>
 #include <memory.h>
-#include <temp_allocator.h>
 #include <murmur_hash.h>
+#include <queue.h>
+#include <temp_allocator.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <cassert>
 #include <mutex>
 #include <random>
 #include <thread>
-#include <cassert>
 
 namespace game {
 using namespace foundation;
@@ -63,7 +62,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
-//    seed = 1621250237; // Orphaned island
+    //    seed = 1621250237; // Orphaned island
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -77,7 +76,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     int32_t stairs_up_pos = 0;
     int32_t stairs_down_pos = 0;
-
 
     // Rooms and corridors collections
     Hash<Room> rooms = Hash<Room>(allocator);
@@ -368,7 +366,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             stairs_up_pos = index(start_room.x + start_room.w / 2, start_room.y + start_room.h / 2, map_width);
             hash::set(terrain_tiles, stairs_up_pos, {stairs_up_tile});
         }
-        
+
         Room boss_room = hash::get(rooms, boss_room_index, {});
         if (boss_room.boss_room) {
             // TODO: randomize this

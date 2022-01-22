@@ -13,4 +13,4 @@ bool validate_actionbinds(const ActionBinds &action_binds);
 // Assumes a valid ActionBinds with no duplicate binds or actions.
 ActionBindEntry_Action action_for_bind(const ActionBinds &action_binds, const ActionBindEntry_Bind bind);
 
-}
+} // namespace game

@@ -1,9 +1,9 @@
 #include "action_binds.h"
 #include <engine/log.h>
-#include <proto/game.pb.h>
-#include <memory.h>
-#include <temp_allocator.h>
 #include <hash.h>
+#include <memory.h>
+#include <proto/game.pb.h>
+#include <temp_allocator.h>
 
 namespace game {
 using namespace foundation;
@@ -55,4 +55,4 @@ ActionBindEntry_Action action_for_bind(const ActionBinds &action_binds, const Ac
     return action;
 }
 
-}
+} // namespace game

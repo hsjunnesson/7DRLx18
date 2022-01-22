@@ -24,9 +24,9 @@
 #include <thread>
 
 namespace {
-    const float LEVEL_Z_LAYER = -5.0f;
-    const float ITEM_Z_LAYER = -4.0f;
-    const float MOB_Z_LAYER = -3.0f;
+const float LEVEL_Z_LAYER = -5.0f;
+const float ITEM_Z_LAYER = -4.0f;
+const float MOB_Z_LAYER = -3.0f;
 } // namespace
 
 namespace game {
@@ -97,7 +97,7 @@ Game::~Game() {
     if (level) {
         MAKE_DELETE(allocator, Level, level);
     }
-    
+
     if (dungen_thread) {
         std::scoped_lock lock(*dungen_mutex);
         MAKE_DELETE(allocator, thread, dungen_thread);
@@ -124,7 +124,7 @@ void update(engine::Engine &engine, void *game_object, float t, float dt) {
         break;
     }
     case GameState::Playing: {
-       game_state_playing_update(engine, *game, t, dt);
+        game_state_playing_update(engine, *game, t, dt);
         break;
     }
     case GameState::Quitting: {
@@ -152,13 +152,13 @@ void on_input(engine::Engine &engine, void *game_object, engine::InputCommand &i
     }
 
     switch (game->game_state) {
-        case GameState::Playing: {
-            game_state_playing_on_input(engine, *game, input_command);
-            break;
-        }
-        default: {
-            break;
-        }
+    case GameState::Playing: {
+        game_state_playing_on_input(engine, *game, input_command);
+        break;
+    }
+    default: {
+        break;
+    }
     }
 }
 
@@ -277,7 +277,7 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
             game->player_sprite_id = sprite_id;
         }
 
-		engine::move_camera(engine, -engine.window_rect.size.x / 2, -engine.window_rect.size.y / 2);
+        engine::move_camera(engine, -engine.window_rect.size.x / 2, -engine.window_rect.size.y / 2);
 
         break;
     }
