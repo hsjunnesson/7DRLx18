@@ -81,17 +81,15 @@ enum ActionBindEntry_Action : int {
   ActionBindEntry_Action_QUIT = 1,
   ActionBindEntry_Action_MENU = 2,
   ActionBindEntry_Action_DEBUG_HUD = 3,
-  ActionBindEntry_Action_EXAMPLE_HUD = 4,
-  ActionBindEntry_Action_DEBUG_DRAW = 5,
-  ActionBindEntry_Action_MOVE_N = 6,
-  ActionBindEntry_Action_MOVE_NE = 7,
-  ActionBindEntry_Action_MOVE_E = 8,
-  ActionBindEntry_Action_MOVE_SE = 9,
-  ActionBindEntry_Action_MOVE_S = 10,
-  ActionBindEntry_Action_MOVE_SW = 11,
-  ActionBindEntry_Action_MOVE_W = 12,
-  ActionBindEntry_Action_MOVE_NW = 13,
-  ActionBindEntry_Action_INTERACT = 14,
+  ActionBindEntry_Action_MOVE_N = 4,
+  ActionBindEntry_Action_MOVE_NE = 5,
+  ActionBindEntry_Action_MOVE_E = 6,
+  ActionBindEntry_Action_MOVE_SE = 7,
+  ActionBindEntry_Action_MOVE_S = 8,
+  ActionBindEntry_Action_MOVE_SW = 9,
+  ActionBindEntry_Action_MOVE_W = 10,
+  ActionBindEntry_Action_MOVE_NW = 11,
+  ActionBindEntry_Action_INTERACT = 12,
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   ActionBindEntry_Action_ActionBindEntry_Action_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
@@ -375,10 +373,6 @@ class ActionBindEntry PROTOBUF_FINAL :
     ActionBindEntry_Action_MENU;
   static constexpr Action DEBUG_HUD =
     ActionBindEntry_Action_DEBUG_HUD;
-  static constexpr Action EXAMPLE_HUD =
-    ActionBindEntry_Action_EXAMPLE_HUD;
-  static constexpr Action DEBUG_DRAW =
-    ActionBindEntry_Action_DEBUG_DRAW;
   static constexpr Action MOVE_N =
     ActionBindEntry_Action_MOVE_N;
   static constexpr Action MOVE_NE =
@@ -836,6 +830,7 @@ class GameParams PROTOBUF_FINAL :
   enum : int {
     kGameAtlasFilenameFieldNumber = 1,
     kDungenParamsFilenameFieldNumber = 2,
+    kTilesizeFieldNumber = 3,
   };
   // string game_atlas_filename = 1;
   void clear_game_atlas_filename();
@@ -869,6 +864,15 @@ class GameParams PROTOBUF_FINAL :
   std::string* _internal_mutable_dungen_params_filename();
   public:
 
+  // int32 tilesize = 3;
+  void clear_tilesize();
+  ::PROTOBUF_NAMESPACE_ID::int32 tilesize() const;
+  void set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_tilesize() const;
+  void _internal_set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // @@protoc_insertion_point(class_scope:game.GameParams)
  private:
   class _Internal;
@@ -878,6 +882,7 @@ class GameParams PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_atlas_filename_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungen_params_filename_;
+  ::PROTOBUF_NAMESPACE_ID::int32 tilesize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fgame_2eproto;
 };
@@ -1392,6 +1397,26 @@ inline void GameParams::set_allocated_dungen_params_filename(std::string* dungen
   dungen_params_filename_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), dungen_params_filename,
       GetArena());
   // @@protoc_insertion_point(field_set_allocated:game.GameParams.dungen_params_filename)
+}
+
+// int32 tilesize = 3;
+inline void GameParams::clear_tilesize() {
+  tilesize_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 GameParams::_internal_tilesize() const {
+  return tilesize_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 GameParams::tilesize() const {
+  // @@protoc_insertion_point(field_get:game.GameParams.tilesize)
+  return _internal_tilesize();
+}
+inline void GameParams::_internal_set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  tilesize_ = value;
+}
+inline void GameParams::set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_tilesize(value);
+  // @@protoc_insertion_point(field_set:game.GameParams.tilesize)
 }
 
 // -------------------------------------------------------------------

@@ -30,20 +30,39 @@ const float MOB_Z_LAYER = -3.0f;
 } // namespace
 
 namespace game {
+using namespace math;
 
 void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::InputCommand &input_command);
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt);
 void game_state_playing_render(engine::Engine &engine, Game &game);
 
+/// Return the world coordinate of the center of a tile at pos, scaled by zoom and render scale.
+const glm::vec2 pos_to_world(const engine::Engine &engine, const Game &game, const uint32_t pos) {
+    uint32_t x, y;
+    coord(pos, x, y, game.level->max_width);
+    
+    glm::vec2 w {x, y};
+    w *= game.params->tilesize() * engine.camera_zoom * engine.render_scale;
+    w += game.params->tilesize();
+
+    return w;
+}
+
+/// Centers the view on the tile at pos.
+void center_view_to_pos(engine::Engine &engine, const Game &game, const uint32_t pos) {
+    glm::vec2 w = pos_to_world(engine, game, pos);
+    engine::move_camera(engine, w.x - engine.window_rect.size.x / 2, w.y - engine.window_rect.size.y / 2);
+}
+
 /// Utility to add a sprite to the world.
-uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, const uint32_t pos, const uint32_t max_width, const float z_layer) {
+uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t pos, const uint32_t max_width, const float z_layer) {
     const engine::Sprite sprite = engine::add_sprite(sprites, sprite_name);
 
     uint32_t x, y;
-    engine::coord(pos, x, y, max_width);
+    coord(pos, x, y, max_width);
 
     glm::mat4 transform = glm::mat4(1.0f);
-    transform = glm::translate(transform, {x * sprite.atlas_rect->size.x, y * sprite.atlas_rect->size.y, z_layer});
+    transform = glm::translate(transform, {x * tilesize, y * tilesize, z_layer});
     transform = glm::scale(transform, glm::vec3((float)sprite.atlas_rect->size.x, (float)sprite.atlas_rect->size.y, 1.0f));
     engine::transform_sprite(sprites, sprite.id, transform);
 
@@ -264,7 +283,7 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
 
                 Tile tile = static_cast<Tile>(iter->value);
                 const char *sprite_name = tile_sprite_name(tile);
-                uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, pos, game->level->max_width, LEVEL_Z_LAYER);
+                uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, game->params->tilesize(), pos, game->level->max_width, LEVEL_Z_LAYER);
                 hash::set(game->level->tiles_sprite_ids, pos, sprite_id);
             }
         }
@@ -272,11 +291,10 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         // Create player
         {
             game->player_pos = game->level->stairs_up_pos;
-            uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game->player_pos, game->level->max_width, MOB_Z_LAYER);
+            uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game->params->tilesize(), game->player_pos, game->level->max_width, MOB_Z_LAYER);
             game->player_sprite_id = sprite_id;
+            center_view_to_pos(engine, *game, game->player_pos);
         }
-
-        engine::move_camera(engine, -engine.window_rect.size.x / 2, -engine.window_rect.size.y / 2);
 
         break;
     }

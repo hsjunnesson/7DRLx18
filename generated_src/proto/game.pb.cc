@@ -105,6 +105,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::GameParams, game_atlas_filename_),
   PROTOBUF_FIELD_OFFSET(::game::GameParams, dungen_params_filename_),
+  PROTOBUF_FIELD_OFFSET(::game::GameParams, tilesize_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -126,8 +127,8 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::game::ActionBindEntry)},
   { 7, -1, sizeof(::game::GameParams)},
-  { 14, -1, sizeof(::game::DungenParams)},
-  { 25, -1, sizeof(::game::ActionBinds)},
+  { 15, -1, sizeof(::game::DungenParams)},
+  { 26, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -138,67 +139,66 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\020proto/game.proto\022\004game\"\247\020\n\017ActionBindE"
+  "\n\020proto/game.proto\022\004game\"\206\020\n\017ActionBindE"
   "ntry\022,\n\006action\030\001 \001(\0162\034.game.ActionBindEn"
   "try.Action\022(\n\004bind\030\002 \001(\0162\032.game.ActionBi"
-  "ndEntry.Bind\"\322\001\n\006Action\022\022\n\016ACTION_UNKNOW"
-  "N\020\000\022\010\n\004QUIT\020\001\022\010\n\004MENU\020\002\022\r\n\tDEBUG_HUD\020\003\022\017"
-  "\n\013EXAMPLE_HUD\020\004\022\016\n\nDEBUG_DRAW\020\005\022\n\n\006MOVE_"
-  "N\020\006\022\013\n\007MOVE_NE\020\007\022\n\n\006MOVE_E\020\010\022\013\n\007MOVE_SE\020"
-  "\t\022\n\n\006MOVE_S\020\n\022\013\n\007MOVE_SW\020\013\022\n\n\006MOVE_W\020\014\022\013"
-  "\n\007MOVE_NW\020\r\022\014\n\010INTERACT\020\016\"\346\r\n\004Bind\022\020\n\014BI"
-  "ND_UNKNOWN\020\000\022\r\n\tKEY_SPACE\020 \022\022\n\016KEY_APOST"
-  "ROPHE\020\'\022\r\n\tKEY_COMMA\020,\022\r\n\tKEY_MINUS\020-\022\016\n"
-  "\nKEY_PERIOD\020.\022\r\n\tKEY_SLASH\020/\022\t\n\005KEY_0\0200\022"
-  "\t\n\005KEY_1\0201\022\t\n\005KEY_2\0202\022\t\n\005KEY_3\0203\022\t\n\005KEY_"
-  "4\0204\022\t\n\005KEY_5\0205\022\t\n\005KEY_6\0206\022\t\n\005KEY_7\0207\022\t\n\005"
-  "KEY_8\0208\022\t\n\005KEY_9\0209\022\021\n\rKEY_SEMICOLON\020;\022\r\n"
-  "\tKEY_EQUAL\020=\022\t\n\005KEY_A\020A\022\t\n\005KEY_B\020B\022\t\n\005KE"
-  "Y_C\020C\022\t\n\005KEY_D\020D\022\t\n\005KEY_E\020E\022\t\n\005KEY_F\020F\022\t"
-  "\n\005KEY_G\020G\022\t\n\005KEY_H\020H\022\t\n\005KEY_I\020I\022\t\n\005KEY_J"
-  "\020J\022\t\n\005KEY_K\020K\022\t\n\005KEY_L\020L\022\t\n\005KEY_M\020M\022\t\n\005K"
-  "EY_N\020N\022\t\n\005KEY_O\020O\022\t\n\005KEY_P\020P\022\t\n\005KEY_Q\020Q\022"
-  "\t\n\005KEY_R\020R\022\t\n\005KEY_S\020S\022\t\n\005KEY_T\020T\022\t\n\005KEY_"
-  "U\020U\022\t\n\005KEY_V\020V\022\t\n\005KEY_W\020W\022\t\n\005KEY_X\020X\022\t\n\005"
-  "KEY_Y\020Y\022\t\n\005KEY_Z\020Z\022\024\n\020KEY_LEFT_BRACKET\020["
-  "\022\021\n\rKEY_BACKSLASH\020\\\022\025\n\021KEY_RIGHT_BRACKET"
-  "\020]\022\024\n\020KEY_GRAVE_ACCENT\020`\022\017\n\nKEY_ESCAPE\020\200"
-  "\002\022\016\n\tKEY_ENTER\020\201\002\022\014\n\007KEY_TAB\020\202\002\022\022\n\rKEY_B"
-  "ACKSPACE\020\203\002\022\017\n\nKEY_INSERT\020\204\002\022\017\n\nKEY_DELE"
-  "TE\020\205\002\022\016\n\tKEY_RIGHT\020\206\002\022\r\n\010KEY_LEFT\020\207\002\022\r\n\010"
-  "KEY_DOWN\020\210\002\022\013\n\006KEY_UP\020\211\002\022\020\n\013KEY_PAGE_UP\020"
-  "\212\002\022\022\n\rKEY_PAGE_DOWN\020\213\002\022\r\n\010KEY_HOME\020\214\002\022\014\n"
-  "\007KEY_END\020\215\002\022\022\n\rKEY_CAPS_LOCK\020\230\002\022\024\n\017KEY_S"
-  "CROLL_LOCK\020\231\002\022\021\n\014KEY_NUM_LOCK\020\232\002\022\025\n\020KEY_"
-  "PRINT_SCREEN\020\233\002\022\016\n\tKEY_PAUSE\020\234\002\022\013\n\006KEY_F"
-  "1\020\242\002\022\013\n\006KEY_F2\020\243\002\022\013\n\006KEY_F3\020\244\002\022\013\n\006KEY_F4"
-  "\020\245\002\022\013\n\006KEY_F5\020\246\002\022\013\n\006KEY_F6\020\247\002\022\013\n\006KEY_F7\020"
-  "\250\002\022\013\n\006KEY_F8\020\251\002\022\013\n\006KEY_F9\020\252\002\022\014\n\007KEY_F10\020"
-  "\253\002\022\014\n\007KEY_F11\020\254\002\022\014\n\007KEY_F12\020\255\002\022\014\n\007KEY_F1"
-  "3\020\256\002\022\014\n\007KEY_F14\020\257\002\022\014\n\007KEY_F15\020\260\002\022\014\n\007KEY_"
-  "F16\020\261\002\022\014\n\007KEY_F17\020\262\002\022\014\n\007KEY_F18\020\263\002\022\014\n\007KE"
-  "Y_F19\020\264\002\022\014\n\007KEY_F20\020\265\002\022\014\n\007KEY_F21\020\266\002\022\014\n\007"
-  "KEY_F22\020\267\002\022\014\n\007KEY_F23\020\270\002\022\014\n\007KEY_F24\020\271\002\022\014"
-  "\n\007KEY_F25\020\272\002\022\r\n\010KEY_KP_0\020\300\002\022\r\n\010KEY_KP_1\020"
-  "\301\002\022\r\n\010KEY_KP_2\020\302\002\022\r\n\010KEY_KP_3\020\303\002\022\r\n\010KEY_"
-  "KP_4\020\304\002\022\r\n\010KEY_KP_5\020\305\002\022\r\n\010KEY_KP_6\020\306\002\022\r\n"
-  "\010KEY_KP_7\020\307\002\022\r\n\010KEY_KP_8\020\310\002\022\r\n\010KEY_KP_9\020"
-  "\311\002\022\023\n\016KEY_KP_DECIMAL\020\312\002\022\022\n\rKEY_KP_DIVIDE"
-  "\020\313\002\022\024\n\017KEY_KP_MULTIPLY\020\314\002\022\024\n\017KEY_KP_SUBT"
-  "RACT\020\315\002\022\017\n\nKEY_KP_ADD\020\316\002\022\021\n\014KEY_KP_ENTER"
-  "\020\317\002\022\021\n\014KEY_KP_EQUAL\020\320\002\022\023\n\016KEY_LEFT_SHIFT"
-  "\020\324\002\022\025\n\020KEY_LEFT_CONTROL\020\325\002\022\021\n\014KEY_LEFT_A"
-  "LT\020\326\002\022\023\n\016KEY_LEFT_SUPER\020\327\002\022\024\n\017KEY_RIGHT_"
-  "SHIFT\020\330\002\022\026\n\021KEY_RIGHT_CONTROL\020\331\002\022\022\n\rKEY_"
-  "RIGHT_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333\002\"I\n\nGa"
-  "meParams\022\033\n\023game_atlas_filename\030\001 \001(\t\022\036\n"
-  "\026dungen_params_filename\030\002 \001(\t\"\216\001\n\014Dungen"
-  "Params\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_room_s"
-  "ize\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021\n\tmap_"
-  "width\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022\025\n\rexpan"
-  "d_chance\030\006 \001(\005\":\n\013ActionBinds\022+\n\014action_"
-  "binds\030\001 \003(\0132\025.game.ActionBindEntryb\006prot"
-  "o3"
+  "ndEntry.Bind\"\261\001\n\006Action\022\022\n\016ACTION_UNKNOW"
+  "N\020\000\022\010\n\004QUIT\020\001\022\010\n\004MENU\020\002\022\r\n\tDEBUG_HUD\020\003\022\n"
+  "\n\006MOVE_N\020\004\022\013\n\007MOVE_NE\020\005\022\n\n\006MOVE_E\020\006\022\013\n\007M"
+  "OVE_SE\020\007\022\n\n\006MOVE_S\020\010\022\013\n\007MOVE_SW\020\t\022\n\n\006MOV"
+  "E_W\020\n\022\013\n\007MOVE_NW\020\013\022\014\n\010INTERACT\020\014\"\346\r\n\004Bin"
+  "d\022\020\n\014BIND_UNKNOWN\020\000\022\r\n\tKEY_SPACE\020 \022\022\n\016KE"
+  "Y_APOSTROPHE\020\'\022\r\n\tKEY_COMMA\020,\022\r\n\tKEY_MIN"
+  "US\020-\022\016\n\nKEY_PERIOD\020.\022\r\n\tKEY_SLASH\020/\022\t\n\005K"
+  "EY_0\0200\022\t\n\005KEY_1\0201\022\t\n\005KEY_2\0202\022\t\n\005KEY_3\0203\022"
+  "\t\n\005KEY_4\0204\022\t\n\005KEY_5\0205\022\t\n\005KEY_6\0206\022\t\n\005KEY_"
+  "7\0207\022\t\n\005KEY_8\0208\022\t\n\005KEY_9\0209\022\021\n\rKEY_SEMICOL"
+  "ON\020;\022\r\n\tKEY_EQUAL\020=\022\t\n\005KEY_A\020A\022\t\n\005KEY_B\020"
+  "B\022\t\n\005KEY_C\020C\022\t\n\005KEY_D\020D\022\t\n\005KEY_E\020E\022\t\n\005KE"
+  "Y_F\020F\022\t\n\005KEY_G\020G\022\t\n\005KEY_H\020H\022\t\n\005KEY_I\020I\022\t"
+  "\n\005KEY_J\020J\022\t\n\005KEY_K\020K\022\t\n\005KEY_L\020L\022\t\n\005KEY_M"
+  "\020M\022\t\n\005KEY_N\020N\022\t\n\005KEY_O\020O\022\t\n\005KEY_P\020P\022\t\n\005K"
+  "EY_Q\020Q\022\t\n\005KEY_R\020R\022\t\n\005KEY_S\020S\022\t\n\005KEY_T\020T\022"
+  "\t\n\005KEY_U\020U\022\t\n\005KEY_V\020V\022\t\n\005KEY_W\020W\022\t\n\005KEY_"
+  "X\020X\022\t\n\005KEY_Y\020Y\022\t\n\005KEY_Z\020Z\022\024\n\020KEY_LEFT_BR"
+  "ACKET\020[\022\021\n\rKEY_BACKSLASH\020\\\022\025\n\021KEY_RIGHT_"
+  "BRACKET\020]\022\024\n\020KEY_GRAVE_ACCENT\020`\022\017\n\nKEY_E"
+  "SCAPE\020\200\002\022\016\n\tKEY_ENTER\020\201\002\022\014\n\007KEY_TAB\020\202\002\022\022"
+  "\n\rKEY_BACKSPACE\020\203\002\022\017\n\nKEY_INSERT\020\204\002\022\017\n\nK"
+  "EY_DELETE\020\205\002\022\016\n\tKEY_RIGHT\020\206\002\022\r\n\010KEY_LEFT"
+  "\020\207\002\022\r\n\010KEY_DOWN\020\210\002\022\013\n\006KEY_UP\020\211\002\022\020\n\013KEY_P"
+  "AGE_UP\020\212\002\022\022\n\rKEY_PAGE_DOWN\020\213\002\022\r\n\010KEY_HOM"
+  "E\020\214\002\022\014\n\007KEY_END\020\215\002\022\022\n\rKEY_CAPS_LOCK\020\230\002\022\024"
+  "\n\017KEY_SCROLL_LOCK\020\231\002\022\021\n\014KEY_NUM_LOCK\020\232\002\022"
+  "\025\n\020KEY_PRINT_SCREEN\020\233\002\022\016\n\tKEY_PAUSE\020\234\002\022\013"
+  "\n\006KEY_F1\020\242\002\022\013\n\006KEY_F2\020\243\002\022\013\n\006KEY_F3\020\244\002\022\013\n"
+  "\006KEY_F4\020\245\002\022\013\n\006KEY_F5\020\246\002\022\013\n\006KEY_F6\020\247\002\022\013\n\006"
+  "KEY_F7\020\250\002\022\013\n\006KEY_F8\020\251\002\022\013\n\006KEY_F9\020\252\002\022\014\n\007K"
+  "EY_F10\020\253\002\022\014\n\007KEY_F11\020\254\002\022\014\n\007KEY_F12\020\255\002\022\014\n"
+  "\007KEY_F13\020\256\002\022\014\n\007KEY_F14\020\257\002\022\014\n\007KEY_F15\020\260\002\022"
+  "\014\n\007KEY_F16\020\261\002\022\014\n\007KEY_F17\020\262\002\022\014\n\007KEY_F18\020\263"
+  "\002\022\014\n\007KEY_F19\020\264\002\022\014\n\007KEY_F20\020\265\002\022\014\n\007KEY_F21"
+  "\020\266\002\022\014\n\007KEY_F22\020\267\002\022\014\n\007KEY_F23\020\270\002\022\014\n\007KEY_F"
+  "24\020\271\002\022\014\n\007KEY_F25\020\272\002\022\r\n\010KEY_KP_0\020\300\002\022\r\n\010KE"
+  "Y_KP_1\020\301\002\022\r\n\010KEY_KP_2\020\302\002\022\r\n\010KEY_KP_3\020\303\002\022"
+  "\r\n\010KEY_KP_4\020\304\002\022\r\n\010KEY_KP_5\020\305\002\022\r\n\010KEY_KP_"
+  "6\020\306\002\022\r\n\010KEY_KP_7\020\307\002\022\r\n\010KEY_KP_8\020\310\002\022\r\n\010KE"
+  "Y_KP_9\020\311\002\022\023\n\016KEY_KP_DECIMAL\020\312\002\022\022\n\rKEY_KP"
+  "_DIVIDE\020\313\002\022\024\n\017KEY_KP_MULTIPLY\020\314\002\022\024\n\017KEY_"
+  "KP_SUBTRACT\020\315\002\022\017\n\nKEY_KP_ADD\020\316\002\022\021\n\014KEY_K"
+  "P_ENTER\020\317\002\022\021\n\014KEY_KP_EQUAL\020\320\002\022\023\n\016KEY_LEF"
+  "T_SHIFT\020\324\002\022\025\n\020KEY_LEFT_CONTROL\020\325\002\022\021\n\014KEY"
+  "_LEFT_ALT\020\326\002\022\023\n\016KEY_LEFT_SUPER\020\327\002\022\024\n\017KEY"
+  "_RIGHT_SHIFT\020\330\002\022\026\n\021KEY_RIGHT_CONTROL\020\331\002\022"
+  "\022\n\rKEY_RIGHT_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333"
+  "\002\"[\n\nGameParams\022\033\n\023game_atlas_filename\030\001"
+  " \001(\t\022\036\n\026dungen_params_filename\030\002 \001(\t\022\020\n\010"
+  "tilesize\030\003 \001(\005\"\216\001\n\014DungenParams\022\022\n\nroom_"
+  "count\030\001 \001(\005\022\025\n\rmin_room_size\030\002 \001(\005\022\025\n\rma"
+  "x_room_size\030\003 \001(\005\022\021\n\tmap_width\030\004 \001(\005\022\022\n\n"
+  "map_height\030\005 \001(\005\022\025\n\rexpand_chance\030\006 \001(\005\""
+  ":\n\013ActionBinds\022+\n\014action_binds\030\001 \003(\0132\025.g"
+  "ame.ActionBindEntryb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fgame_2eproto_deps[1] = {
 };
@@ -210,7 +210,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_pro
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2402,
+  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2387,
   &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 4, 0,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
   file_level_metadata_proto_2fgame_2eproto, 4, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
@@ -238,8 +238,6 @@ bool ActionBindEntry_Action_IsValid(int value) {
     case 10:
     case 11:
     case 12:
-    case 13:
-    case 14:
       return true;
     default:
       return false;
@@ -251,8 +249,6 @@ constexpr ActionBindEntry_Action ActionBindEntry::ACTION_UNKNOWN;
 constexpr ActionBindEntry_Action ActionBindEntry::QUIT;
 constexpr ActionBindEntry_Action ActionBindEntry::MENU;
 constexpr ActionBindEntry_Action ActionBindEntry::DEBUG_HUD;
-constexpr ActionBindEntry_Action ActionBindEntry::EXAMPLE_HUD;
-constexpr ActionBindEntry_Action ActionBindEntry::DEBUG_DRAW;
 constexpr ActionBindEntry_Action ActionBindEntry::MOVE_N;
 constexpr ActionBindEntry_Action ActionBindEntry::MOVE_NE;
 constexpr ActionBindEntry_Action ActionBindEntry::MOVE_E;
@@ -776,6 +772,7 @@ GameParams::GameParams(const GameParams& from)
     dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_dungen_params_filename(), 
       GetArena());
   }
+  tilesize_ = from.tilesize_;
   // @@protoc_insertion_point(copy_constructor:game.GameParams)
 }
 
@@ -783,6 +780,7 @@ void GameParams::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_GameParams_proto_2fgame_2eproto.base);
   game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  tilesize_ = 0;
 }
 
 GameParams::~GameParams() {
@@ -820,6 +818,7 @@ void GameParams::Clear() {
 
   game_atlas_filename_.ClearToEmpty();
   dungen_params_filename_.ClearToEmpty();
+  tilesize_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -845,6 +844,13 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           auto str = _internal_mutable_dungen_params_filename();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.dungen_params_filename"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 tilesize = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          tilesize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -896,6 +902,12 @@ failure:
         2, this->_internal_dungen_params_filename(), target);
   }
 
+  // int32 tilesize = 3;
+  if (this->tilesize() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_tilesize(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -924,6 +936,13 @@ size_t GameParams::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_dungen_params_filename());
+  }
+
+  // int32 tilesize = 3;
+  if (this->tilesize() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_tilesize());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -963,6 +982,9 @@ void GameParams::MergeFrom(const GameParams& from) {
   if (from.dungen_params_filename().size() > 0) {
     _internal_set_dungen_params_filename(from._internal_dungen_params_filename());
   }
+  if (from.tilesize() != 0) {
+    _internal_set_tilesize(from._internal_tilesize());
+  }
 }
 
 void GameParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -988,6 +1010,7 @@ void GameParams::InternalSwap(GameParams* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   game_atlas_filename_.Swap(&other->game_atlas_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   dungen_params_filename_.Swap(&other->dungen_params_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(tilesize_, other->tilesize_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GameParams::GetMetadata() const {
