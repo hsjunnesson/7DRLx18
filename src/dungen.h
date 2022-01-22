@@ -16,9 +16,9 @@ struct Game;
  * 
  */
 struct Room {
-    int32_t room_index;
-    int32_t x, y;
-    int32_t w, h;
+    uint32_t room_index;
+    uint32_t x, y;
+    uint32_t w, h;
     bool start_room = false;
     bool boss_room = false;
 };

@@ -72,11 +72,11 @@ void dungen(engine::Engine *engine, game::Game *game) {
     std::uniform_int_distribution<int> fifty_fifty(0, 1);
     std::uniform_int_distribution<int> percentage(1, 100);
 
-    int32_t start_room_index = 0;
-    int32_t boss_room_index = 0;
+    uint32_t start_room_index = 0;
+    uint32_t boss_room_index = 0;
 
-    int32_t stairs_up_pos = 0;
-    int32_t stairs_down_pos = 0;
+    uint32_t stairs_up_pos = 0;
+    uint32_t stairs_down_pos = 0;
 
     // Rooms and corridors collections
     Hash<Room> rooms = Hash<Room>(allocator);
@@ -119,11 +119,11 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         }
 
-        if (start_room_index > params.room_count()) {
+        if (start_room_index > (uint32_t)params.room_count()) {
             start_room_index = params.room_count() - 1;
         }
 
-        if (boss_room_index > params.room_count()) {
+        if (boss_room_index > (uint32_t)params.room_count()) {
             boss_room_index = params.room_count() - 1;
         }
 
@@ -133,23 +133,23 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Place rooms in grids sections, referenced by their index.
     {
-        for (int32_t room_index = 0; room_index < params.room_count(); ++room_index) {
+        for (uint32_t room_index = 0; room_index < (uint32_t)params.room_count(); ++room_index) {
             uint32_t room_index_x, room_index_y;
             coord(room_index, room_index_x, room_index_y, rooms_count_wide);
 
-            const int32_t section_min_x = room_index_x * section_width;
-            const int32_t section_max_x = section_min_x + section_width;
-            const int32_t section_min_y = room_index_y * section_height;
-            const int32_t section_max_y = section_min_y + section_height;
+            const uint32_t section_min_x = room_index_x * section_width;
+            const uint32_t section_max_x = section_min_x + section_width;
+            const uint32_t section_min_y = room_index_y * section_height;
+            const uint32_t section_max_y = section_min_y + section_height;
 
-            const int32_t room_width = room_size_distribution(random_engine);
-            const int32_t room_height = room_size_distribution(random_engine);
+            const uint32_t room_width = room_size_distribution(random_engine);
+            const uint32_t room_height = room_size_distribution(random_engine);
 
-            std::uniform_int_distribution<int32_t> x_offset(section_min_x + 2, section_max_x - 2 - room_width);
-            std::uniform_int_distribution<int32_t> y_offset(section_min_y + 2, section_max_y - 2 - room_height);
+            std::uniform_int_distribution<uint32_t> x_offset(section_min_x + 2, section_max_x - 2 - room_width);
+            std::uniform_int_distribution<uint32_t> y_offset(section_min_y + 2, section_max_y - 2 - room_height);
 
-            const int32_t room_x = x_offset(random_engine);
-            const int32_t room_y = y_offset(random_engine);
+            const uint32_t room_x = x_offset(random_engine);
+            const uint32_t room_y = y_offset(random_engine);
 
             Room room = Room{room_index, room_x, room_y, room_width, room_height};
 
@@ -270,7 +270,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     // Prune disconnected rooms
     {
         Queue<uint32_t> disconnected_room_indices = Queue<uint32_t>(allocator);
-        for (uint32_t i = 0; i < params.room_count(); ++i) {
+        for (uint32_t i = 0; i < (uint32_t)params.room_count(); ++i) {
             bool found = false;
 
             for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
@@ -322,8 +322,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             Room &room = iter->value;
 
-            for (int y = 0; y < room.h; ++y) {
-                for (int x = 0; x < room.w; ++x) {
+            for (uint32_t y = 0; y < room.h; ++y) {
+                for (uint32_t x = 0; x < room.w; ++x) {
                     Tile tile = Tile::None;
 
                     if (y == 0) {
@@ -389,8 +389,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
                 Room start_room = hash::get(rooms, corridor.from_room_index, {});
                 Room to_room = hash::get(rooms, corridor.to_room_index, {});
 
-                line::Coordinate a = {start_room.x + start_room.w / 2, start_room.y + start_room.h / 2};
-                line::Coordinate b = {to_room.x + to_room.w / 2, to_room.y + to_room.h / 2};
+                line::Coordinate a = {(int32_t)start_room.x + (int32_t)start_room.w / 2, (int32_t)start_room.y + (int32_t)start_room.h / 2};
+                line::Coordinate b = {(int32_t)to_room.x + (int32_t)to_room.w / 2, (int32_t)to_room.y + (int32_t)to_room.h / 2};
 
                 Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
 
@@ -408,16 +408,16 @@ void dungen(engine::Engine *engine, game::Game *game) {
                     // Don't place corridors if we're inside the start or to room.
                     // But place corridor in the wall of the rooms.
                     bool inside_start_room =
-                        coord.x > start_room.x &&
-                        coord.y > start_room.y &&
-                        coord.x < start_room.x + start_room.w - 1 &&
-                        coord.y < start_room.y + start_room.h - 1;
+                        (uint32_t)coord.x > start_room.x &&
+                        (uint32_t)coord.y > start_room.y &&
+                        (uint32_t)coord.x < start_room.x + start_room.w - 1 &&
+                        (uint32_t)coord.y < start_room.y + start_room.h - 1;
 
                     bool inside_to_room =
-                        coord.x > to_room.x &&
-                        coord.y > to_room.y &&
-                        coord.x < to_room.x + to_room.w - 1 &&
-                        coord.y < to_room.y + to_room.h - 1;
+                        (uint32_t)coord.x > to_room.x &&
+                        (uint32_t)coord.y > to_room.y &&
+                        (uint32_t)coord.x < to_room.x + to_room.w - 1 &&
+                        (uint32_t)coord.y < to_room.y + to_room.h - 1;
 
                     if (inside_start_room || inside_to_room) {
                         continue;
