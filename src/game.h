@@ -22,6 +22,11 @@ class GameParams;
 class ActionBinds;
 struct Level;
 
+struct Mob {
+    uint64_t sprite_id;
+    uint32_t pos;
+};
+
 /**
  * @brief An enum that describes a specific game state.
  * 
@@ -60,8 +65,7 @@ struct Game {
     GameState game_state;
     Level *level;
 
-    int32_t player_pos;
-    uint64_t player_sprite_id;
+    Mob player_mob;
 
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
