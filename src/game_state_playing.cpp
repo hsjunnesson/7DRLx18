@@ -106,13 +106,6 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
         uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob.pos, game.level->max_width, MOB_Z_LAYER, color::peach);
         game.player_mob.sprite_id = sprite_id;
         center_view_to_pos(engine, game, game.player_mob.pos);
-
-        const engine::Sprite *player_sprite = get_sprite(*engine.sprites, sprite_id);
-        const glm::vec3 player_world_pos = player_sprite->transform[3];
-        const uint32_t adjacent_pos = index_offset(game.player_mob.pos, 3, 0, game.level->max_width);
-        const glm::vec3 adjacent_world_pos = pos_to_world(game, adjacent_pos);
-        uint64_t animation_id = animate_sprite_position(*engine.sprites, game.player_mob.sprite_id, {adjacent_world_pos.x, adjacent_world_pos.y, MOB_Z_LAYER}, 3.0f);
-        log_debug("Created animation %" PRIx64, animation_id);
     }
 }
 
