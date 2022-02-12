@@ -66,6 +66,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
     // seed = 1642864096; // orphaned island
+//    seed = 1644687731;
+
     random_engine.seed(seed);
 
     log_debug("Dungen seeded with %u", seed);

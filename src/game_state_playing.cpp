@@ -28,6 +28,7 @@ namespace {
 const float LEVEL_Z_LAYER = -5.0f;
 const float ITEM_Z_LAYER = -4.0f;
 const float MOB_Z_LAYER = -3.0f;
+const float MOB_WALK_SPEED = 0.1f;
 } // namespace
 
 
@@ -100,7 +101,7 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
     if (legal_move) {
 		glm::vec3 to_position = tile_index_to_world_position(game, new_index);
 		to_position.z = MOB_Z_LAYER;
-		uint64_t animation_id = animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, 0.1f);
+		uint64_t animation_id = engine::animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, MOB_WALK_SPEED);
         if (animation_id != 0) {
             hash::set(game.processing_animations, animation_id, true);
         }
@@ -108,8 +109,38 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
 		const uint32_t old_index = mob.index;
 		mob.index = new_index;
 
-        // Hiding or unhiding terrain tiles?
+        // Unhide and hide level tiles
         {
+            const float fade_speed = MOB_WALK_SPEED / 2.0f;
+
+            const Tile old_tile = hash::get(game.level->tiles, old_index, Tile::None);
+            const Tile new_tile = hash::get(game.level->tiles, new_index, Tile::None);
+
+            if (old_tile != Tile::None) {
+                const uint64_t old_index_sprite_id = hash::get(game.level->tiles_sprite_ids, old_index, (uint64_t)0);
+
+                if (old_index_sprite_id > 0) {
+                    const engine::Sprite *sprite = engine::get_sprite(*engine.sprites, old_index_sprite_id);
+                    if (sprite) {
+                        Color4f color = sprite->color;
+                        color.a = 1.0f;
+                        engine::animate_sprite_color(*engine.sprites, sprite->id, color, fade_speed, fade_speed);
+                    }
+                }
+            }
+
+            if (new_tile != Tile::None) {
+                const uint64_t new_index_sprite_id = hash::get(game.level->tiles_sprite_ids, new_index, (uint64_t)0);
+
+                if (new_index_sprite_id > 0) {
+                    const engine::Sprite *sprite = engine::get_sprite(*engine.sprites, new_index_sprite_id);
+                    if (sprite) {
+                        Color4f color = sprite->color;
+                        color.a = 0.0f;
+                        engine::animate_sprite_color(*engine.sprites, sprite->id, color, fade_speed, fade_speed);
+                    }
+                }
+            }
         }
     }
 }
