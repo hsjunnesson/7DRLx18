@@ -32,10 +32,10 @@ const float MOB_Z_LAYER = -3.0f;
 namespace game {
 using namespace math;
 
-/// Return the world coordinate of the center of a tile at pos.
-const glm::vec3 pos_to_world(const Game &game, const uint32_t pos) {
+/// Return the world position of the center of a tile at coord.
+const glm::vec3 tile_index_to_world_position(const Game &game, const uint32_t index) {
     uint32_t x, y;
-    coord(pos, x, y, game.level->max_width);
+    coord(index, x, y, game.level->max_width);
     
     glm::vec3 w {x, y, 0.0f};
     w *= game.params->tilesize();
@@ -43,10 +43,10 @@ const glm::vec3 pos_to_world(const Game &game, const uint32_t pos) {
     return w;
 }
 
-/// Return the screen coordinate of the center of a tile at pos, scaled by zoom and render scale.
-const glm::vec2 pos_to_screen(const engine::Engine &engine, const Game &game, const uint32_t pos) {
+/// Return the screen position of the center of a tile at coord, scaled by zoom and render scale.
+const glm::vec2 tile_index_to_screen_position(const engine::Engine &engine, const Game &game, const uint32_t index) {
     uint32_t x, y;
-    coord(pos, x, y, game.level->max_width);
+    coord(index, x, y, game.level->max_width);
     
     glm::vec2 w {x, y};
     w *= game.params->tilesize() * engine.camera_zoom * engine.render_scale;
@@ -55,18 +55,32 @@ const glm::vec2 pos_to_screen(const engine::Engine &engine, const Game &game, co
     return w;
 }
 
-/// Centers the view on the tile at pos.
-void center_view_to_pos(engine::Engine &engine, const Game &game, const uint32_t pos) {
-    glm::vec2 w = pos_to_screen(engine, game, pos);
+/// Whether a tile at index is traversible.
+bool is_traversible(const Game &game, const uint32_t index) {
+	const Tile &tile = hash::get(game.level->tiles, index, Tile::None);
+    
+    switch (tile) {
+    case Tile::StairsDown:
+    case Tile::StairsUp:
+    case Tile::Floor:
+        return true;
+    default:
+        return false;
+    }
+}
+
+/// Centers the view on the tile at index.
+void center_view_to_tile_index(engine::Engine &engine, const Game &game, const uint32_t index) {
+    glm::vec2 w = tile_index_to_screen_position(engine, game, index);
     engine::move_camera(engine, w.x - engine.window_rect.size.x / 2, w.y - engine.window_rect.size.y / 2);
 }
 
-/// Utility to add a sprite to the world.
-uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t pos, const uint32_t max_width, const float z_layer, Color4f color = color::white) {
+/// Utility to add a sprite to the game.
+uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t index, const uint32_t max_width, const float z_layer, Color4f color = color::white) {
     const engine::Sprite sprite = engine::add_sprite(sprites, sprite_name);
 
     uint32_t x, y;
-    coord(pos, x, y, max_width);
+    coord(index, x, y, max_width);
 
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, {x * tilesize, y * tilesize, z_layer});
@@ -77,8 +91,25 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t 
     return sprite.id;
 }
 
-void player_move(int32_t x, int32_t y) {
+void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int32_t yoffset) {
+    uint32_t new_index = index_offset(mob.index, xoffset, yoffset, game.level->max_width);
+	bool legal_move = is_traversible(game, new_index);
 
+    if (legal_move) {
+		glm::vec3 to_position = tile_index_to_world_position(game, new_index);
+		to_position.z = MOB_Z_LAYER;
+		uint64_t animation_id = animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, 0.1f);
+        if (animation_id != 0) {
+            hash::set(game.processing_animations, animation_id, true);
+        }
+
+		const uint32_t old_index = mob.index;
+		mob.index = new_index;
+
+        // Hiding or unhiding terrain tiles?
+        {
+        }
+    }
 }
 
 void player_wait() {
@@ -91,21 +122,21 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
         hash::clear(game.level->tiles_sprite_ids);
 
         for (auto iter = hash::begin(game.level->tiles); iter != hash::end(game.level->tiles); ++iter) {
-            uint64_t pos = iter->key;
+            uint32_t index = (uint32_t)iter->key;
 
             Tile tile = static_cast<Tile>(iter->value);
             const char *sprite_name = tile_sprite_name(tile);
-            uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, game.params->tilesize(), pos, game.level->max_width, LEVEL_Z_LAYER);
-            hash::set(game.level->tiles_sprite_ids, pos, sprite_id);
+			uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, game.params->tilesize(), index, game.level->max_width, LEVEL_Z_LAYER);
+			hash::set(game.level->tiles_sprite_ids, index, sprite_id);
         }
     }
 
     // Create player
     {
-        game.player_mob.pos = game.level->stairs_up_pos;
-        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob.pos, game.level->max_width, MOB_Z_LAYER, color::peach);
+        game.player_mob.index = game.level->stairs_up_index;
+        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob.index, game.level->max_width, MOB_Z_LAYER, color::peach);
         game.player_mob.sprite_id = sprite_id;
-        center_view_to_pos(engine, game, game.player_mob.pos);
+        center_view_to_tile_index(engine, game, game.player_mob.index);
     }
 }
 
@@ -153,64 +184,20 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
             }
             break;
         }
-        case ActionBindEntry::MOVE_N: {
+        case ActionBindEntry::MOVE_N:
+        case ActionBindEntry::MOVE_NE:
+        case ActionBindEntry::MOVE_E:
+        case ActionBindEntry::MOVE_SE:
+        case ActionBindEntry::MOVE_S:
+        case ActionBindEntry::MOVE_SW:
+        case ActionBindEntry::MOVE_W:
+        case ActionBindEntry::MOVE_NW:
+        case ActionBindEntry::INTERACT:
+        case ActionBindEntry::WAIT:
             if (pressed || repeated) {
-                player_move(0, 1);
+                game.queued_action = action;
             }
             break;
-        }
-        case ActionBindEntry::MOVE_NE: {
-            if (pressed || repeated) {
-                player_move(1, 1);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_E: {
-            if (pressed || repeated) {
-                player_move(1, 0);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_SE: {
-            if (pressed || repeated) {
-                player_move(1, -1);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_S: {
-            if (pressed || repeated) {
-                player_move(0, -1);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_SW: {
-            if (pressed || repeated) {
-                player_move(-1, -1);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_W: {
-            if (pressed || repeated) {
-                player_move(-1, 0);
-            }
-            break;
-        }
-        case ActionBindEntry::MOVE_NW: {
-            if (pressed || repeated) {
-                player_move(-1, 1);
-            }
-            break;
-        }
-        case ActionBindEntry::INTERACT: {
-            log_debug("Not implemented action INTERACT");
-            break;
-        }
-        case ActionBindEntry::WAIT: {
-            if (pressed || repeated) {
-                player_wait();
-            }
-            break;
-        }
         default:
             break;
         }
@@ -229,14 +216,87 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
 }
 
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt) {
-    (void)engine;
     (void)game;
     (void)t;
     (void)dt;
 
-    const Array<engine::SpriteAnimation> done_animations = done_sprite_animations(*engine.sprites);
-    for (const engine::SpriteAnimation *iter = array::begin(done_animations); iter != array::end(done_animations); ++iter) {
-        log_debug("Completed animation %" PRIx64, iter->animation_id);
+    // Check done with processing animations
+    {
+        const Array<engine::SpriteAnimation> done_animations = done_sprite_animations(*engine.sprites);
+        for (const engine::SpriteAnimation *iter = array::begin(done_animations); iter != array::end(done_animations); ++iter) {
+            uint64_t animation_id = iter->animation_id;
+            if (hash::has(game.processing_animations, animation_id)) {
+                hash::remove(game.processing_animations, animation_id);
+            }
+        }
+
+        if (game.processing_turn) {
+            int processing_animations_count = 0;
+            for (auto iter = hash::begin(game.processing_animations); iter != hash::end(game.processing_animations); ++iter) {
+                ++processing_animations_count;
+            }
+            if (processing_animations_count == 0) {
+                game.processing_turn = false;
+            }
+        }
+    }
+
+    // Process queued action
+    if (!game.processing_turn && game.queued_action != ActionBindEntry_Action_ACTION_UNKNOWN) {
+        bool invalid_action = false;
+
+        switch (game.queued_action) {
+        case ActionBindEntry::MOVE_N: {
+            mob_walk(engine, game, game.player_mob, 0, 1);
+            break;
+        }
+        case ActionBindEntry::MOVE_NE: {
+            mob_walk(engine, game, game.player_mob, 1, 1);
+            break;
+        }
+        case ActionBindEntry::MOVE_E: {
+            mob_walk(engine, game, game.player_mob, 1, 0);
+            break;
+        }
+        case ActionBindEntry::MOVE_SE: {
+            mob_walk(engine, game, game.player_mob, 1, -1);
+            break;
+        }
+        case ActionBindEntry::MOVE_S: {
+            mob_walk(engine, game, game.player_mob, 0, -1);
+            break;
+        }
+        case ActionBindEntry::MOVE_SW: {
+            mob_walk(engine, game, game.player_mob, -1, -1);
+            break;
+        }
+        case ActionBindEntry::MOVE_W: {
+            mob_walk(engine, game, game.player_mob, -1, 0);
+            break;
+        }
+        case ActionBindEntry::MOVE_NW: {
+            mob_walk(engine, game, game.player_mob, -1, 1);
+            break;
+        }
+        case ActionBindEntry::WAIT: {
+            player_wait();
+            break;
+        }
+        default: {
+            const google::protobuf::EnumDescriptor *descriptor = game::ActionBindEntry_Action_descriptor();
+            const char *action_name = descriptor->FindValueByNumber(game.queued_action)->name().c_str();
+            log_debug("Not implemented action: %s", action_name);
+            invalid_action = true;
+            break;
+        }
+        }
+
+        game.queued_action = ActionBindEntry_Action_ACTION_UNKNOWN;
+
+        if (!invalid_action) {
+            game.player_mob.energy = 0.0f;
+            game.processing_turn = true;
+        }
     }
 }
 

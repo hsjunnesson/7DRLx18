@@ -39,7 +39,10 @@ Game::Game(Allocator &allocator)
 , player_mob()
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
-, present_hud(false) {
+, present_hud(false)
+, processing_turn(false)
+, processing_animations(allocator)
+, queued_action(ActionBindEntry_Action_ACTION_UNKNOWN) {
     // Default assets paths
     const char *params_path = "assets/game_params.json";
     const char *action_binds_path = "assets/action_binds.json";

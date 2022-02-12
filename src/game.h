@@ -21,10 +21,12 @@ using namespace foundation;
 class GameParams;
 class ActionBinds;
 struct Level;
+enum ActionBindEntry_Action : int;
 
 struct Mob {
     uint64_t sprite_id;
-    uint32_t pos;
+    uint32_t index; // Tile index
+    float energy;
 };
 
 /**
@@ -71,6 +73,12 @@ struct Game {
     std::thread *dungen_thread;
 
     bool present_hud;
+
+    bool processing_turn;
+
+    // These animates catch up mobs and synchronized effects. We wait until these complete before allowing player input.
+    Hash<bool> processing_animations;
+    ActionBindEntry_Action queued_action;
 };
 
 /**

@@ -109,10 +109,10 @@ struct Level {
     Hash<Room> rooms;
     Hash<Tile> tiles;
     Hash<uint64_t> tiles_sprite_ids;
-    int32_t max_width;
-    int32_t depth;
-    int32_t stairs_up_pos;
-    int32_t stairs_down_pos;
+    uint32_t max_width;
+    uint32_t depth;
+    uint32_t stairs_up_index;
+    uint32_t stairs_down_index;
 };
 
 /**

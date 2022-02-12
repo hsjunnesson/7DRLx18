@@ -35,8 +35,8 @@ Level::Level(Allocator &allocator)
 , tiles_sprite_ids(allocator)
 , max_width(0)
 , depth(0)
-, stairs_up_pos(0)
-, stairs_down_pos(0) {}
+, stairs_up_index(0)
+, stairs_down_index(0) {}
 
 void dungen(engine::Engine *engine, game::Game *game) {
     assert(engine);
@@ -75,8 +75,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
     uint32_t start_room_index = 0;
     uint32_t boss_room_index = 0;
 
-    uint32_t stairs_up_pos = 0;
-    uint32_t stairs_down_pos = 0;
+    uint32_t stairs_up_index = 0;
+    uint32_t stairs_down_index = 0;
 
     // Rooms and corridors collections
     Hash<Room> rooms = Hash<Room>(allocator);
@@ -364,15 +364,15 @@ void dungen(engine::Engine *engine, game::Game *game) {
         Room start_room = hash::get(rooms, start_room_index, {});
         if (start_room.start_room) {
             // TODO: randomize this
-            stairs_up_pos = index(start_room.x + start_room.w / 2, start_room.y + start_room.h / 2, map_width);
-            hash::set(terrain_tiles, stairs_up_pos, {stairs_up_tile});
+            stairs_up_index = index(start_room.x + start_room.w / 2, start_room.y + start_room.h / 2, map_width);
+            hash::set(terrain_tiles, stairs_up_index, {stairs_up_tile});
         }
 
         Room boss_room = hash::get(rooms, boss_room_index, {});
         if (boss_room.boss_room) {
             // TODO: randomize this
-            stairs_down_pos = index(boss_room.x + boss_room.w / 2, boss_room.y + boss_room.h / 2, map_width);
-            hash::set(terrain_tiles, stairs_down_pos, {stairs_down_tile});
+            stairs_down_index = index(boss_room.x + boss_room.w / 2, boss_room.y + boss_room.h / 2, map_width);
+            hash::set(terrain_tiles, stairs_down_index, {stairs_down_tile});
         }
     }
 
@@ -594,8 +594,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
         game->level->tiles = terrain_tiles;
         game->level->rooms = rooms;
         game->level->max_width = map_width;
-        game->level->stairs_up_pos = stairs_up_pos;
-        game->level->stairs_down_pos = stairs_down_pos;
+        game->level->stairs_up_index = stairs_up_index;
+        game->level->stairs_down_index = stairs_down_index;
     }
 
     game::transition(*engine, game, GameState::Playing);
