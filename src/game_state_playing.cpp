@@ -170,6 +170,14 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
         uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob.index, game.level->max_width, MOB_Z_LAYER, color::peach);
         game.player_mob.sprite_id = sprite_id;
         center_view_to_tile_index(engine, game, game.player_mob.index);
+
+        const uint64_t stairs_sprite_id = hash::get(game.level->tiles_sprite_ids, game.level->stairs_up_index, (uint64_t)0);
+        if (stairs_sprite_id) {
+            const engine::Sprite *stairs_sprite = engine::get_sprite(*engine.sprites, stairs_sprite_id);
+            Color4f color = stairs_sprite->color;
+            color.a = 0.0f;
+            engine::color_sprite(*engine.sprites, stairs_sprite_id, color);
+        }
     }
 }
 
