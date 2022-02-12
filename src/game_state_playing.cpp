@@ -4,6 +4,7 @@
 #include "dungen.h"
 #include "color.inl"
 
+#pragma warning(push, 0)
 #include <engine/engine.h>
 #include <engine/input.h>
 #include <engine/sprites.h>
@@ -20,6 +21,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#pragma warning(pop)
 
 
 namespace {
@@ -72,7 +74,7 @@ bool is_traversible(const Game &game, const uint32_t index) {
 /// Centers the view on the tile at index.
 void center_view_to_tile_index(engine::Engine &engine, const Game &game, const uint32_t index) {
     glm::vec2 w = tile_index_to_screen_position(engine, game, index);
-    engine::move_camera(engine, w.x - engine.window_rect.size.x / 2, w.y - engine.window_rect.size.y / 2);
+    engine::move_camera(engine, (int32_t)w.x - engine.window_rect.size.x / 2, (int32_t)w.y - engine.window_rect.size.y / 2);
 }
 
 /// Utility to add a sprite to the game.
@@ -147,8 +149,8 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
         switch (input_command.mouse_state.mouse_action) {
         case engine::MouseAction::MouseMoved: {
             if (input_command.mouse_state.mouse_left_state == engine::TriggerState::Pressed) {
-                int32_t x = input_command.mouse_state.mouse_relative_motion.x;
-                int32_t y = input_command.mouse_state.mouse_relative_motion.y;
+                int32_t x = (int32_t)input_command.mouse_state.mouse_relative_motion.x;
+                int32_t y = (int32_t)input_command.mouse_state.mouse_relative_motion.y;
                 engine::offset_camera(engine, -x, y);
             }
             break;

@@ -64,8 +64,19 @@ target_link_libraries(${PROJECT_NAME} PRIVATE chocolate)
 # Compiler warnings & definitions
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE _USE_MATH_DEFINES)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-gnu-zero-variadic-macro-arguments)
 
+if (CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-gnu-zero-variadic-macro-arguments)
+endif()
+
+if (MSVC)
+    source_group("src" FILES ${SRC_7DRLx18})
+    source_group("foundation" FILES ${bitsquidfoundation_SOURCE_DIR})
+    source_group("generated" FILES ${SRC_Generated})
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+    set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
+    set_source_files_properties(${SRC_7DRLx18} PROPERTIES COMPILE_FLAGS "/W4 /WX")
+endif()
 
 # Enable tests
 

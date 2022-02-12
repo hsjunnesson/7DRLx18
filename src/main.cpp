@@ -3,8 +3,10 @@
 #include <engine/engine.h>
 #include <engine/input.h>
 
+#pragma warning(push, 0)
 #include <backward.hpp>
 #include <memory.h>
+#pragma warning(pop)
 
 int main(int argc, char *argv[]) {
     (void)argc;

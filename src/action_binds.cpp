@@ -1,9 +1,12 @@
 #include "action_binds.h"
+
+#pragma warning(push, 0)
 #include <engine/log.h>
 #include <hash.h>
 #include <memory.h>
 #include <proto/game.pb.h>
 #include <temp_allocator.h>
+#pragma warning(pop)
 
 namespace game {
 using namespace foundation;

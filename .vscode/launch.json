@@ -8,7 +8,7 @@
       "request": "launch",
       "name": "Debug",
       "type": "lldb",
-      "program": "${workspaceFolder}/build/7DRLx18.exe",
+      "program": "${workspaceFolder}/build/Debug/7DRLx18.exe",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
@@ -19,7 +19,7 @@
       "windows": {
         "request": "launch",
         "name": "Debug",
-        "program": "${workspaceFolder}/build/7DRLx18.exe",
+        "program": "${workspaceFolder}/build/Debug/7DRLx18.exe",
       },
       "osx": {
         "request": "launch",

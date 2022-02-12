@@ -2,6 +2,7 @@
 #include "game.h"
 #include "line.hpp"
 
+#pragma warning(push, 0)
 #include "engine/config.inl"
 #include "engine/engine.h"
 #include "engine/log.h"
@@ -23,6 +24,7 @@
 #include <mutex>
 #include <random>
 #include <thread>
+#pragma warning(pop)
 
 namespace game {
 using namespace foundation;
@@ -506,9 +508,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t index_s = index(coord_x, coord_y + 1, map_width);
             const uint32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-
             const bool wall_nw = (hash::has(terrain_tiles, index_nw) && hash::get(terrain_tiles, index_nw, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_nw);
             const bool wall_n = (hash::has(terrain_tiles, index_n) && hash::get(terrain_tiles, index_n, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_n);
             const bool wall_ne = (hash::has(terrain_tiles, index_ne) && hash::get(terrain_tiles, index_ne, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_ne);
@@ -532,8 +531,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const bool wall_e_room = !hash::has(placeholder_walls, index_e) && wall_e;
             const bool wall_n_room = !hash::has(placeholder_walls, index_n) && wall_n;
             const bool wall_s_room = !hash::has(placeholder_walls, index_s) && wall_s;
-
-#pragma GCC diagnostic pop
 
             // TODO: Handle tri-wall corners
 

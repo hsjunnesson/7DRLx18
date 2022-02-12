@@ -3,6 +3,7 @@
 #include "dungen.h"
 #include "color.inl"
 
+#pragma warning(push, 0)
 #include <engine/atlas.h>
 #include <engine/config.inl>
 #include <engine/engine.h>
@@ -21,6 +22,7 @@
 
 #include <mutex>
 #include <thread>
+#pragma warning(pop)
 
 namespace game {
 using namespace math;

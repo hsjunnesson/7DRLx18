@@ -68,8 +68,6 @@ constexpr const char *tile_sprite_name(const Tile tile) {
     switch (tile) {
     case Tile::None:
         return "none";
-    case Tile::Missing:
-        return "missing";
     case Tile::Floor:
         return "floor";
     case Tile::Wall:
@@ -96,6 +94,10 @@ constexpr const char *tile_sprite_name(const Tile tile) {
         return "stairs_down";
     case Tile::StairsUp:
         return "stairs_up";
+    case Tile::Missing:
+        return "missing";
+    default:
+        return "missing";
     }
 }
 

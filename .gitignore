@@ -5,6 +5,8 @@
 !.vscode/extensions.json
 *.code-workspace
 
+/.vs
+
 /build
 
 /project.header_hero
