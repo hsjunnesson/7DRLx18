@@ -75,7 +75,7 @@ if (MSVC)
     source_group("generated" FILES ${SRC_Generated})
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
     set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
-    set_source_files_properties(${SRC_7DRLx18} PROPERTIES COMPILE_FLAGS "/W4 /WX")
+    set_source_files_properties(${SRC_7DRLx18} PROPERTIES COMPILE_FLAGS "/W4")
 endif()
 
 # Enable tests
