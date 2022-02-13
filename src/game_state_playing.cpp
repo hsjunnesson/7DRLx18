@@ -21,6 +21,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtx/norm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #pragma warning(pop)
 
@@ -190,6 +191,7 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
                 int32_t x = (int32_t)input_command.mouse_state.mouse_relative_motion.x;
                 int32_t y = (int32_t)input_command.mouse_state.mouse_relative_motion.y;
                 engine::offset_camera(engine, -x, y);
+                game.camera_locked_on_player = false;
             }
             break;
         }
@@ -261,7 +263,6 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
 }
 
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt) {
-    (void)game;
     (void)t;
     (void)dt;
 
@@ -293,38 +294,47 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
         switch (game.queued_action) {
         case ActionBindEntry::MOVE_N: {
             mob_walk(engine, game, game.player_mob, 0, 1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_NE: {
             mob_walk(engine, game, game.player_mob, 1, 1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_E: {
             mob_walk(engine, game, game.player_mob, 1, 0);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_SE: {
             mob_walk(engine, game, game.player_mob, 1, -1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_S: {
             mob_walk(engine, game, game.player_mob, 0, -1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_SW: {
             mob_walk(engine, game, game.player_mob, -1, -1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_W: {
             mob_walk(engine, game, game.player_mob, -1, 0);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_NW: {
             mob_walk(engine, game, game.player_mob, -1, 1);
+            game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::WAIT: {
             player_wait();
+            game.camera_locked_on_player = true;
             break;
         }
         default: {
@@ -341,6 +351,24 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
         if (!invalid_action) {
             game.player_mob.energy = 0.0f;
             game.processing_turn = true;
+        }
+    }
+
+    // Update camera
+    if (game.camera_locked_on_player) {
+        Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob.index);
+        glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
+        glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
+        
+        const float length = glm::length(from_pos-to_pos);
+        int32_t tilesize = game.params->tilesize();
+        const float min_length = tilesize * 4.0f;
+
+        if (length > min_length) {
+            const float max_length = tilesize * 16.0f;
+            const float speed = lerp(10.0f, 200.0f, std::max(length, max_length) / max_length);
+            glm::vec2 approach_pos = {approach(from_pos.x, to_pos.x, speed * dt), approach(from_pos.y, to_pos.y, speed * dt)};
+            engine::move_camera(engine, (int32_t)floorf(approach_pos.x), (int32_t)floor(approach_pos.y));
         }
     }
 }

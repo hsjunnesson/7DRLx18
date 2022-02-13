@@ -43,6 +43,7 @@ Game::Game(Allocator &allocator)
 , dungen_thread(nullptr)
 , present_hud(false)
 , processing_turn(false)
+, camera_locked_on_player(false)
 , processing_animations(allocator)
 , queued_action(ActionBindEntry_Action_ACTION_UNKNOWN) {
     // Default assets paths

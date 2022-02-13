@@ -73,11 +73,12 @@ struct Game {
     std::thread *dungen_thread;
 
     bool present_hud;
-
     bool processing_turn;
-
-    // These animates catch up mobs and synchronized effects. We wait until these complete before allowing player input.
+    bool camera_locked_on_player;
+    
+    // These animations catch up mobs and synchronized effects. We wait until these complete before allowing player input.
     Hash<bool> processing_animations;
+
     ActionBindEntry_Action queued_action;
 };
 
