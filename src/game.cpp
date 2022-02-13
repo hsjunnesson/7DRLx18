@@ -1,7 +1,7 @@
 #include "game.h"
 #include "action_binds.h"
-#include "dungen.h"
 #include "color.inl"
+#include "dungen.h"
 
 #pragma warning(push, 0)
 #include <engine/atlas.h>
@@ -9,8 +9,8 @@
 #include <engine/engine.h>
 #include <engine/input.h>
 #include <engine/log.h>
-#include <engine/sprites.h>
 #include <engine/math.inl>
+#include <engine/sprites.h>
 #include <proto/game.pb.h>
 
 #include <array.h>

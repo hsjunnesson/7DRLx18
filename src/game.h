@@ -75,7 +75,7 @@ struct Game {
     bool present_hud;
     bool processing_turn;
     bool camera_locked_on_player;
-    
+
     // These animations catch up mobs and synchronized effects. We wait until these complete before allowing player input.
     Hash<bool> processing_animations;
 

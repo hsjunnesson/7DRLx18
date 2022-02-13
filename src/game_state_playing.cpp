@@ -1,30 +1,29 @@
 #include "action_binds.h"
 #include "array.h"
-#include "game.h"
-#include "dungen.h"
 #include "color.inl"
+#include "dungen.h"
+#include "game.h"
 
 #pragma warning(push, 0)
 #include <engine/engine.h>
 #include <engine/input.h>
-#include <engine/sprites.h>
 #include <engine/log.h>
+#include <engine/sprites.h>
 #include <proto/game.pb.h>
 
 #include <array.h>
 #include <hash.h>
 
-#include <imgui.h>
 #include <cassert>
+#include <imgui.h>
 #include <limits>
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtx/norm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/norm.hpp>
+#include <glm/gtx/transform.hpp>
 #pragma warning(pop)
-
 
 namespace {
 const int32_t LEVEL_Z_LAYER = -5;
@@ -32,7 +31,6 @@ const int32_t ITEM_Z_LAYER = -4;
 const int32_t MOB_Z_LAYER = -3;
 const float MOB_WALK_SPEED = 0.1f;
 } // namespace
-
 
 namespace game {
 using namespace math;
@@ -43,7 +41,7 @@ const Vector2 tile_index_to_world_position(const Game &game, const uint32_t inde
     coord(index, x, y, game.level->max_width);
     int32_t tilesize = game.params->tilesize();
 
-    return Vector2 { (int32_t)x * tilesize, (int32_t)y * tilesize};
+    return Vector2{(int32_t)x * tilesize, (int32_t)y * tilesize};
 }
 
 /// Return the screen position of the center of a tile at coord, scaled by zoom and render scale.
@@ -55,13 +53,13 @@ const Vector2 tile_index_to_screen_position(const engine::Engine &engine, const 
     float fx = x * tilesize * engine.camera_zoom * engine.render_scale + (tilesize / 2.0f);
     float fy = y * tilesize * engine.camera_zoom * engine.render_scale + (tilesize / 2.0f);
 
-    return Vector2 { (int32_t)floorf(fx), (int32_t)floorf(fy) };
+    return Vector2{(int32_t)floorf(fx), (int32_t)floorf(fy)};
 }
 
 /// Whether a tile at index is traversible.
 bool is_traversible(const Game &game, const uint32_t index) {
-	const Tile &tile = hash::get(game.level->tiles, index, Tile::None);
-    
+    const Tile &tile = hash::get(game.level->tiles, index, Tile::None);
+
     switch (tile) {
     case Tile::StairsDown:
     case Tile::StairsUp:
@@ -96,18 +94,18 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t 
 
 void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int32_t yoffset) {
     uint32_t new_index = index_offset(mob.index, xoffset, yoffset, game.level->max_width);
-	bool legal_move = is_traversible(game, new_index);
+    bool legal_move = is_traversible(game, new_index);
 
     if (legal_move) {
-		const Vector2 world_position = tile_index_to_world_position(game, new_index);
+        const Vector2 world_position = tile_index_to_world_position(game, new_index);
         const Vector3 to_position = {world_position.x, world_position.y, MOB_Z_LAYER};
-		uint64_t animation_id = engine::animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, MOB_WALK_SPEED);
+        uint64_t animation_id = engine::animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, MOB_WALK_SPEED);
         if (animation_id != 0) {
             hash::set(game.processing_animations, animation_id, true);
         }
 
-		const uint32_t old_index = mob.index;
-		mob.index = new_index;
+        const uint32_t old_index = mob.index;
+        mob.index = new_index;
 
         // Unhide and hide level tiles
         {
@@ -146,7 +144,6 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
 }
 
 void player_wait() {
-
 }
 
 void game_state_playing_started(engine::Engine &engine, Game &game) {
@@ -159,8 +156,8 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
 
             Tile tile = static_cast<Tile>(iter->value);
             const char *sprite_name = tile_sprite_name(tile);
-			uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, game.params->tilesize(), index, game.level->max_width, LEVEL_Z_LAYER);
-			hash::set(game.level->tiles_sprite_ids, index, sprite_id);
+            uint64_t sprite_id = add_sprite(*engine.sprites, sprite_name, game.params->tilesize(), index, game.level->max_width, LEVEL_Z_LAYER);
+            hash::set(game.level->tiles_sprite_ids, index, sprite_id);
         }
     }
 
@@ -359,7 +356,7 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
         const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob.index);
         const glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
         const glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
-        const glm::vec2 direction = to_pos - from_pos;        
+        const glm::vec2 direction = to_pos - from_pos;
         const float length = fabs(glm::length(direction));
         const int32_t tilesize = game.params->tilesize();
         const float min_length = tilesize * 1.0f;

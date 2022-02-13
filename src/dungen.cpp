@@ -6,8 +6,8 @@
 #include "engine/config.inl"
 #include "engine/engine.h"
 #include "engine/log.h"
-#include "engine/sprites.h"
 #include "engine/math.inl"
+#include "engine/sprites.h"
 #include "proto/game.pb.h"
 
 #include <array.h>
@@ -66,7 +66,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     std::mt19937 random_engine(random_device());
     unsigned int seed = (unsigned int)time(nullptr);
     // seed = 1642864096; // orphaned island
-//    seed = 1644687731;
+    //    seed = 1644687731;
 
     random_engine.seed(seed);
 
@@ -203,9 +203,9 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
             auto adjacent_coordinates = {
                 line::Coordinate{(int32_t)room_x + 1, (int32_t)room_y},
-                line::Coordinate{(int32_t)room_x,     (int32_t)room_y + 1},
+                line::Coordinate{(int32_t)room_x, (int32_t)room_y + 1},
                 line::Coordinate{(int32_t)room_x - 1, (int32_t)room_y},
-                line::Coordinate{(int32_t)room_x,     (int32_t)room_y - 1}};
+                line::Coordinate{(int32_t)room_x, (int32_t)room_y - 1}};
 
             // For each orthogonally adjacent room. Check if it's a valid location.
             for (line::Coordinate next_coordinate : adjacent_coordinates) {
@@ -510,8 +510,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t index_s = index(coord_x, coord_y + 1, map_width);
             const uint32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
 
-            #pragma warning(push)
-            #pragma warning(disable : 4189)
+#pragma warning(push)
+#pragma warning(disable : 4189)
 
             const bool wall_nw = (hash::has(terrain_tiles, index_nw) && hash::get(terrain_tiles, index_nw, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_nw);
             const bool wall_n = (hash::has(terrain_tiles, index_n) && hash::get(terrain_tiles, index_n, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_n);
@@ -537,7 +537,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const bool wall_n_room = !hash::has(placeholder_walls, index_n) && wall_n;
             const bool wall_s_room = !hash::has(placeholder_walls, index_s) && wall_s;
 
-            #pragma warning(pop)
+#pragma warning(pop)
 
             // TODO: Handle tri-wall corners
 
