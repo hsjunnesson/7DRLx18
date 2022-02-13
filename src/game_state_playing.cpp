@@ -356,18 +356,20 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
 
     // Update camera
     if (game.camera_locked_on_player) {
-        Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob.index);
-        glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
-        glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
-        
-        const float length = glm::length(from_pos-to_pos);
-        int32_t tilesize = game.params->tilesize();
-        const float min_length = tilesize * 4.0f;
+        const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob.index);
+        const glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
+        const glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
+        const glm::vec2 direction = to_pos - from_pos;        
+        const float length = fabs(glm::length(direction));
+        const int32_t tilesize = game.params->tilesize();
+        const float min_length = tilesize * 1.0f;
+        const float max_length = tilesize * 24.0f;
+        const float min_speed = 0.25f;
+        const float max_speed = 5.0f;
 
         if (length > min_length) {
-            const float max_length = tilesize * 16.0f;
-            const float speed = lerp(10.0f, 200.0f, std::max(length, max_length) / max_length);
-            glm::vec2 approach_pos = {approach(from_pos.x, to_pos.x, speed * dt), approach(from_pos.y, to_pos.y, speed * dt)};
+            float speed = lerp(min_speed, max_speed, std::min(length, max_length) / max_length);
+            const glm::vec approach_pos = glm::mix(from_pos, to_pos, speed * dt);
             engine::move_camera(engine, (int32_t)floorf(approach_pos.x), (int32_t)floor(approach_pos.y));
         }
     }
