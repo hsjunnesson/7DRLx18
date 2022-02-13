@@ -510,6 +510,9 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t index_s = index(coord_x, coord_y + 1, map_width);
             const uint32_t index_se = index(coord_x + 1, coord_y + 1, map_width);
 
+            #pragma warning(push)
+            #pragma warning(disable : 4189)
+
             const bool wall_nw = (hash::has(terrain_tiles, index_nw) && hash::get(terrain_tiles, index_nw, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_nw);
             const bool wall_n = (hash::has(terrain_tiles, index_n) && hash::get(terrain_tiles, index_n, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_n);
             const bool wall_ne = (hash::has(terrain_tiles, index_ne) && hash::get(terrain_tiles, index_ne, Tile::None) != Tile::Floor) || hash::has(placeholder_walls, index_ne);
@@ -533,6 +536,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const bool wall_e_room = !hash::has(placeholder_walls, index_e) && wall_e;
             const bool wall_n_room = !hash::has(placeholder_walls, index_n) && wall_n;
             const bool wall_s_room = !hash::has(placeholder_walls, index_s) && wall_s;
+
+            #pragma warning(pop)
 
             // TODO: Handle tri-wall corners
 
