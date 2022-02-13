@@ -21,13 +21,14 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #pragma warning(pop)
 
 
 namespace {
-const float LEVEL_Z_LAYER = -5.0f;
-const float ITEM_Z_LAYER = -4.0f;
-const float MOB_Z_LAYER = -3.0f;
+const int32_t LEVEL_Z_LAYER = -5;
+const int32_t ITEM_Z_LAYER = -4;
+const int32_t MOB_Z_LAYER = -3;
 const float MOB_WALK_SPEED = 0.1f;
 } // namespace
 
@@ -36,26 +37,24 @@ namespace game {
 using namespace math;
 
 /// Return the world position of the center of a tile at coord.
-const glm::vec3 tile_index_to_world_position(const Game &game, const uint32_t index) {
+const Vector2 tile_index_to_world_position(const Game &game, const uint32_t index) {
     uint32_t x, y;
     coord(index, x, y, game.level->max_width);
-    
-    glm::vec3 w {x, y, 0.0f};
-    w *= game.params->tilesize();
+    int32_t tilesize = game.params->tilesize();
 
-    return w;
+    return Vector2 { (int32_t)x * tilesize, (int32_t)y * tilesize};
 }
 
 /// Return the screen position of the center of a tile at coord, scaled by zoom and render scale.
-const glm::vec2 tile_index_to_screen_position(const engine::Engine &engine, const Game &game, const uint32_t index) {
+const Vector2 tile_index_to_screen_position(const engine::Engine &engine, const Game &game, const uint32_t index) {
     uint32_t x, y;
     coord(index, x, y, game.level->max_width);
-    
-    glm::vec2 w {x, y};
-    w *= game.params->tilesize() * engine.camera_zoom * engine.render_scale;
-    w += game.params->tilesize() / 2.0f;
+    int32_t tilesize = game.params->tilesize();
 
-    return w;
+    float fx = x * tilesize * engine.camera_zoom * engine.render_scale + (tilesize / 2.0f);
+    float fy = y * tilesize * engine.camera_zoom * engine.render_scale + (tilesize / 2.0f);
+
+    return Vector2 { (int32_t)floorf(fx), (int32_t)floorf(fy) };
 }
 
 /// Whether a tile at index is traversible.
@@ -74,8 +73,8 @@ bool is_traversible(const Game &game, const uint32_t index) {
 
 /// Centers the view on the tile at index.
 void center_view_to_tile_index(engine::Engine &engine, const Game &game, const uint32_t index) {
-    glm::vec2 w = tile_index_to_screen_position(engine, game, index);
-    engine::move_camera(engine, (int32_t)w.x - engine.window_rect.size.x / 2, (int32_t)w.y - engine.window_rect.size.y / 2);
+    Vector2 pos = tile_index_to_screen_position(engine, game, index);
+    engine::move_camera(engine, pos.x - engine.window_rect.size.x / 2, pos.y - engine.window_rect.size.y / 2);
 }
 
 /// Utility to add a sprite to the game.
@@ -87,8 +86,8 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t 
 
     glm::mat4 transform = glm::mat4(1.0f);
     transform = glm::translate(transform, {x * tilesize, y * tilesize, z_layer});
-    transform = glm::scale(transform, glm::vec3((float)sprite.atlas_rect->size.x, (float)sprite.atlas_rect->size.y, 1.0f));
-    engine::transform_sprite(sprites, sprite.id, transform);
+    transform = glm::scale(transform, glm::vec3(sprite.atlas_rect->size.x, sprite.atlas_rect->size.y, 1));
+    engine::transform_sprite(sprites, sprite.id, Matrix4f(glm::value_ptr(transform)));
     engine::color_sprite(sprites, sprite.id, color);
 
     return sprite.id;
@@ -99,8 +98,8 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
 	bool legal_move = is_traversible(game, new_index);
 
     if (legal_move) {
-		glm::vec3 to_position = tile_index_to_world_position(game, new_index);
-		to_position.z = MOB_Z_LAYER;
+		const Vector2 world_position = tile_index_to_world_position(game, new_index);
+        const Vector3 to_position = {world_position.x, world_position.y, MOB_Z_LAYER};
 		uint64_t animation_id = engine::animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, MOB_WALK_SPEED);
         if (animation_id != 0) {
             hash::set(game.processing_animations, animation_id, true);
@@ -247,11 +246,16 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
     if (input_command.input_type == engine::InputType::Scroll) {
         // Zoom
         if (fabs(input_command.scroll_state.y_offset) > FLT_EPSILON) {
+            float zoom = engine.camera_zoom;
+
             if (input_command.scroll_state.y_offset > 0.0f) {
-                engine::zoom_camera(engine, engine.camera_zoom * 2.0f);
+                zoom = zoom * 2.0f;
             } else {
-                engine::zoom_camera(engine, engine.camera_zoom * 0.5f);
+                zoom = zoom * 0.5f;
             }
+
+            zoom = std::clamp(zoom, 0.25f, 4.0f);
+            engine::zoom_camera(engine, zoom);
         }
     }
 }

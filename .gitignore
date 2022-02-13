@@ -10,4 +10,5 @@
 /build
 
 /project.header_hero
-imgui.ini
+/imgui.ini
+/debug.rdbg
