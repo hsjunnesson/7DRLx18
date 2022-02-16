@@ -8,6 +8,7 @@
 #include "engine/log.h"
 #include "engine/math.inl"
 #include "engine/sprites.h"
+#include "engine/file.h"
 #include "proto/game.pb.h"
 
 #include <array.h>
@@ -16,6 +17,7 @@
 #include <murmur_hash.h>
 #include <queue.h>
 #include <temp_allocator.h>
+#include <string_stream.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -31,6 +33,37 @@ using namespace foundation;
 using engine::coord;
 using engine::index;
 
+RoomTemplate::RoomTemplate(Allocator &allocator)
+: allocator(allocator)
+, name(nullptr)
+, rows(0)
+, columns(0)
+, data(nullptr) {
+    name = MAKE_NEW(allocator, Array<char>, allocator);
+    data = MAKE_NEW(allocator, Array<char>, allocator);
+}
+
+RoomTemplate::~RoomTemplate() {
+    if (name) {
+        MAKE_DELETE(allocator, Array, name);
+    }
+
+    if (data) {
+        MAKE_DELETE(allocator, Array, data);
+    }
+}
+
+RoomTemplate &RoomTemplate::operator=(const RoomTemplate &other) {
+    if (this != &other) {
+        name = other.name;
+        rows = other.rows;
+        columns = other.columns;
+        data = other.data;
+    }
+
+    return *this;
+}
+
 Level::Level(Allocator &allocator)
 : rooms(allocator)
 , tiles(allocator)
@@ -39,6 +72,7 @@ Level::Level(Allocator &allocator)
 , depth(0)
 , stairs_up_index(0)
 , stairs_down_index(0) {}
+
 
 void dungen(engine::Engine *engine, game::Game *game) {
     assert(engine);
@@ -603,6 +637,121 @@ void dungen(engine::Engine *engine, game::Game *game) {
     }
 
     game::transition(*engine, game, GameState::Playing);
+}
+
+void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templates, const char *filename) {
+    assert(filename != nullptr);
+
+    TempAllocator2048 ta;
+    string_stream::Buffer file_buffer(ta);
+    if (!engine::file::read(file_buffer, filename)) {
+        log_fatal("Could not parse: %s", filename);
+    }
+
+    char *p = array::begin(file_buffer);
+    const char *pe = array::end(file_buffer);
+    int32_t line = 1;
+
+    while (p < pe) {
+        if (*p == '#') { // comment
+            while (p < pe && *p != '\n') {
+                ++p;
+            }
+            ++p;
+            ++line;
+        } else if (*p == ' ' || *p == '\r' || *p == '\t' || *p == '\v' || *p == '\f') { // whitespace in a line
+            ++p;
+        } else if (*p == '\n') { // new lines
+            ++p;
+            ++line;
+        } else { // room
+            RoomTemplate room_template(allocator);
+
+            while (true) {
+                string_stream::Buffer key(ta);
+                string_stream::Buffer value(ta);
+
+                while (*p != ':') {
+                    if (p == pe || *p == '\n') {
+                        log_fatal("Could not parse: %s invalid key", filename);
+                    }
+
+                    array::push_back(key, *p);
+                    ++p;
+                }
+
+                while (*p == ':' || *p == ' ') {
+                    ++p;
+                    if (p == pe || *p == '\n') {
+                        log_fatal("Could not parse: %s invalid separator", filename);
+                    }
+                }
+
+                while (p < pe && !(*p == '\n' || *p == '\r')) {
+                    array::push_back(value, *p);
+                    ++p;
+                }
+
+                const char *key_string = string_stream::c_str(key);
+                const char *value_string = string_stream::c_str(value);
+
+                if (strcmp(key_string, "name") == 0) {
+                    if (room_template.name) {
+                        *room_template.name = value;
+                    }
+                } else if (strcmp(key_string, "columns") == 0) {
+                    room_template.columns = atoi(value_string);
+                } else if (strcmp(key_string, "rows") == 0) {
+                    room_template.rows = atoi(value_string);
+                } else if (strcmp(key_string, "D") == 0) {
+                    if (room_template.data) {
+                        string_stream::push(*room_template.data, value_string, (uint32_t)strlen(value_string));
+                    }
+                } else {
+                    log_fatal("Could not parse: %s invalid key: %s at line: %i", filename, string_stream::c_str(key), line);
+                }
+
+                // Read end of line
+                if (p <pe && *p == '\r') {
+                    ++p;
+                }
+
+                if (p <pe && *p == '\n') {
+                    ++p;
+                }
+
+                ++line;
+
+                // Done with room after end of file or new line
+                if (p == pe || *p == '\r' || *p == '\n') {
+                    break;
+                }
+            }
+
+            // Validate rooms
+            {
+                if (room_template.name && array::empty(*room_template.name)) {
+                    log_fatal("Could not parse: %s missing name for room at line %i", filename, line);
+                }
+
+                const char *room_name = string_stream::c_str(*room_template.name);
+
+                if (room_template.data && array::empty(*room_template.data)) {
+                    log_fatal("Could not parse: %s missing data for %s", filename, room_name);
+                }
+
+                if (room_template.columns == 0 || room_template.rows == 0) {
+                    log_fatal("Could not parse: %s Missing rows and columns for %s", filename, room_name);
+                }
+
+                if (room_template.data && room_template.columns * room_template.rows != array::size(*room_template.data)) {
+                    log_fatal("Could not parse: %s incorrect rows and columns for %s", filename, room_name);
+                }
+            }
+
+            array::push_back(room_templates, room_template);
+        }
+    }
 }
 
 } // namespace game

@@ -149,9 +149,10 @@ message ActionBindEntry {
 }
 
 message GameParams {
-    string game_atlas_filename    = 1;
-    string dungen_params_filename = 2;
-    int32 tilesize                = 3;
+    string game_atlas_filename     = 1;
+    string dungen_params_filename  = 2;
+    string room_templates_filename = 3;
+    int32 tilesize                 = 4;
 }
 
 message DungenParams {

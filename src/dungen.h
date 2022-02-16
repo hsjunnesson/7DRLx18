@@ -23,6 +23,18 @@ struct Room {
     bool boss_room = false;
 };
 
+struct RoomTemplate {
+    RoomTemplate(Allocator &allocator);
+    ~RoomTemplate();
+    RoomTemplate &operator=(RoomTemplate const &);
+
+    Allocator &allocator;
+    Array<char> *name;
+    uint32_t rows;
+    uint32_t columns;
+    Array<char> *data;
+};
+
 /**
  * @brief A corridor between rooms
  * 
@@ -120,9 +132,13 @@ struct Level {
 /**
  * @brief Dungeon generation thread function
  * 
- * @param engine The Engine to pass in
- * @param game The Game to pass in
  */
 void dungen(engine::Engine *engine, game::Game *game);
+
+/**
+ * @brief Parsing room templates from disk.
+ * 
+ */
+void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templates, const char *filename);
 
 } // namespace game

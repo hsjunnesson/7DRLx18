@@ -25,4 +25,3 @@ constexpr Color4f peach = {1.0f, 0.8f, 0.67f, 1.0f};
 
 } // namespace color
 } // namespace game
-

@@ -833,7 +833,8 @@ class GameParams PROTOBUF_FINAL :
   enum : int {
     kGameAtlasFilenameFieldNumber = 1,
     kDungenParamsFilenameFieldNumber = 2,
-    kTilesizeFieldNumber = 3,
+    kRoomTemplatesFilenameFieldNumber = 3,
+    kTilesizeFieldNumber = 4,
   };
   // string game_atlas_filename = 1;
   void clear_game_atlas_filename();
@@ -867,7 +868,23 @@ class GameParams PROTOBUF_FINAL :
   std::string* _internal_mutable_dungen_params_filename();
   public:
 
-  // int32 tilesize = 3;
+  // string room_templates_filename = 3;
+  void clear_room_templates_filename();
+  const std::string& room_templates_filename() const;
+  void set_room_templates_filename(const std::string& value);
+  void set_room_templates_filename(std::string&& value);
+  void set_room_templates_filename(const char* value);
+  void set_room_templates_filename(const char* value, size_t size);
+  std::string* mutable_room_templates_filename();
+  std::string* release_room_templates_filename();
+  void set_allocated_room_templates_filename(std::string* room_templates_filename);
+  private:
+  const std::string& _internal_room_templates_filename() const;
+  void _internal_set_room_templates_filename(const std::string& value);
+  std::string* _internal_mutable_room_templates_filename();
+  public:
+
+  // int32 tilesize = 4;
   void clear_tilesize();
   ::PROTOBUF_NAMESPACE_ID::int32 tilesize() const;
   void set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -885,6 +902,7 @@ class GameParams PROTOBUF_FINAL :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_atlas_filename_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungen_params_filename_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr room_templates_filename_;
   ::PROTOBUF_NAMESPACE_ID::int32 tilesize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fgame_2eproto;
@@ -1402,7 +1420,68 @@ inline void GameParams::set_allocated_dungen_params_filename(std::string* dungen
   // @@protoc_insertion_point(field_set_allocated:game.GameParams.dungen_params_filename)
 }
 
-// int32 tilesize = 3;
+// string room_templates_filename = 3;
+inline void GameParams::clear_room_templates_filename() {
+  room_templates_filename_.ClearToEmpty();
+}
+inline const std::string& GameParams::room_templates_filename() const {
+  // @@protoc_insertion_point(field_get:game.GameParams.room_templates_filename)
+  return _internal_room_templates_filename();
+}
+inline void GameParams::set_room_templates_filename(const std::string& value) {
+  _internal_set_room_templates_filename(value);
+  // @@protoc_insertion_point(field_set:game.GameParams.room_templates_filename)
+}
+inline std::string* GameParams::mutable_room_templates_filename() {
+  // @@protoc_insertion_point(field_mutable:game.GameParams.room_templates_filename)
+  return _internal_mutable_room_templates_filename();
+}
+inline const std::string& GameParams::_internal_room_templates_filename() const {
+  return room_templates_filename_.Get();
+}
+inline void GameParams::_internal_set_room_templates_filename(const std::string& value) {
+  
+  room_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArena());
+}
+inline void GameParams::set_room_templates_filename(std::string&& value) {
+  
+  room_templates_filename_.Set(
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::move(value), GetArena());
+  // @@protoc_insertion_point(field_set_rvalue:game.GameParams.room_templates_filename)
+}
+inline void GameParams::set_room_templates_filename(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  room_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(value), GetArena());
+  // @@protoc_insertion_point(field_set_char:game.GameParams.room_templates_filename)
+}
+inline void GameParams::set_room_templates_filename(const char* value,
+    size_t size) {
+  
+  room_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, ::std::string(
+      reinterpret_cast<const char*>(value), size), GetArena());
+  // @@protoc_insertion_point(field_set_pointer:game.GameParams.room_templates_filename)
+}
+inline std::string* GameParams::_internal_mutable_room_templates_filename() {
+  
+  return room_templates_filename_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArena());
+}
+inline std::string* GameParams::release_room_templates_filename() {
+  // @@protoc_insertion_point(field_release:game.GameParams.room_templates_filename)
+  return room_templates_filename_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+}
+inline void GameParams::set_allocated_room_templates_filename(std::string* room_templates_filename) {
+  if (room_templates_filename != nullptr) {
+    
+  } else {
+    
+  }
+  room_templates_filename_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), room_templates_filename,
+      GetArena());
+  // @@protoc_insertion_point(field_set_allocated:game.GameParams.room_templates_filename)
+}
+
+// int32 tilesize = 4;
 inline void GameParams::clear_tilesize() {
   tilesize_ = 0;
 }

@@ -38,6 +38,7 @@ Game::Game(Allocator &allocator)
 , action_binds(nullptr)
 , game_state(GameState::None)
 , level(nullptr)
+, room_templates(allocator)
 , player_mob()
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
@@ -223,6 +224,8 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     case GameState::Initializing: {
         log_info("Initializing");
         engine::init_sprites(*engine.sprites, game->params->game_atlas_filename().c_str());
+        game::parse_room_templates(game->allocator, game->room_templates, game->params->room_templates_filename().c_str());
+
         transition(engine, game_object, GameState::Menus);
         break;
     }

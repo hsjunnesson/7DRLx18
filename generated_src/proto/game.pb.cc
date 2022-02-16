@@ -105,6 +105,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::game::GameParams, game_atlas_filename_),
   PROTOBUF_FIELD_OFFSET(::game::GameParams, dungen_params_filename_),
+  PROTOBUF_FIELD_OFFSET(::game::GameParams, room_templates_filename_),
   PROTOBUF_FIELD_OFFSET(::game::GameParams, tilesize_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, _internal_metadata_),
@@ -127,8 +128,8 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::game::ActionBindEntry)},
   { 7, -1, sizeof(::game::GameParams)},
-  { 15, -1, sizeof(::game::DungenParams)},
-  { 26, -1, sizeof(::game::ActionBinds)},
+  { 16, -1, sizeof(::game::DungenParams)},
+  { 27, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -191,14 +192,15 @@ const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VAR
   "\020\325\002\022\021\n\014KEY_LEFT_ALT\020\326\002\022\023\n\016KEY_LEFT_SUPER"
   "\020\327\002\022\024\n\017KEY_RIGHT_SHIFT\020\330\002\022\026\n\021KEY_RIGHT_C"
   "ONTROL\020\331\002\022\022\n\rKEY_RIGHT_ALT\020\332\002\022\024\n\017KEY_RIG"
-  "HT_SUPER\020\333\002\"[\n\nGameParams\022\033\n\023game_atlas_"
+  "HT_SUPER\020\333\002\"|\n\nGameParams\022\033\n\023game_atlas_"
   "filename\030\001 \001(\t\022\036\n\026dungen_params_filename"
-  "\030\002 \001(\t\022\020\n\010tilesize\030\003 \001(\005\"\216\001\n\014DungenParam"
-  "s\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_room_size\030\002"
-  " \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021\n\tmap_width"
-  "\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022\025\n\rexpand_cha"
-  "nce\030\006 \001(\005\":\n\013ActionBinds\022+\n\014action_binds"
-  "\030\001 \003(\0132\025.game.ActionBindEntryb\006proto3"
+  "\030\002 \001(\t\022\037\n\027room_templates_filename\030\003 \001(\t\022"
+  "\020\n\010tilesize\030\004 \001(\005\"\216\001\n\014DungenParams\022\022\n\nro"
+  "om_count\030\001 \001(\005\022\025\n\rmin_room_size\030\002 \001(\005\022\025\n"
+  "\rmax_room_size\030\003 \001(\005\022\021\n\tmap_width\030\004 \001(\005\022"
+  "\022\n\nmap_height\030\005 \001(\005\022\025\n\rexpand_chance\030\006 \001"
+  "(\005\":\n\013ActionBinds\022+\n\014action_binds\030\001 \003(\0132"
+  "\025.game.ActionBindEntryb\006proto3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fgame_2eproto_deps[1] = {
 };
@@ -210,7 +212,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_pro
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2397,
+  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2430,
   &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 4, 0,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
   file_level_metadata_proto_2fgame_2eproto, 4, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
@@ -774,6 +776,11 @@ GameParams::GameParams(const GameParams& from)
     dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_dungen_params_filename(), 
       GetArena());
   }
+  room_templates_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_room_templates_filename().empty()) {
+    room_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_room_templates_filename(), 
+      GetArena());
+  }
   tilesize_ = from.tilesize_;
   // @@protoc_insertion_point(copy_constructor:game.GameParams)
 }
@@ -782,6 +789,7 @@ void GameParams::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_GameParams_proto_2fgame_2eproto.base);
   game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  room_templates_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   tilesize_ = 0;
 }
 
@@ -795,6 +803,7 @@ void GameParams::SharedDtor() {
   GOOGLE_DCHECK(GetArena() == nullptr);
   game_atlas_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   dungen_params_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  room_templates_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 void GameParams::ArenaDtor(void* object) {
@@ -820,6 +829,7 @@ void GameParams::Clear() {
 
   game_atlas_filename_.ClearToEmpty();
   dungen_params_filename_.ClearToEmpty();
+  room_templates_filename_.ClearToEmpty();
   tilesize_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -849,9 +859,18 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // int32 tilesize = 3;
+      // string room_templates_filename = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 26)) {
+          auto str = _internal_mutable_room_templates_filename();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.room_templates_filename"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 tilesize = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           tilesize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
@@ -904,10 +923,20 @@ failure:
         2, this->_internal_dungen_params_filename(), target);
   }
 
-  // int32 tilesize = 3;
+  // string room_templates_filename = 3;
+  if (this->room_templates_filename().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_room_templates_filename().data(), static_cast<int>(this->_internal_room_templates_filename().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "game.GameParams.room_templates_filename");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_room_templates_filename(), target);
+  }
+
+  // int32 tilesize = 4;
   if (this->tilesize() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_tilesize(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_tilesize(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -940,7 +969,14 @@ size_t GameParams::ByteSizeLong() const {
         this->_internal_dungen_params_filename());
   }
 
-  // int32 tilesize = 3;
+  // string room_templates_filename = 3;
+  if (this->room_templates_filename().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_room_templates_filename());
+  }
+
+  // int32 tilesize = 4;
   if (this->tilesize() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
@@ -984,6 +1020,9 @@ void GameParams::MergeFrom(const GameParams& from) {
   if (from.dungen_params_filename().size() > 0) {
     _internal_set_dungen_params_filename(from._internal_dungen_params_filename());
   }
+  if (from.room_templates_filename().size() > 0) {
+    _internal_set_room_templates_filename(from._internal_room_templates_filename());
+  }
   if (from.tilesize() != 0) {
     _internal_set_tilesize(from._internal_tilesize());
   }
@@ -1012,6 +1051,7 @@ void GameParams::InternalSwap(GameParams* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   game_atlas_filename_.Swap(&other->game_atlas_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   dungen_params_filename_.Swap(&other->dungen_params_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  room_templates_filename_.Swap(&other->room_templates_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   swap(tilesize_, other->tilesize_);
 }
 
