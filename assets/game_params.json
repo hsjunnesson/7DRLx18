@@ -1,5 +1,6 @@
 {
     "game_atlas_filename": "assets/atlas.json",
     "dungen_params_filename": "assets/dungen_params.json",
-    "tilesize": 16
+    "room_templates_filename": "assets/rooms/basic_rooms.dat",
+    "tilesize": 64
 }

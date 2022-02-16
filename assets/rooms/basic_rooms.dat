@@ -1,0 +1,30 @@
+# File: basic_rooms.dat
+
+# Basic template rooms.
+
+# Use this to measure columns
+#          1         2         3         4         5         6         7
+# 123456789012345678901234567890123456789012345678901234567890123456789012345
+
+name: small_square_1
+rows: 6
+columns: 6
+D:%%%%%%
+D:%....%
+D:%....%
+D:%....%
+D:%....%
+D:%%%%%%
+
+name: small_square_2
+rows: 8
+columns: 8
+D:%%%%%%%%
+D:%......%
+D:%......%
+D:%......%
+D:%......%
+D:%......%
+D:%......%
+D:%%%%%%%%
+
