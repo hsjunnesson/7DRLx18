@@ -24,6 +24,10 @@ struct Level;
 struct RoomTemplate;
 enum ActionBindEntry_Action : int;
 
+namespace editor {
+struct EditorState;
+} // namespace editor
+
 struct Mob {
     uint64_t sprite_id;
     uint32_t index; // Tile index
@@ -74,7 +78,9 @@ struct Game {
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
 
-    bool present_hud;
+    bool presenting_editor;
+    editor::EditorState *editor_state;
+
     bool processing_turn;
     bool camera_locked_on_player;
 

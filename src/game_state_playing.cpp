@@ -217,9 +217,9 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
             log_debug("Not implemented action MENU");
             break;
         }
-        case ActionBindEntry::DEBUG_HUD: {
+        case ActionBindEntry::EDITOR: {
             if (pressed) {
-                game.present_hud = !game.present_hud;
+                game.presenting_editor = !game.presenting_editor;
             }
             break;
         }
@@ -374,9 +374,7 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
 
 void game_state_playing_render(engine::Engine &engine, Game &game) {
     (void)engine;
-
-    if (game.present_hud) {
-    }
+    (void)game;
 }
 
 } // namespace game

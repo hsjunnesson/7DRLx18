@@ -2,6 +2,7 @@
 #include "action_binds.h"
 #include "color.inl"
 #include "dungen.h"
+#include "editor.h"
 
 #pragma warning(push, 0)
 #include <engine/atlas.h>
@@ -42,7 +43,8 @@ Game::Game(Allocator &allocator)
 , player_mob()
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
-, present_hud(false)
+, presenting_editor(false)
+, editor_state(nullptr)
 , processing_turn(false)
 , camera_locked_on_player(false)
 , processing_animations(allocator)
@@ -66,9 +68,13 @@ Game::Game(Allocator &allocator)
     // level
     {
         level = MAKE_NEW(allocator, Level, allocator);
+        dungen_mutex = MAKE_NEW(allocator, std::mutex);
     }
 
-    dungen_mutex = MAKE_NEW(allocator, std::mutex);
+    // editor
+    {
+        editor_state = MAKE_NEW(allocator, editor::EditorState, allocator);
+    }
 }
 
 Game::~Game() {
@@ -91,6 +97,10 @@ Game::~Game() {
 
     if (dungen_mutex) {
         MAKE_DELETE(allocator, mutex, dungen_mutex);
+    }
+
+    if (editor_state) {
+        MAKE_DELETE(allocator, EditorState, editor_state);
     }
 
     for (RoomTemplate **it = array::begin(room_templates); it != array::end(room_templates); ++it) {
@@ -135,7 +145,7 @@ void on_input(engine::Engine &engine, void *game_object, engine::InputCommand &i
 
     Game *game = (Game *)game_object;
 
-    if (game->present_hud && input_command.input_type == engine::InputType::Mouse) {
+    if (game->presenting_editor && input_command.input_type == engine::InputType::Mouse) {
         ImGuiIO &io = ImGui::GetIO();
         if (io.WantCaptureMouse) {
             return;
@@ -180,11 +190,8 @@ void render_imgui(engine::Engine &engine, void *game_object) {
     (void)engine;
 
     Game *game = (Game *)game_object;
-    std::scoped_lock lock(*game->dungen_mutex);
-
-    TempAllocator128 ta;
-
-    if (game->present_hud) {
+    if (game->presenting_editor) {
+        editor::render_imgui(engine, *game, *game->editor_state);
     }
 }
 

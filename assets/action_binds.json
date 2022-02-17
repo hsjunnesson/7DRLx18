@@ -1,7 +1,7 @@
 {
     "action_binds": [
         {"action": "QUIT",              "bind": "KEY_ESCAPE"},
-        {"action": "DEBUG_HUD",         "bind": "KEY_F1"},
+        {"action": "EDITOR",         "bind": "KEY_F1"},
         {"action": "MOVE_N",            "bind": "KEY_KP_8"},
         {"action": "MOVE_N",            "bind": "KEY_UP"},
         {"action": "MOVE_NE",           "bind": "KEY_KP_9"},

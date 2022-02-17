@@ -8,7 +8,7 @@ message ActionBindEntry {
 
         QUIT              = 1;
         MENU              = 2;
-        DEBUG_HUD         = 3;
+        EDITOR            = 3;
         MOVE_N            = 4;
         MOVE_NE           = 5;
         MOVE_E            = 6;

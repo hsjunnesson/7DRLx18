@@ -80,7 +80,7 @@ enum ActionBindEntry_Action : int {
   ActionBindEntry_Action_ACTION_UNKNOWN = 0,
   ActionBindEntry_Action_QUIT = 1,
   ActionBindEntry_Action_MENU = 2,
-  ActionBindEntry_Action_DEBUG_HUD = 3,
+  ActionBindEntry_Action_EDITOR = 3,
   ActionBindEntry_Action_MOVE_N = 4,
   ActionBindEntry_Action_MOVE_NE = 5,
   ActionBindEntry_Action_MOVE_E = 6,
@@ -372,8 +372,8 @@ class ActionBindEntry PROTOBUF_FINAL :
     ActionBindEntry_Action_QUIT;
   static constexpr Action MENU =
     ActionBindEntry_Action_MENU;
-  static constexpr Action DEBUG_HUD =
-    ActionBindEntry_Action_DEBUG_HUD;
+  static constexpr Action EDITOR =
+    ActionBindEntry_Action_EDITOR;
   static constexpr Action MOVE_N =
     ActionBindEntry_Action_MOVE_N;
   static constexpr Action MOVE_NE =
