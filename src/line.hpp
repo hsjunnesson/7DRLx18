@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <stdint.h>
+#include <math.h>
 
 #pragma warning(push, 0)
 #include "array.h"
