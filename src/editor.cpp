@@ -14,10 +14,11 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     (void)engine;
     (void)game;
     (void)state;
-    
+
     if (!ImGui::Begin("Editor")) {
         ImGui::End();
     } else {
+        
         ImGui::End();
     }
 }

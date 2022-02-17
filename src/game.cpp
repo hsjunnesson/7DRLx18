@@ -43,6 +43,7 @@ Game::Game(Allocator &allocator)
 , player_mob()
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
+, presenting_imgui_demo(false)
 , presenting_editor(false)
 , editor_state(nullptr)
 , processing_turn(false)
@@ -145,9 +146,23 @@ void on_input(engine::Engine &engine, void *game_object, engine::InputCommand &i
 
     Game *game = (Game *)game_object;
 
-    if (game->presenting_editor && input_command.input_type == engine::InputType::Mouse) {
+    if ((game->presenting_imgui_demo || game->presenting_editor) && input_command.input_type == engine::InputType::Mouse) {
         ImGuiIO &io = ImGui::GetIO();
         if (io.WantCaptureMouse) {
+            return;
+        }
+    }
+
+    if ((game->presenting_imgui_demo || game->presenting_editor) && input_command.input_type == engine::InputType::Scroll) {
+        ImGuiIO &io = ImGui::GetIO();
+        if (io.WantCaptureMouse) {
+            return;
+        }
+    }
+
+    if ((game->presenting_imgui_demo || game->presenting_editor) && input_command.input_type == engine::InputType::Key) {
+        ImGuiIO &io = ImGui::GetIO();
+        if (io.WantCaptureKeyboard) {
             return;
         }
     }
@@ -190,6 +205,11 @@ void render_imgui(engine::Engine &engine, void *game_object) {
     (void)engine;
 
     Game *game = (Game *)game_object;
+
+    if (game->presenting_imgui_demo) {
+        ImGui::ShowDemoWindow();
+    }
+
     if (game->presenting_editor) {
         editor::render_imgui(engine, *game, *game->editor_state);
     }

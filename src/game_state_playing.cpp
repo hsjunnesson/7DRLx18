@@ -23,6 +23,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/norm.hpp>
 #include <glm/gtx/transform.hpp>
+
+#include <imgui.h>
 #pragma warning(pop)
 
 namespace {
@@ -222,6 +224,11 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
                 game.presenting_editor = !game.presenting_editor;
             }
             break;
+        }
+        case ActionBindEntry::SHOW_IMGUI_DEMO: {
+            if (pressed) {
+                game.presenting_imgui_demo = !game.presenting_imgui_demo;
+            }
         }
         case ActionBindEntry::MOVE_N:
         case ActionBindEntry::MOVE_NE:

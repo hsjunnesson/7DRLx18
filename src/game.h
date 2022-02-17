@@ -78,6 +78,7 @@ struct Game {
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
 
+    bool presenting_imgui_demo;
     bool presenting_editor;
     editor::EditorState *editor_state;
 

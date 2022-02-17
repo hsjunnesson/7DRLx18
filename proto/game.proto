@@ -19,6 +19,7 @@ message ActionBindEntry {
         MOVE_NW           = 11;
         INTERACT          = 12;
         WAIT              = 13;
+        SHOW_IMGUI_DEMO   = 99;
     }
 
     // These correspond to glfw keycodes https://www.glfw.org/docs/3.3/group__keys.html

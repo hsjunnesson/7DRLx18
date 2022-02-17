@@ -1,7 +1,7 @@
 {
     "action_binds": [
         {"action": "QUIT",              "bind": "KEY_ESCAPE"},
-        {"action": "EDITOR",         "bind": "KEY_F1"},
+        {"action": "EDITOR",            "bind": "KEY_F1"},
         {"action": "MOVE_N",            "bind": "KEY_KP_8"},
         {"action": "MOVE_N",            "bind": "KEY_UP"},
         {"action": "MOVE_NE",           "bind": "KEY_KP_9"},
@@ -14,6 +14,7 @@
         {"action": "INTERACT",          "bind": "KEY_KP_ENTER"},
         {"action": "INTERACT",          "bind": "KEY_ENTER"},
         {"action": "WAIT",              "bind": "KEY_KP_5"},
-        {"action": "WAIT",              "bind": "KEY_COMMA"}
+        {"action": "WAIT",              "bind": "KEY_COMMA"},
+        {"action": "SHOW_IMGUI_DEMO",   "bind": "KEY_F2"}
     ]
 }
