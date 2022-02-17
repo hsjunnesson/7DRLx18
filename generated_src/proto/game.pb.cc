@@ -14,78 +14,69 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-extern PROTOBUF_INTERNAL_EXPORT_proto_2fgame_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ActionBindEntry_proto_2fgame_2eproto;
+
+PROTOBUF_PRAGMA_INIT_SEG
 namespace game {
-class ActionBindEntryDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ActionBindEntry> _instance;
-} _ActionBindEntry_default_instance_;
-class GameParamsDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<GameParams> _instance;
-} _GameParams_default_instance_;
-class DungenParamsDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<DungenParams> _instance;
-} _DungenParams_default_instance_;
-class ActionBindsDefaultTypeInternal {
- public:
-  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<ActionBinds> _instance;
-} _ActionBinds_default_instance_;
+constexpr ActionBindEntry::ActionBindEntry(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : action_(0)
+
+  , bind_(0)
+{}
+struct ActionBindEntryDefaultTypeInternal {
+  constexpr ActionBindEntryDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ActionBindEntryDefaultTypeInternal() {}
+  union {
+    ActionBindEntry _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ActionBindEntryDefaultTypeInternal _ActionBindEntry_default_instance_;
+constexpr GameParams::GameParams(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : game_atlas_filename_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , dungen_params_filename_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , room_templates_filename_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , tilesize_(0){}
+struct GameParamsDefaultTypeInternal {
+  constexpr GameParamsDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~GameParamsDefaultTypeInternal() {}
+  union {
+    GameParams _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT GameParamsDefaultTypeInternal _GameParams_default_instance_;
+constexpr DungenParams::DungenParams(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : room_count_(0)
+  , min_room_size_(0)
+  , max_room_size_(0)
+  , map_width_(0)
+  , map_height_(0)
+  , expand_chance_(0){}
+struct DungenParamsDefaultTypeInternal {
+  constexpr DungenParamsDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~DungenParamsDefaultTypeInternal() {}
+  union {
+    DungenParams _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT DungenParamsDefaultTypeInternal _DungenParams_default_instance_;
+constexpr ActionBinds::ActionBinds(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : action_binds_(){}
+struct ActionBindsDefaultTypeInternal {
+  constexpr ActionBindsDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~ActionBindsDefaultTypeInternal() {}
+  union {
+    ActionBinds _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT ActionBindsDefaultTypeInternal _ActionBinds_default_instance_;
 }  // namespace game
-static void InitDefaultsscc_info_ActionBindEntry_proto_2fgame_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::game::_ActionBindEntry_default_instance_;
-    new (ptr) ::game::ActionBindEntry();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_ActionBindEntry_proto_2fgame_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_ActionBindEntry_proto_2fgame_2eproto}, {}};
-
-static void InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::game::_ActionBinds_default_instance_;
-    new (ptr) ::game::ActionBinds();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_ActionBinds_proto_2fgame_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_ActionBinds_proto_2fgame_2eproto}, {
-      &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,}};
-
-static void InitDefaultsscc_info_DungenParams_proto_2fgame_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::game::_DungenParams_default_instance_;
-    new (ptr) ::game::DungenParams();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_DungenParams_proto_2fgame_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_DungenParams_proto_2fgame_2eproto}, {}};
-
-static void InitDefaultsscc_info_GameParams_proto_2fgame_2eproto() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::game::_GameParams_default_instance_;
-    new (ptr) ::game::GameParams();
-    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
-  }
-}
-
-::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_GameParams_proto_2fgame_2eproto =
-    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_GameParams_proto_2fgame_2eproto}, {}};
-
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_proto_2fgame_2eproto[4];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_proto_2fgame_2eproto[2];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_proto_2fgame_2eproto = nullptr;
@@ -96,6 +87,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::game::ActionBindEntry, action_),
   PROTOBUF_FIELD_OFFSET(::game::ActionBindEntry, bind_),
   ~0u,  // no _has_bits_
@@ -103,6 +95,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::game::GameParams, game_atlas_filename_),
   PROTOBUF_FIELD_OFFSET(::game::GameParams, dungen_params_filename_),
   PROTOBUF_FIELD_OFFSET(::game::GameParams, room_templates_filename_),
@@ -112,6 +105,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, room_count_),
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, min_room_size_),
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, max_room_size_),
@@ -123,13 +117,14 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::game::ActionBinds, action_binds_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::game::ActionBindEntry)},
-  { 7, -1, sizeof(::game::GameParams)},
-  { 16, -1, sizeof(::game::DungenParams)},
-  { 27, -1, sizeof(::game::ActionBinds)},
+  { 0, -1, -1, sizeof(::game::ActionBindEntry)},
+  { 8, -1, -1, sizeof(::game::GameParams)},
+  { 18, -1, -1, sizeof(::game::DungenParams)},
+  { 30, -1, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -203,24 +198,19 @@ const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VAR
   "ction_binds\030\001 \003(\0132\025.game.ActionBindEntry"
   "b\006proto3"
   ;
-static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_proto_2fgame_2eproto_deps[1] = {
-};
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_proto_2fgame_2eproto_sccs[4] = {
-  &scc_info_ActionBindEntry_proto_2fgame_2eproto.base,
-  &scc_info_ActionBinds_proto_2fgame_2eproto.base,
-  &scc_info_DungenParams_proto_2fgame_2eproto.base,
-  &scc_info_GameParams_proto_2fgame_2eproto.base,
-};
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 2448,
-  &descriptor_table_proto_2fgame_2eproto_once, descriptor_table_proto_2fgame_2eproto_sccs, descriptor_table_proto_2fgame_2eproto_deps, 4, 0,
+  false, false, 2448, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 
+  &descriptor_table_proto_2fgame_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
-  file_level_metadata_proto_2fgame_2eproto, 4, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
+  file_level_metadata_proto_2fgame_2eproto, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
 };
+PROTOBUF_ATTRIBUTE_WEAK const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable* descriptor_table_proto_2fgame_2eproto_getter() {
+  return &descriptor_table_proto_2fgame_2eproto;
+}
 
 // Force running AddDescriptors() at dynamic initialization time.
-static bool dynamic_init_dummy_proto_2fgame_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_proto_2fgame_2eproto)), true);
+PROTOBUF_ATTRIBUTE_INIT_PRIORITY static ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptorsRunner dynamic_init_dummy_proto_2fgame_2eproto(&descriptor_table_proto_2fgame_2eproto);
 namespace game {
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ActionBindEntry_Action_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_proto_2fgame_2eproto);
@@ -529,10 +519,13 @@ class ActionBindEntry::_Internal {
  public:
 };
 
-ActionBindEntry::ActionBindEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+ActionBindEntry::ActionBindEntry(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:game.ActionBindEntry)
 }
 ActionBindEntry::ActionBindEntry(const ActionBindEntry& from)
@@ -545,20 +538,21 @@ ActionBindEntry::ActionBindEntry(const ActionBindEntry& from)
 }
 
 void ActionBindEntry::SharedCtor() {
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&action_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&bind_) -
-      reinterpret_cast<char*>(&action_)) + sizeof(bind_));
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&action_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&bind_) -
+    reinterpret_cast<char*>(&action_)) + sizeof(bind_));
 }
 
 ActionBindEntry::~ActionBindEntry() {
   // @@protoc_insertion_point(destructor:game.ActionBindEntry)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void ActionBindEntry::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void ActionBindEntry::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void ActionBindEntry::ArenaDtor(void* object) {
@@ -570,11 +564,6 @@ void ActionBindEntry::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void ActionBindEntry::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ActionBindEntry& ActionBindEntry::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ActionBindEntry_proto_2fgame_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void ActionBindEntry::Clear() {
 // @@protoc_insertion_point(message_clear_start:game.ActionBindEntry)
@@ -593,7 +582,6 @@ const char* ActionBindEntry::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // .game.ActionBindEntry.Action action = 1;
       case 1:
@@ -601,7 +589,8 @@ const char* ActionBindEntry::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_action(static_cast<::game::ActionBindEntry_Action>(val));
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // .game.ActionBindEntry.Bind bind = 2;
       case 2:
@@ -609,27 +598,29 @@ const char* ActionBindEntry::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPAC
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_bind(static_cast<::game::ActionBindEntry_Bind>(val));
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
@@ -640,14 +631,14 @@ failure:
   (void) cached_has_bits;
 
   // .game.ActionBindEntry.Action action = 1;
-  if (this->action() != 0) {
+  if (this->_internal_action() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       1, this->_internal_action(), target);
   }
 
   // .game.ActionBindEntry.Bind bind = 2;
-  if (this->bind() != 0) {
+  if (this->_internal_bind() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
       2, this->_internal_bind(), target);
@@ -670,61 +661,46 @@ size_t ActionBindEntry::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // .game.ActionBindEntry.Action action = 1;
-  if (this->action() != 0) {
+  if (this->_internal_action() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_action());
   }
 
   // .game.ActionBindEntry.Bind bind = 2;
-  if (this->bind() != 0) {
+  if (this->_internal_bind() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_bind());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void ActionBindEntry::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:game.ActionBindEntry)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ActionBindEntry* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ActionBindEntry>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.ActionBindEntry)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.ActionBindEntry)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ActionBindEntry::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ActionBindEntry::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ActionBindEntry::GetClassData() const { return &_class_data_; }
+
+void ActionBindEntry::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ActionBindEntry *>(to)->MergeFrom(
+      static_cast<const ActionBindEntry &>(from));
 }
+
 
 void ActionBindEntry::MergeFrom(const ActionBindEntry& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:game.ActionBindEntry)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.action() != 0) {
+  if (from._internal_action() != 0) {
     _internal_set_action(from._internal_action());
   }
-  if (from.bind() != 0) {
+  if (from._internal_bind() != 0) {
     _internal_set_bind(from._internal_bind());
   }
-}
-
-void ActionBindEntry::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:game.ActionBindEntry)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ActionBindEntry::CopyFrom(const ActionBindEntry& from) {
@@ -740,7 +716,7 @@ bool ActionBindEntry::IsInitialized() const {
 
 void ActionBindEntry::InternalSwap(ActionBindEntry* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(ActionBindEntry, bind_)
       + sizeof(ActionBindEntry::bind_)
@@ -750,9 +726,10 @@ void ActionBindEntry::InternalSwap(ActionBindEntry* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ActionBindEntry::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_proto_2fgame_2eproto_getter, &descriptor_table_proto_2fgame_2eproto_once,
+      file_level_metadata_proto_2fgame_2eproto[0]);
 }
-
 
 // ===================================================================
 
@@ -760,10 +737,13 @@ class GameParams::_Internal {
  public:
 };
 
-GameParams::GameParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+GameParams::GameParams(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:game.GameParams)
 }
 GameParams::GameParams(const GameParams& from)
@@ -772,38 +752,38 @@ GameParams::GameParams(const GameParams& from)
   game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_game_atlas_filename().empty()) {
     game_atlas_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_game_atlas_filename(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_dungen_params_filename().empty()) {
     dungen_params_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_dungen_params_filename(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   room_templates_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_room_templates_filename().empty()) {
     room_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_room_templates_filename(), 
-      GetArena());
+      GetArenaForAllocation());
   }
   tilesize_ = from.tilesize_;
   // @@protoc_insertion_point(copy_constructor:game.GameParams)
 }
 
 void GameParams::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_GameParams_proto_2fgame_2eproto.base);
-  game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  room_templates_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  tilesize_ = 0;
+game_atlas_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+dungen_params_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+room_templates_filename_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+tilesize_ = 0;
 }
 
 GameParams::~GameParams() {
   // @@protoc_insertion_point(destructor:game.GameParams)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void GameParams::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void GameParams::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   game_atlas_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   dungen_params_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   room_templates_filename_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
@@ -818,11 +798,6 @@ void GameParams::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void GameParams::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const GameParams& GameParams::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_GameParams_proto_2fgame_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void GameParams::Clear() {
 // @@protoc_insertion_point(message_clear_start:game.GameParams)
@@ -842,7 +817,6 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // string game_atlas_filename = 1;
       case 1:
@@ -851,7 +825,8 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.game_atlas_filename"));
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // string dungen_params_filename = 2;
       case 2:
@@ -860,7 +835,8 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.dungen_params_filename"));
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // string room_templates_filename = 3;
       case 3:
@@ -869,34 +845,37 @@ const char* GameParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "game.GameParams.room_templates_filename"));
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 tilesize = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           tilesize_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
@@ -907,7 +886,7 @@ failure:
   (void) cached_has_bits;
 
   // string game_atlas_filename = 1;
-  if (this->game_atlas_filename().size() > 0) {
+  if (!this->_internal_game_atlas_filename().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_game_atlas_filename().data(), static_cast<int>(this->_internal_game_atlas_filename().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -917,7 +896,7 @@ failure:
   }
 
   // string dungen_params_filename = 2;
-  if (this->dungen_params_filename().size() > 0) {
+  if (!this->_internal_dungen_params_filename().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_dungen_params_filename().data(), static_cast<int>(this->_internal_dungen_params_filename().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -927,7 +906,7 @@ failure:
   }
 
   // string room_templates_filename = 3;
-  if (this->room_templates_filename().size() > 0) {
+  if (!this->_internal_room_templates_filename().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_room_templates_filename().data(), static_cast<int>(this->_internal_room_templates_filename().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -937,7 +916,7 @@ failure:
   }
 
   // int32 tilesize = 4;
-  if (this->tilesize() != 0) {
+  if (this->_internal_tilesize() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_tilesize(), target);
   }
@@ -959,83 +938,66 @@ size_t GameParams::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string game_atlas_filename = 1;
-  if (this->game_atlas_filename().size() > 0) {
+  if (!this->_internal_game_atlas_filename().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_game_atlas_filename());
   }
 
   // string dungen_params_filename = 2;
-  if (this->dungen_params_filename().size() > 0) {
+  if (!this->_internal_dungen_params_filename().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_dungen_params_filename());
   }
 
   // string room_templates_filename = 3;
-  if (this->room_templates_filename().size() > 0) {
+  if (!this->_internal_room_templates_filename().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_room_templates_filename());
   }
 
   // int32 tilesize = 4;
-  if (this->tilesize() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_tilesize());
+  if (this->_internal_tilesize() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_tilesize());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void GameParams::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:game.GameParams)
-  GOOGLE_DCHECK_NE(&from, this);
-  const GameParams* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<GameParams>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.GameParams)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.GameParams)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData GameParams::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    GameParams::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GameParams::GetClassData() const { return &_class_data_; }
+
+void GameParams::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<GameParams *>(to)->MergeFrom(
+      static_cast<const GameParams &>(from));
 }
+
 
 void GameParams::MergeFrom(const GameParams& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:game.GameParams)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.game_atlas_filename().size() > 0) {
+  if (!from._internal_game_atlas_filename().empty()) {
     _internal_set_game_atlas_filename(from._internal_game_atlas_filename());
   }
-  if (from.dungen_params_filename().size() > 0) {
+  if (!from._internal_dungen_params_filename().empty()) {
     _internal_set_dungen_params_filename(from._internal_dungen_params_filename());
   }
-  if (from.room_templates_filename().size() > 0) {
+  if (!from._internal_room_templates_filename().empty()) {
     _internal_set_room_templates_filename(from._internal_room_templates_filename());
   }
-  if (from.tilesize() != 0) {
+  if (from._internal_tilesize() != 0) {
     _internal_set_tilesize(from._internal_tilesize());
   }
-}
-
-void GameParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:game.GameParams)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void GameParams::CopyFrom(const GameParams& from) {
@@ -1051,17 +1013,32 @@ bool GameParams::IsInitialized() const {
 
 void GameParams::InternalSwap(GameParams* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
-  game_atlas_filename_.Swap(&other->game_atlas_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  dungen_params_filename_.Swap(&other->dungen_params_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
-  room_templates_filename_.Swap(&other->room_templates_filename_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &game_atlas_filename_, lhs_arena,
+      &other->game_atlas_filename_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &dungen_params_filename_, lhs_arena,
+      &other->dungen_params_filename_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &room_templates_filename_, lhs_arena,
+      &other->room_templates_filename_, rhs_arena
+  );
   swap(tilesize_, other->tilesize_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata GameParams::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_proto_2fgame_2eproto_getter, &descriptor_table_proto_2fgame_2eproto_once,
+      file_level_metadata_proto_2fgame_2eproto[1]);
 }
-
 
 // ===================================================================
 
@@ -1069,10 +1046,13 @@ class DungenParams::_Internal {
  public:
 };
 
-DungenParams::DungenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+DungenParams::DungenParams(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:game.DungenParams)
 }
 DungenParams::DungenParams(const DungenParams& from)
@@ -1085,20 +1065,21 @@ DungenParams::DungenParams(const DungenParams& from)
 }
 
 void DungenParams::SharedCtor() {
-  ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-      reinterpret_cast<char*>(&room_count_) - reinterpret_cast<char*>(this)),
-      0, static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
-      reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&room_count_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&expand_chance_) -
+    reinterpret_cast<char*>(&room_count_)) + sizeof(expand_chance_));
 }
 
 DungenParams::~DungenParams() {
   // @@protoc_insertion_point(destructor:game.DungenParams)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void DungenParams::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void DungenParams::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void DungenParams::ArenaDtor(void* object) {
@@ -1110,11 +1091,6 @@ void DungenParams::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void DungenParams::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const DungenParams& DungenParams::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_DungenParams_proto_2fgame_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void DungenParams::Clear() {
 // @@protoc_insertion_point(message_clear_start:game.DungenParams)
@@ -1133,69 +1109,75 @@ const char* DungenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // int32 room_count = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
           room_count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 min_room_size = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
           min_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 max_room_size = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           max_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 map_width = 4;
       case 4:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           map_width_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 map_height = 5;
       case 5:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
           map_height_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // int32 expand_chance = 6;
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
           expand_chance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
@@ -1206,37 +1188,37 @@ failure:
   (void) cached_has_bits;
 
   // int32 room_count = 1;
-  if (this->room_count() != 0) {
+  if (this->_internal_room_count() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_room_count(), target);
   }
 
   // int32 min_room_size = 2;
-  if (this->min_room_size() != 0) {
+  if (this->_internal_min_room_size() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_min_room_size(), target);
   }
 
   // int32 max_room_size = 3;
-  if (this->max_room_size() != 0) {
+  if (this->_internal_max_room_size() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_max_room_size(), target);
   }
 
   // int32 map_width = 4;
-  if (this->map_width() != 0) {
+  if (this->_internal_map_width() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_map_width(), target);
   }
 
   // int32 map_height = 5;
-  if (this->map_height() != 0) {
+  if (this->_internal_map_height() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->_internal_map_height(), target);
   }
 
   // int32 expand_chance = 6;
-  if (this->expand_chance() != 0) {
+  if (this->_internal_expand_chance() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->_internal_expand_chance(), target);
   }
@@ -1258,103 +1240,76 @@ size_t DungenParams::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // int32 room_count = 1;
-  if (this->room_count() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_room_count());
+  if (this->_internal_room_count() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_room_count());
   }
 
   // int32 min_room_size = 2;
-  if (this->min_room_size() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_min_room_size());
+  if (this->_internal_min_room_size() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_min_room_size());
   }
 
   // int32 max_room_size = 3;
-  if (this->max_room_size() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_max_room_size());
+  if (this->_internal_max_room_size() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_max_room_size());
   }
 
   // int32 map_width = 4;
-  if (this->map_width() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_map_width());
+  if (this->_internal_map_width() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_map_width());
   }
 
   // int32 map_height = 5;
-  if (this->map_height() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_map_height());
+  if (this->_internal_map_height() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_map_height());
   }
 
   // int32 expand_chance = 6;
-  if (this->expand_chance() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_expand_chance());
+  if (this->_internal_expand_chance() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_expand_chance());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void DungenParams::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:game.DungenParams)
-  GOOGLE_DCHECK_NE(&from, this);
-  const DungenParams* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<DungenParams>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.DungenParams)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.DungenParams)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData DungenParams::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    DungenParams::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*DungenParams::GetClassData() const { return &_class_data_; }
+
+void DungenParams::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<DungenParams *>(to)->MergeFrom(
+      static_cast<const DungenParams &>(from));
 }
+
 
 void DungenParams::MergeFrom(const DungenParams& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:game.DungenParams)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.room_count() != 0) {
+  if (from._internal_room_count() != 0) {
     _internal_set_room_count(from._internal_room_count());
   }
-  if (from.min_room_size() != 0) {
+  if (from._internal_min_room_size() != 0) {
     _internal_set_min_room_size(from._internal_min_room_size());
   }
-  if (from.max_room_size() != 0) {
+  if (from._internal_max_room_size() != 0) {
     _internal_set_max_room_size(from._internal_max_room_size());
   }
-  if (from.map_width() != 0) {
+  if (from._internal_map_width() != 0) {
     _internal_set_map_width(from._internal_map_width());
   }
-  if (from.map_height() != 0) {
+  if (from._internal_map_height() != 0) {
     _internal_set_map_height(from._internal_map_height());
   }
-  if (from.expand_chance() != 0) {
+  if (from._internal_expand_chance() != 0) {
     _internal_set_expand_chance(from._internal_expand_chance());
   }
-}
-
-void DungenParams::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:game.DungenParams)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void DungenParams::CopyFrom(const DungenParams& from) {
@@ -1370,7 +1325,7 @@ bool DungenParams::IsInitialized() const {
 
 void DungenParams::InternalSwap(DungenParams* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(DungenParams, expand_chance_)
       + sizeof(DungenParams::expand_chance_)
@@ -1380,9 +1335,10 @@ void DungenParams::InternalSwap(DungenParams* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata DungenParams::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_proto_2fgame_2eproto_getter, &descriptor_table_proto_2fgame_2eproto_once,
+      file_level_metadata_proto_2fgame_2eproto[2]);
 }
-
 
 // ===================================================================
 
@@ -1390,11 +1346,14 @@ class ActionBinds::_Internal {
  public:
 };
 
-ActionBinds::ActionBinds(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+ActionBinds::ActionBinds(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   action_binds_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:game.ActionBinds)
 }
 ActionBinds::ActionBinds(const ActionBinds& from)
@@ -1405,17 +1364,17 @@ ActionBinds::ActionBinds(const ActionBinds& from)
 }
 
 void ActionBinds::SharedCtor() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_ActionBinds_proto_2fgame_2eproto.base);
 }
 
 ActionBinds::~ActionBinds() {
   // @@protoc_insertion_point(destructor:game.ActionBinds)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void ActionBinds::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void ActionBinds::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void ActionBinds::ArenaDtor(void* object) {
@@ -1427,11 +1386,6 @@ void ActionBinds::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void ActionBinds::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ActionBinds& ActionBinds::default_instance() {
-  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_ActionBinds_proto_2fgame_2eproto.base);
-  return *internal_default_instance();
-}
-
 
 void ActionBinds::Clear() {
 // @@protoc_insertion_point(message_clear_start:game.ActionBinds)
@@ -1448,7 +1402,6 @@ const char* ActionBinds::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    CHK_(ptr);
     switch (tag >> 3) {
       // repeated .game.ActionBindEntry action_binds = 1;
       case 1:
@@ -1460,27 +1413,29 @@ const char* ActionBinds::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag & 7) == 4 || tag == 0) {
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
@@ -1521,45 +1476,30 @@ size_t ActionBinds::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void ActionBinds::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:game.ActionBinds)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ActionBinds* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<ActionBinds>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:game.ActionBinds)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:game.ActionBinds)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ActionBinds::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    ActionBinds::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ActionBinds::GetClassData() const { return &_class_data_; }
+
+void ActionBinds::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<ActionBinds *>(to)->MergeFrom(
+      static_cast<const ActionBinds &>(from));
 }
+
 
 void ActionBinds::MergeFrom(const ActionBinds& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:game.ActionBinds)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   action_binds_.MergeFrom(from.action_binds_);
-}
-
-void ActionBinds::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:game.ActionBinds)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void ActionBinds::CopyFrom(const ActionBinds& from) {
@@ -1575,14 +1515,15 @@ bool ActionBinds::IsInitialized() const {
 
 void ActionBinds::InternalSwap(ActionBinds* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   action_binds_.InternalSwap(&other->action_binds_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ActionBinds::GetMetadata() const {
-  return GetMetadataStatic();
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_proto_2fgame_2eproto_getter, &descriptor_table_proto_2fgame_2eproto_once,
+      file_level_metadata_proto_2fgame_2eproto[3]);
 }
-
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace game
