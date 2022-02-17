@@ -23,14 +23,6 @@ bool validate_actionbinds(const ActionBinds &action_binds) {
         ActionBindEntry_Action action = action_bind_entry.action();
         ActionBindEntry_Bind bind = action_bind_entry.bind();
 
-        // TODO: Remove. We're fine with duplicated actions having multiple binds.
-        // if (hash::has(validation_actions, action)) {
-        //     const google::protobuf::EnumDescriptor *descriptor = action_bind_entry.Action_descriptor();
-        //     const char *action_name = descriptor->FindValueByNumber(action_bind_entry.action())->name().c_str();
-        //     log_error("Duplicate keybind action for %s", action_name);
-        //     valid = false;
-        // }
-
         if (hash::has(validation_binds, bind)) {
             const google::protobuf::EnumDescriptor *descriptor = action_bind_entry.Bind_descriptor();
             const char *bind_name = descriptor->FindValueByNumber(action_bind_entry.bind())->name().c_str();
