@@ -26,7 +26,8 @@ struct Room {
 struct RoomTemplate {
     RoomTemplate(Allocator &allocator);
     ~RoomTemplate();
-    RoomTemplate &operator=(RoomTemplate const &);
+    RoomTemplate(const RoomTemplate &) = delete;
+    RoomTemplate &operator=(const RoomTemplate &) = delete;
 
     Allocator &allocator;
     Array<char> *name;
@@ -139,6 +140,6 @@ void dungen(engine::Engine *engine, game::Game *game);
  * @brief Parsing room templates from disk.
  * 
  */
-void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templates, const char *filename);
+void parse_room_templates(Allocator &allocator, Array<RoomTemplate *> &room_templates, const char *filename);
 
 } // namespace game

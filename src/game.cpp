@@ -92,6 +92,11 @@ Game::~Game() {
     if (dungen_mutex) {
         MAKE_DELETE(allocator, mutex, dungen_mutex);
     }
+
+    for (RoomTemplate **it = array::begin(room_templates); it != array::end(room_templates); ++it) {
+        RoomTemplate *room_template = *it;
+        MAKE_DELETE(room_template->allocator, RoomTemplate, room_template);
+    }
 }
 
 void update(engine::Engine &engine, void *game_object, float t, float dt) {

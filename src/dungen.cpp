@@ -53,17 +53,6 @@ RoomTemplate::~RoomTemplate() {
     }
 }
 
-RoomTemplate &RoomTemplate::operator=(const RoomTemplate &other) {
-    if (this != &other) {
-        name = other.name;
-        rows = other.rows;
-        columns = other.columns;
-        data = other.data;
-    }
-
-    return *this;
-}
-
 Level::Level(Allocator &allocator)
 : rooms(allocator)
 , tiles(allocator)
@@ -639,7 +628,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     game::transition(*engine, game, GameState::Playing);
 }
 
-void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templates, const char *filename) {
+void parse_room_templates(Allocator &allocator, Array<RoomTemplate *> &room_templates, const char *filename) {
     assert(filename != nullptr);
 
     TempAllocator2048 ta;
@@ -665,7 +654,7 @@ void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templa
             ++p;
             ++line;
         } else { // room
-            RoomTemplate room_template(allocator);
+            RoomTemplate *room_template = MAKE_NEW(allocator, RoomTemplate, allocator);
 
             while (true) {
                 string_stream::Buffer key(ta);
@@ -696,16 +685,16 @@ void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templa
                 const char *value_string = string_stream::c_str(value);
 
                 if (strcmp(key_string, "name") == 0) {
-                    if (room_template.name) {
-                        *room_template.name = value;
+                    if (room_template->name) {
+                        *room_template->name = value;
                     }
                 } else if (strcmp(key_string, "columns") == 0) {
-                    room_template.columns = atoi(value_string);
+                    room_template->columns = atoi(value_string);
                 } else if (strcmp(key_string, "rows") == 0) {
-                    room_template.rows = atoi(value_string);
+                    room_template->rows = atoi(value_string);
                 } else if (strcmp(key_string, "D") == 0) {
-                    if (room_template.data) {
-                        string_stream::push(*room_template.data, value_string, (uint32_t)strlen(value_string));
+                    if (room_template->data) {
+                        string_stream::push(*room_template->data, value_string, (uint32_t)strlen(value_string));
                     }
                 } else {
                     log_fatal("Could not parse: %s invalid key: %s at line: %i", filename, string_stream::c_str(key), line);
@@ -728,23 +717,26 @@ void parse_room_templates(Allocator &allocator, Array<RoomTemplate> &room_templa
                 }
             }
 
+            array::trim(*room_template->name);
+            array::trim(*room_template->data);
+
             // Validate rooms
             {
-                if (room_template.name && array::empty(*room_template.name)) {
+                if (room_template->name && array::empty(*room_template->name)) {
                     log_fatal("Could not parse: %s missing name for room at line %i", filename, line);
                 }
 
-                const char *room_name = string_stream::c_str(*room_template.name);
+                const char *room_name = string_stream::c_str(*room_template->name);
 
-                if (room_template.data && array::empty(*room_template.data)) {
+                if (room_template->data && array::empty(*room_template->data)) {
                     log_fatal("Could not parse: %s missing data for %s", filename, room_name);
                 }
 
-                if (room_template.columns == 0 || room_template.rows == 0) {
+                if (room_template->columns == 0 || room_template->rows == 0) {
                     log_fatal("Could not parse: %s Missing rows and columns for %s", filename, room_name);
                 }
 
-                if (room_template.data && room_template.columns * room_template.rows != array::size(*room_template.data)) {
+                if (room_template->data && room_template->columns * room_template->rows != array::size(*room_template->data)) {
                     log_fatal("Could not parse: %s incorrect rows and columns for %s", filename, room_name);
                 }
             }

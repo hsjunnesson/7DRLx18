@@ -67,7 +67,7 @@ struct Game {
     ActionBinds *action_binds;
     GameState game_state;
     Level *level;
-    Array<RoomTemplate> room_templates;
+    Array<RoomTemplate *> room_templates;
 
     Mob player_mob;
 
