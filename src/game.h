@@ -3,16 +3,10 @@
 #include <collection_types.h>
 #include <glm/fwd.hpp>
 
-// Mac doesn't like this, says std::mutex is ambiguous :shrug:
-#if defined(__APPLE__)
-#include <thread>
-#include <mutex>
-#else
 namespace std {
 class thread;
 class mutex;
 } // namespace std
-#endif
 
 namespace engine {
 struct Engine;
