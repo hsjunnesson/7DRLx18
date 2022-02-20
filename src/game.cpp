@@ -39,7 +39,7 @@ Game::Game(Allocator &allocator)
 , action_binds(nullptr)
 , game_state(GameState::None)
 , level(nullptr)
-, room_templates(allocator)
+, room_templates(nullptr)
 , player_mob()
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
@@ -72,6 +72,11 @@ Game::Game(Allocator &allocator)
         dungen_mutex = MAKE_NEW(allocator, std::mutex);
     }
 
+    // room templates
+    {
+        room_templates = MAKE_NEW(allocator, RoomTemplates, allocator);
+    }
+
     // editor
     {
         editor_state = MAKE_NEW(allocator, editor::EditorState, allocator);
@@ -91,6 +96,10 @@ Game::~Game() {
         MAKE_DELETE(allocator, Level, level);
     }
 
+    if (room_templates) {
+        MAKE_DELETE(allocator, RoomTemplates, room_templates);
+    }
+
     if (dungen_thread) {
         std::scoped_lock lock(*dungen_mutex);
         MAKE_DELETE(allocator, thread, dungen_thread);
@@ -102,11 +111,6 @@ Game::~Game() {
 
     if (editor_state) {
         MAKE_DELETE(allocator, EditorState, editor_state);
-    }
-
-    for (RoomTemplate **it = array::begin(room_templates); it != array::end(room_templates); ++it) {
-        RoomTemplate *room_template = *it;
-        MAKE_DELETE(room_template->allocator, RoomTemplate, room_template);
     }
 }
 
@@ -256,7 +260,7 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     case GameState::Initializing: {
         log_info("Initializing");
         engine::init_sprites(*engine.sprites, game->params->game_atlas_filename().c_str());
-        game::parse_room_templates(game->allocator, game->room_templates, game->params->room_templates_filename().c_str());
+        game->room_templates->read(game->params->room_templates_filename().c_str());
 
         transition(engine, game_object, GameState::Menus);
         break;

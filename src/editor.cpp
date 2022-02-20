@@ -15,11 +15,16 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     (void)game;
     (void)state;
 
-    if (!ImGui::Begin("Editor")) {
-        ImGui::End();
-    } else {
-        
-        ImGui::End();
+    // Room Templates
+    {
+        if (!ImGui::Begin("Room Templates")) {
+            ImGui::End();
+        } else {
+            if (ImGui::BeginMenu("File")) {
+                ImGui::EndMenu();
+            }
+            ImGui::End();
+        }
     }
 }
 

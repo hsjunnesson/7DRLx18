@@ -1,6 +1,7 @@
 #pragma once
 
 #include <collection_types.h>
+#include <engine/math.inl>
 
 namespace engine {
 struct Engine;
@@ -12,7 +13,7 @@ using namespace foundation;
 struct Game;
 
 /**
- * @brief A room in the dungeon.
+ * @brief A room placed in the dungeon.
  * 
  */
 struct Room {
@@ -23,17 +24,30 @@ struct Room {
     bool boss_room = false;
 };
 
-struct RoomTemplate {
-    RoomTemplate(Allocator &allocator);
-    ~RoomTemplate();
-    RoomTemplate(const RoomTemplate &) = delete;
-    RoomTemplate &operator=(const RoomTemplate &) = delete;
+/**
+ * @brief A collection of room templates.
+ * 
+ */
+struct RoomTemplates {
+    struct Template {
+        Template(Allocator &allocator);
+        ~Template();
 
+        Allocator &allocator;
+        Array<char> *name;
+        uint8_t rows;
+        uint8_t columns;
+        Array<uint8_t> *data;
+    };
+
+    RoomTemplates(Allocator &allocator);
+    ~RoomTemplates();
+    
     Allocator &allocator;
-    Array<char> *name;
-    uint32_t rows;
-    uint32_t columns;
-    Array<char> *data;
+    Array<Template *> templates;
+
+    void read(const char *filename);
+    void write(const char *filename);
 };
 
 /**
@@ -135,11 +149,5 @@ struct Level {
  * 
  */
 void dungen(engine::Engine *engine, game::Game *game);
-
-/**
- * @brief Parsing room templates from disk.
- * 
- */
-void parse_room_templates(Allocator &allocator, Array<RoomTemplate *> &room_templates, const char *filename);
 
 } // namespace game

@@ -21,7 +21,7 @@ using namespace foundation;
 class GameParams;
 class ActionBinds;
 struct Level;
-struct RoomTemplate;
+struct RoomTemplates;
 enum ActionBindEntry_Action : int;
 
 namespace editor {
@@ -71,7 +71,7 @@ struct Game {
     ActionBinds *action_binds;
     GameState game_state;
     Level *level;
-    Array<RoomTemplate *> room_templates;
+    RoomTemplates *room_templates;
 
     Mob player_mob;
 

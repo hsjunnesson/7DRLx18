@@ -33,24 +33,118 @@ using namespace foundation;
 using engine::coord;
 using engine::index;
 
-RoomTemplate::RoomTemplate(Allocator &allocator)
+RoomTemplates::Template::Template(Allocator &allocator)
 : allocator(allocator)
 , name(nullptr)
 , rows(0)
 , columns(0)
-, data(nullptr) {
-    name = MAKE_NEW(allocator, Array<char>, allocator);
-    data = MAKE_NEW(allocator, Array<char>, allocator);
+, data(nullptr) {}
+
+RoomTemplates::Template::~Template() {
+    MAKE_DELETE(allocator, Array, name);
+    MAKE_DELETE(allocator, Array, data);
 }
 
-RoomTemplate::~RoomTemplate() {
-    if (name) {
-        MAKE_DELETE(allocator, Array, name);
+RoomTemplates::RoomTemplates(Allocator &allocator)
+: allocator(allocator)
+, templates(allocator) {}
+
+RoomTemplates::~RoomTemplates() {
+    for (RoomTemplates::Template **it = array::begin(templates); it != array::end(templates); ++it) {
+        MAKE_DELETE(allocator, Template, *it);
+    }
+}
+
+void RoomTemplates::read(const char *filename) {
+    assert(filename != nullptr);
+
+    TempAllocator2048 ta;
+    string_stream::Buffer file_buffer(ta);
+    if (!engine::file::read(file_buffer, filename)) {
+        log_fatal("Could not parse: %s", filename);
     }
 
-    if (data) {
-        MAKE_DELETE(allocator, Array, data);
+    const char *room_templates_header = "ROOMTEMPLATES";
+    const size_t room_templates_header_len = strlen(room_templates_header);
+
+    if (array::size(file_buffer) < room_templates_header_len + 1) { // Account for additional version byte
+        log_fatal("Empty file: %s", filename);
     }
+
+    char *p = array::begin(file_buffer);
+    const char *pe = array::end(file_buffer);
+
+    // Header
+    {
+        char header_buf[256];
+        memcpy(header_buf, p, room_templates_header_len);
+        if (strncmp(room_templates_header, header_buf, room_templates_header_len) != 0) {
+            log_fatal("Could not parse: %s invalid header", filename);
+        }
+
+        p = p + room_templates_header_len;
+    }
+
+    const uint8_t version = *p;
+    ++p;
+
+    const uint8_t max_version = 1;
+
+    if (version > max_version) {
+        log_fatal("Could not parse: %s version %u not supported", version);
+    }
+
+    while (p < pe) {
+        const uint8_t name_length = *p;
+        ++p;
+
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        string_stream::Buffer *name_buffer = MAKE_NEW(this->allocator, Array<char>, this->allocator);
+        string_stream::push(*name_buffer, p, name_length);
+
+        p = p + name_length;
+
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        const uint8_t rows = *p;
+        ++p;
+
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        const uint8_t columns = *p;
+        ++p;
+
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        const uint8_t data_length = rows * columns;
+
+        Array<uint8_t> *data = MAKE_NEW(this->allocator, Array<uint8_t>, this->allocator);
+        array::resize(*data, data_length);
+        memcpy(array::begin(*data), p, data_length);
+
+        p = p + data_length;
+
+        Template *room_template = MAKE_NEW(this->allocator, Template, this->allocator);
+        room_template->name = name_buffer;
+        room_template->rows = rows;
+        room_template->columns = columns;
+        room_template->data = data;
+
+        array::push_back(this->templates, room_template);
+    }
+}
+
+void RoomTemplates::write(const char *filename) {
+    (void)filename;
 }
 
 Level::Level(Allocator &allocator)
@@ -626,124 +720,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
     }
 
     game::transition(*engine, game, GameState::Playing);
-}
-
-void parse_room_templates(Allocator &allocator, Array<RoomTemplate *> &room_templates, const char *filename) {
-    assert(filename != nullptr);
-
-    TempAllocator2048 ta;
-    string_stream::Buffer file_buffer(ta);
-    if (!engine::file::read(file_buffer, filename)) {
-        log_fatal("Could not parse: %s", filename);
-    }
-
-    char *p = array::begin(file_buffer);
-    const char *pe = array::end(file_buffer);
-    int32_t line = 1;
-
-    while (p < pe) {
-        if (*p == '#') { // comment
-            while (p < pe && *p != '\n') {
-                ++p;
-            }
-            ++p;
-            ++line;
-        } else if (*p == ' ' || *p == '\r' || *p == '\t' || *p == '\v' || *p == '\f') { // whitespace in a line
-            ++p;
-        } else if (*p == '\n') { // new lines
-            ++p;
-            ++line;
-        } else { // room
-            RoomTemplate *room_template = MAKE_NEW(allocator, RoomTemplate, allocator);
-
-            while (true) {
-                string_stream::Buffer key(ta);
-                string_stream::Buffer value(ta);
-
-                while (*p != ':') {
-                    if (p == pe || *p == '\n') {
-                        log_fatal("Could not parse: %s invalid key", filename);
-                    }
-
-                    array::push_back(key, *p);
-                    ++p;
-                }
-
-                while (*p == ':' || *p == ' ') {
-                    ++p;
-                    if (p == pe || *p == '\n') {
-                        log_fatal("Could not parse: %s invalid separator", filename);
-                    }
-                }
-
-                while (p < pe && !(*p == '\n' || *p == '\r')) {
-                    array::push_back(value, *p);
-                    ++p;
-                }
-
-                const char *key_string = string_stream::c_str(key);
-                const char *value_string = string_stream::c_str(value);
-
-                if (strcmp(key_string, "name") == 0) {
-                    if (room_template->name) {
-                        *room_template->name = value;
-                    }
-                } else if (strcmp(key_string, "columns") == 0) {
-                    room_template->columns = atoi(value_string);
-                } else if (strcmp(key_string, "rows") == 0) {
-                    room_template->rows = atoi(value_string);
-                } else if (strcmp(key_string, "D") == 0) {
-                    if (room_template->data) {
-                        string_stream::push(*room_template->data, value_string, (uint32_t)strlen(value_string));
-                    }
-                } else {
-                    log_fatal("Could not parse: %s invalid key: %s at line: %i", filename, string_stream::c_str(key), line);
-                }
-
-                // Read end of line
-                if (p <pe && *p == '\r') {
-                    ++p;
-                }
-
-                if (p <pe && *p == '\n') {
-                    ++p;
-                }
-
-                ++line;
-
-                // Done with room after end of file or new line
-                if (p == pe || *p == '\r' || *p == '\n') {
-                    break;
-                }
-            }
-
-            array::trim(*room_template->name);
-            array::trim(*room_template->data);
-
-            // Validate rooms
-            {
-                if (room_template->name && array::empty(*room_template->name)) {
-                    log_fatal("Could not parse: %s missing name for room at line %i", filename, line);
-                }
-
-                const char *room_name = string_stream::c_str(*room_template->name);
-
-                if (room_template->data && array::empty(*room_template->data)) {
-                    log_fatal("Could not parse: %s missing data for %s", filename, room_name);
-                }
-
-                if (room_template->columns == 0 || room_template->rows == 0) {
-                    log_fatal("Could not parse: %s Missing rows and columns for %s", filename, room_name);
-                }
-
-                if (room_template->data && room_template->columns * room_template->rows != array::size(*room_template->data)) {
-                    log_fatal("Could not parse: %s incorrect rows and columns for %s", filename, room_name);
-                }
-            }
-
-            array::push_back(room_templates, room_template);
-        }
-    }
 }
 
 } // namespace game
