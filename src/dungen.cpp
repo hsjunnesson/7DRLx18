@@ -28,6 +28,11 @@
 #include <thread>
 #pragma warning(pop)
 
+namespace {
+const char *room_templates_header = "ROOMTEMPLATES";
+const size_t room_templates_header_len = strlen(room_templates_header);
+}
+
 namespace game {
 using namespace foundation;
 using engine::coord;
@@ -58,14 +63,20 @@ RoomTemplates::~RoomTemplates() {
 void RoomTemplates::read(const char *filename) {
     assert(filename != nullptr);
 
+    // Clear
+    {
+        for (RoomTemplates::Template **it = array::begin(this->templates); it != array::end(templates); ++it) {
+            MAKE_DELETE(this->allocator, Template, *it);
+        }
+
+        array::clear(this->templates);
+    }
+
     TempAllocator2048 ta;
     string_stream::Buffer file_buffer(ta);
     if (!engine::file::read(file_buffer, filename)) {
         log_fatal("Could not parse: %s", filename);
     }
-
-    const char *room_templates_header = "ROOMTEMPLATES";
-    const size_t room_templates_header_len = strlen(room_templates_header);
 
     if (array::size(file_buffer) < room_templates_header_len + 1) { // Account for additional version byte
         log_fatal("Empty file: %s", filename);
@@ -125,7 +136,7 @@ void RoomTemplates::read(const char *filename) {
             log_fatal("Could not parse: %s invalid file format", filename);
         }
 
-        const uint8_t data_length = rows * columns;
+        const uint16_t data_length = rows * columns;
 
         Array<uint8_t> *data = MAKE_NEW(this->allocator, Array<uint8_t>, this->allocator);
         array::resize(*data, data_length);
@@ -144,7 +155,37 @@ void RoomTemplates::read(const char *filename) {
 }
 
 void RoomTemplates::write(const char *filename) {
-    (void)filename;
+    assert(filename != nullptr);
+
+    FILE *file = nullptr;
+    if (fopen_s(&file, filename, "wb") != 0) {
+        log_fatal("Could not write: %s", filename);
+    }
+
+    // Header
+    fwrite(room_templates_header, room_templates_header_len, 1, file);
+
+    // Version
+    uint8_t version = 1;
+    fwrite(&version, sizeof(uint8_t), 1, file);
+
+    // Write rooms
+    for (RoomTemplates::Template **it = array::begin(this->templates); it != array::end(templates); ++it) {
+        RoomTemplates::Template *room_template = *it;
+        const uint8_t name_length = array::size(*room_template->name);
+        fwrite(&name_length, sizeof(uint8_t), 1, file);
+        
+        fwrite(array::begin(*room_template->name), sizeof(char), name_length, file);
+
+        fwrite(&room_template->rows, sizeof(uint8_t), 1, file);
+        fwrite(&room_template->columns, sizeof(uint8_t), 1, file);
+
+        uint32_t data_length = array::size(*room_template->data);
+
+        fwrite(array::begin(*room_template->data), sizeof(uint8_t), array::size(*room_template->data), file);
+    }
+
+    fclose(file);
 }
 
 Level::Level(Allocator &allocator)
