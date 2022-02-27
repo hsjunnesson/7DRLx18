@@ -29,7 +29,11 @@ using namespace foundation;
 EditorState::EditorState(Allocator &allocator)
 : allocator(allocator) {}
 
-void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState &state) {
+void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState &state, bool *show_window) {
+    if (*show_window == false) {
+        return;
+    }
+
     static int32_t selected_template_index = -1;
     static char template_name[256] = {'\0'};
     static int rows = 0;
@@ -47,7 +51,7 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
 
     ImGui::SetNextWindowSize(ImVec2(500, 600), ImGuiCond_FirstUseEver);
     
-    if (!ImGui::Begin(menu_label, NULL, ImGuiWindowFlags_MenuBar)) {
+    if (!ImGui::Begin(menu_label, show_window, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
         return;
     }
@@ -408,7 +412,21 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
 }
 
 void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) {
-    room_templates_editor(engine, game, state);
+    static bool show_room_templates_window = true;
+
+    if (ImGui::BeginMainMenuBar()) {
+        if (ImGui::BeginMenu("Windows")) {
+            if (ImGui::MenuItem("Room templates", nullptr, show_room_templates_window)) {
+                show_room_templates_window = !show_room_templates_window;
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
+    room_templates_editor(engine, game, state, &show_room_templates_window);
 }
 
 } // namespace editor
