@@ -48,6 +48,19 @@ RoomTemplates::Template::Template(Allocator &allocator)
     data = MAKE_NEW(allocator, Array<uint8_t>, allocator);
 }
 
+RoomTemplates::Template::Template(const Template &other)
+: allocator(other.allocator)
+, name(nullptr)
+, rows(other.rows)
+, columns(other.columns)
+, data(nullptr) {
+    const Array<char> &other_name = *other.name;
+    const Array<uint8_t> &other_data = *other.data;
+
+    name = MAKE_NEW(allocator, string_stream::Buffer, other_name);
+    data = MAKE_NEW(allocator, Array<uint8_t>, other_data);
+}
+
 RoomTemplates::Template::~Template() {
     MAKE_DELETE(allocator, Array, name);
     MAKE_DELETE(allocator, Array, data);

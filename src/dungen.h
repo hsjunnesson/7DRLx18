@@ -31,6 +31,7 @@ struct Room {
 struct RoomTemplates {
     struct Template {
         Template(Allocator &allocator);
+        Template(const Template &other);
         ~Template();
 
         Allocator &allocator;
