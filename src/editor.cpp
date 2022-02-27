@@ -12,6 +12,13 @@
 namespace {
 bool did_reset = false;
 bool room_templates_dirty = false;
+const uint8_t tile_tool_labels_count = 3;
+const char tile_tool_labels[] = {'.', '#', '%'};
+const char *tile_tool_descriptions[] = {"Empty", "Wall", "Connection"};
+
+// salmon  217, 105, 65
+// red  166, 43, 31
+const ImVec4 tile_tool_colors[] = {ImColor(25, 60, 64), ImColor(33, 64, 1), ImColor(46, 89, 2)};
 }
 
 namespace game {
@@ -21,7 +28,6 @@ using namespace foundation;
 EditorState::EditorState(Allocator &allocator)
 : allocator(allocator) {}
 
-// Return true on "dirty" edit
 void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState &state) {
     const char *menu_label = nullptr;
     if (room_templates_dirty) {
@@ -58,16 +64,17 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
         ImGui::EndMenuBar();
     }
 
-    static int32_t selected_index = -1;
+    static int32_t selected_template_index = -1;
     static char template_name[256] = {'\0'};
     static int rows = 0;
     static int columns = 0;
     const int max_side = 256;
     static uint8_t room_template_tiles[max_side * max_side] = {0};
-    
+    static uint8_t selected_tile_tool_index = 0;
+
     // Left
-    if (did_reset || (selected_index >= 0 && selected_index > array::size(game.room_templates->templates))) {
-        selected_index = -1;
+    if (did_reset || (selected_template_index >= 0 && selected_template_index > array::size(game.room_templates->templates))) {
+        selected_template_index = -1;
         template_name[0] = '\0';
     }
 
@@ -78,8 +85,8 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
         for (auto it = array::begin(game.room_templates->templates); it != array::end(game.room_templates->templates); ++it) {
             string_stream::Buffer *name_buffer = (*it)->name;
             const char *name = string_stream::c_str(*name_buffer);
-            if (ImGui::Selectable(name, selected_index == i)) {
-                selected_index = i;
+            if (ImGui::Selectable(name, selected_template_index == i)) {
+                selected_template_index = i;
                 memcpy(template_name, name, strlen(name));
                 rows = (*it)->rows;
                 columns = (*it)->columns;
@@ -96,100 +103,140 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
     // Right
     {
         RoomTemplates::Template *room_template = nullptr;
-        if (selected_index >= 0) {
-            room_template = game.room_templates->templates[selected_index];
+        if (selected_template_index >= 0) {
+            room_template = game.room_templates->templates[selected_template_index];
         }
 
         if (room_template) {
             ImGui::BeginGroup();
 
-            ImGui::PushItemWidth(240);
-            if (ImGui::InputText("Name", template_name, 256, ImGuiInputTextFlags_CharsNoBlank)) {
-                string_stream::Buffer *name = room_template->name;
-                array::clear(*name);
-                string_stream::push(*name, template_name, strlen(template_name));
-                room_templates_dirty = true;
+            // Name
+            {
+                ImGui::PushItemWidth(240);
+                if (ImGui::InputText("Name", template_name, 256, ImGuiInputTextFlags_CharsNoBlank)) {
+                    string_stream::Buffer *name = room_template->name;
+                    array::clear(*name);
+                    string_stream::push(*name, template_name, strlen(template_name));
+                    room_templates_dirty = true;
+                }
             }
 
-            ImGui::PushItemWidth(100);
-            if (ImGui::InputInt("Rows", &rows)) {
-                room_templates_dirty = true;
+            // Rows & Columns
+            {
+                ImGui::PushItemWidth(100);
+                if (ImGui::InputInt("Rows", &rows)) {
+                    room_templates_dirty = true;
 
-                if (rows <= 0) {
-                    rows = 1;
-                } else if (rows > max_side) {
-                    rows = max_side;
-                } else {
-                    if (rows != room_template->rows) {
-                        uint32_t old_size = array::size(*room_template->data);
-                        int32_t adjust_by = rows > room_template->rows ? room_template->columns : -room_template->columns;
-                        uint32_t new_size = old_size + adjust_by;
-                        array::resize(*room_template->data, new_size);
-                        room_template->rows = (uint8_t)rows;
+                    if (rows <= 0) {
+                        rows = 1;
+                    } else if (rows > max_side) {
+                        rows = max_side;
+                    } else {
+                        if (rows != room_template->rows) {
+                            uint32_t old_size = array::size(*room_template->data);
+                            int32_t adjust_by = rows > room_template->rows ? room_template->columns : -room_template->columns;
+                            uint32_t new_size = old_size + adjust_by;
+                            array::resize(*room_template->data, new_size);
+                            room_template->rows = (uint8_t)rows;
 
-                        if (adjust_by > 0) {
-                            memset(array::begin(*room_template->data) + old_size, 0, adjust_by);
+                            if (adjust_by > 0) {
+                                memset(array::begin(*room_template->data) + old_size, 0, adjust_by);
+                            }
+
+                            memcpy(room_template_tiles, room_template->data, rows * columns);
                         }
-
-                        memcpy(room_template_tiles, room_template->data, rows * columns);
                     }
                 }
+
+                ImGui::SameLine();
+
+                if (ImGui::InputInt("Columns", &columns)) {
+                    room_templates_dirty = true;
+
+                    if (columns <= 0) {
+                        columns = 1;
+                    } else if (columns > max_side) {
+                        columns = max_side;
+                    } else {
+                        if (columns != room_template->columns) {
+                            uint8_t old_columns = room_template->columns;
+                            uint32_t old_size = array::size(*room_template->data);
+                            int32_t adjust_by = columns > room_template->columns ? room_template->rows : -room_template->rows;
+                            uint32_t new_size = old_size + adjust_by;
+                            room_template->columns = (uint8_t)columns;
+
+                            if (abs(old_columns - columns) != 1) {
+                                log_fatal("Adjusting room template by more than 1 column");
+                            }
+
+                            if (adjust_by > 0) {
+                                uint8_t copy_buf[max_side];
+
+                                array::resize(*room_template->data, new_size);
+                                memset(array::begin(*room_template->data) + old_size, 0, adjust_by);
+
+                                for (uint8_t  i = room_template->rows - 1; i > 0; --i) {
+                                    uint8_t *start = array::begin(*room_template->data) + i * old_columns;
+                                    memcpy(copy_buf, start, old_columns);
+                                    memset(start, 0, old_columns);
+                                    memcpy(start + i, copy_buf, old_columns);
+                                }
+                            } else {
+                                uint8_t copy_buf[max_side];
+
+                                for (uint8_t  i = 1; i < room_template->rows; ++i) {
+                                    uint8_t *start = array::begin(*room_template->data) + i * old_columns;
+                                    memcpy(copy_buf, start, old_columns - 1);
+                                    memcpy(start - i, copy_buf, old_columns - 1);
+                                }
+
+                                array::resize(*room_template->data, new_size);
+                            }
+
+                            memcpy(room_template_tiles, room_template->data, rows * columns);
+                        }
+                    }
+                }
+            }
+
+            // Tile tool palette
+            {
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
+                ImGui::BeginChild("ToolPalette", ImVec2(120, 0), false, window_flags);
+
+                ImDrawList *draw_list = ImGui::GetWindowDrawList();
+
+                for (uint8_t i = 0; i < tile_tool_labels_count; ++i) {
+                    char label[256] = {0};
+                    snprintf(label, 256, "%c %s", tile_tool_labels[i], tile_tool_descriptions[i]);
+
+                    draw_list->ChannelsSplit(2);
+                    draw_list->ChannelsSetCurrent(1);
+
+                    if (ImGui::Selectable(label, i == selected_tile_tool_index)) {
+                        selected_tile_tool_index = i;
+                    }
+
+                    draw_list->ChannelsSetCurrent(0);
+                    ImVec2 p_min = ImGui::GetItemRectMin();
+                    ImVec2 p_max = ImGui::GetItemRectMax();
+                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_colors[i]));
+
+                    draw_list->ChannelsMerge();
+                }
+
+                ImGui::EndChild();
             }
 
             ImGui::SameLine();
 
-            if (ImGui::InputInt("Columns", &columns)) {
-                room_templates_dirty = true;
+            // Tile buttons
+            {
+                ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
+                ImGui::BeginChild("Tiles", ImVec2(0, 0), false, window_flags);
 
-                if (columns <= 0) {
-                    columns = 1;
-                } else if (columns > max_side) {
-                    columns = max_side;
-                } else {
-                    if (columns != room_template->columns) {
-                        uint8_t old_columns = room_template->columns;
-                        uint32_t old_size = array::size(*room_template->data);
-                        int32_t adjust_by = columns > room_template->columns ? room_template->rows : -room_template->rows;
-                        uint32_t new_size = old_size + adjust_by;
-                        room_template->columns = (uint8_t)columns;
+                ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
-                        if (abs(old_columns - columns) != 1) {
-                            log_fatal("Adjusting room template by more than 1 column");
-                        }
-
-                        if (adjust_by > 0) {
-                            uint8_t copy_buf[max_side];
-
-                            array::resize(*room_template->data, new_size);
-                            memset(array::begin(*room_template->data) + old_size, 0, adjust_by);
-
-                            for (uint8_t  i = room_template->rows - 1; i > 0; --i) {
-                                uint8_t *start = array::begin(*room_template->data) + i * old_columns;
-                                memcpy(copy_buf, start, old_columns);
-                                memset(start, 0, old_columns);
-                                memcpy(start + i, copy_buf, old_columns);
-                            }
-                        } else {
-                            uint8_t copy_buf[max_side];
-
-                            for (uint8_t  i = 1; i < room_template->rows; ++i) {
-                                uint8_t *start = array::begin(*room_template->data) + i * old_columns;
-                                memcpy(copy_buf, start, old_columns - 1);
-                                memcpy(start - i, copy_buf, old_columns - 1);
-                            }
-
-                            array::resize(*room_template->data, new_size);
-                        }
-
-                        memcpy(room_template_tiles, room_template->data, rows * columns);
-                    }
-                }
-            }
-
-            const char tile_items[] = {'.', '#', '%'};
-            const int tile_items_count = 3;
-
-            if (room_template) {
                 for (uint32_t i = 0; i < array::size(*room_template->data); ++i) {
                     if (i % room_template->columns != 0) {
                         ImGui::SameLine();
@@ -197,38 +244,32 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
 
                     uint8_t tile = (*room_template->data)[i];
                     char label[8] = {0};
-                    char tile_item = tile_items[tile];
+                    char tile_item = tile_tool_labels[tile];
                     snprintf(label, 8, "%c", tile_item);
 
-                    ImGuiComboFlags flags = ImGuiComboFlags_NoArrowButton;
+                    draw_list->ChannelsSplit(2);
+                    draw_list->ChannelsSetCurrent(1);
 
-                    ImGui::SetNextItemWidth(ImGui::GetFrameHeight());
                     ImGui::PushID(i);
-
-                    if (ImGui::BeginCombo("", label, flags)) {
-                        for (uint8_t n = 0; n < tile_items_count; ++n) {
-                            char selectable_label[8] = {0};
-                            snprintf(selectable_label, 8, "%c", tile_items[n]);
-
-                            const bool is_selected = room_template_tiles[i] == n;
-
-                            ImGui::PushID(n);
-                            if (ImGui::Selectable(selectable_label, is_selected)) {
-                                (*room_template->data)[i] = n;
-                                room_template_tiles[i] = n;
-                                room_templates_dirty = true;
-                            }
-                            ImGui::PopID();
-
-                            if (is_selected) {
-                                ImGui::SetItemDefaultFocus();
-                            }
-                        }
-                        ImGui::EndCombo();
+                    ImGui::PushStyleVar(ImGuiStyleVar_SelectableTextAlign, ImVec2(0.5f, 0.5f));
+                    ImGui::Selectable(label, false, 0, ImVec2(20, 20));
+                    if (ImGui::IsItemHovered(ImGuiHoveredFlags_AnyWindow) && ImGui::IsMouseDown(ImGuiMouseButton_Left)) {
+                        (*room_template->data)[i] = selected_tile_tool_index;
+                        room_template_tiles[i] = selected_tile_tool_index;
+                        room_templates_dirty = true;
                     }
-
+                    ImGui::PopStyleVar();
                     ImGui::PopID();
+
+                    draw_list->ChannelsSetCurrent(0);
+                    ImVec2 p_min = ImGui::GetItemRectMin();
+                    ImVec2 p_max = ImGui::GetItemRectMax();
+                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_colors[tile]));
+
+                    draw_list->ChannelsMerge();
                 }
+
+                ImGui::EndChild();
             }
 
             ImGui::EndGroup();
