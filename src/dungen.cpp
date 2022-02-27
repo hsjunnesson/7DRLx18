@@ -43,9 +43,9 @@ RoomTemplates::Template::Template(Allocator &allocator)
 , name(nullptr)
 , rows(0)
 , columns(0)
-, data(nullptr) {
+, tiles(nullptr) {
     name = MAKE_NEW(allocator, string_stream::Buffer, allocator);
-    data = MAKE_NEW(allocator, Array<uint8_t>, allocator);
+    tiles = MAKE_NEW(allocator, Array<uint8_t>, allocator);
 }
 
 RoomTemplates::Template::Template(const Template &other)
@@ -53,17 +53,17 @@ RoomTemplates::Template::Template(const Template &other)
 , name(nullptr)
 , rows(other.rows)
 , columns(other.columns)
-, data(nullptr) {
+, tiles(nullptr) {
     const Array<char> &other_name = *other.name;
-    const Array<uint8_t> &other_data = *other.data;
+    const Array<uint8_t> &other_data = *other.tiles;
 
     name = MAKE_NEW(allocator, string_stream::Buffer, other_name);
-    data = MAKE_NEW(allocator, Array<uint8_t>, other_data);
+    tiles = MAKE_NEW(allocator, Array<uint8_t>, other_data);
 }
 
 RoomTemplates::Template::~Template() {
     MAKE_DELETE(allocator, Array, name);
-    MAKE_DELETE(allocator, Array, data);
+    MAKE_DELETE(allocator, Array, tiles);
 }
 
 RoomTemplates::RoomTemplates(Allocator &allocator)
@@ -95,7 +95,8 @@ void RoomTemplates::read(const char *filename) {
     }
 
     if (array::size(file_buffer) < room_templates_header_len + 1) { // Account for additional version byte
-        log_fatal("Empty file: %s", filename);
+        log_info("Empty file: %s", filename);
+        return;
     }
 
     char *p = array::begin(file_buffer);
@@ -165,8 +166,8 @@ void RoomTemplates::read(const char *filename) {
         room_template->name = name_buffer;
         room_template->rows = rows;
         room_template->columns = columns;
-        MAKE_DELETE(this->allocator, Array, room_template->data);
-        room_template->data = data;
+        MAKE_DELETE(this->allocator, Array, room_template->tiles);
+        room_template->tiles = data;
 
         array::push_back(this->templates, room_template);
     }
@@ -198,9 +199,9 @@ void RoomTemplates::write(const char *filename) {
         fwrite(&room_template->rows, sizeof(uint8_t), 1, file);
         fwrite(&room_template->columns, sizeof(uint8_t), 1, file);
 
-        uint32_t data_length = array::size(*room_template->data);
+        uint32_t data_length = array::size(*room_template->tiles);
 
-        fwrite(array::begin(*room_template->data), sizeof(uint8_t), array::size(*room_template->data), file);
+        fwrite(array::begin(*room_template->tiles), sizeof(uint8_t), array::size(*room_template->tiles), file);
     }
 
     fclose(file);

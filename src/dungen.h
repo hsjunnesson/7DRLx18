@@ -32,6 +32,14 @@ struct Room {
  */
 struct RoomTemplates {
     struct Template {
+        enum class TileType: uint8_t {
+            Empty = 0,
+            Floor,
+            Wall,
+            Connection,
+            Count
+        };
+
         Template(Allocator &allocator);
         Template(const Template &other);
         ~Template();
@@ -40,7 +48,7 @@ struct RoomTemplates {
         Array<char> *name;
         uint8_t rows;
         uint8_t columns;
-        Array<uint8_t> *data;
+        Array<uint8_t> *tiles;
     };
 
     RoomTemplates(Allocator &allocator);
