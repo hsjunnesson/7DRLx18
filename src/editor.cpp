@@ -91,6 +91,7 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
             }
 
             array::push_back(game.room_templates->templates, t);
+            room_templates_dirty = true;
         }
 
         ImGui::SameLine();
@@ -110,8 +111,10 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
 
                 MAKE_DELETE(game.room_templates->allocator, Template, selected_template);
                 selected_template = nullptr;
-                
+
                 --selected_template_index;
+
+                room_templates_dirty = true;
             }
         }
 
