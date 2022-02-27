@@ -43,7 +43,10 @@ RoomTemplates::Template::Template(Allocator &allocator)
 , name(nullptr)
 , rows(0)
 , columns(0)
-, data(nullptr) {}
+, data(nullptr) {
+    name = MAKE_NEW(allocator, string_stream::Buffer, allocator);
+    data = MAKE_NEW(allocator, Array<uint8_t>, allocator);
+}
 
 RoomTemplates::Template::~Template() {
     MAKE_DELETE(allocator, Array, name);
@@ -145,9 +148,11 @@ void RoomTemplates::read(const char *filename) {
         p = p + data_length;
 
         Template *room_template = MAKE_NEW(this->allocator, Template, this->allocator);
+        MAKE_DELETE(this->allocator, Array, room_template->name);
         room_template->name = name_buffer;
         room_template->rows = rows;
         room_template->columns = columns;
+        MAKE_DELETE(this->allocator, Array, room_template->data);
         room_template->data = data;
 
         array::push_back(this->templates, room_template);

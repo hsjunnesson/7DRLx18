@@ -4,6 +4,7 @@
 
 #include <array.h>
 #include <string_stream.h>
+#include <string_stream.h>
 #include <proto/game.pb.h>
 #include <engine/engine.h>
 #include <engine/log.h>
@@ -75,18 +76,54 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
     // Left
     if (did_reset || (selected_template_index >= 0 && selected_template_index > array::size(game.room_templates->templates))) {
         selected_template_index = -1;
-        template_name[0] = '\0';
+        memset(template_name, 0, 256);
     }
 
     {
+        if (ImGui::Button("Add")) {
+            RoomTemplates::Template *t = MAKE_NEW(game.room_templates->allocator, game::RoomTemplates::Template, game.room_templates->allocator);
+            string_stream::push(*t->name, "Room", 4);
+            t->columns = 3;
+            t->rows = 3;
+
+            for (int i = 0; i < t->columns * t->rows; ++i) {
+                array::push_back(*t->data, (uint8_t)0);
+            }
+
+            array::push_back(game.room_templates->templates, t);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Delete")) {
+            if (selected_template_index >= 0) {
+                Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
+                RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
+                
+                array::clear(game.room_templates->templates);
+
+                for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
+                    if (i != selected_template_index) {
+                        array::push_back(game.room_templates->templates, room_templates_copy[i]);
+                    }
+                }
+
+                MAKE_DELETE(game.room_templates->allocator, Template, selected_template);
+                selected_template = nullptr;
+                
+                --selected_template_index;
+            }
+        }
+
         ImGui::BeginChild("room_templates_left_pane", ImVec2(150, 0), true);
-        
+
         int32_t i = 0;
         for (auto it = array::begin(game.room_templates->templates); it != array::end(game.room_templates->templates); ++it) {
             string_stream::Buffer *name_buffer = (*it)->name;
             const char *name = string_stream::c_str(*name_buffer);
             if (ImGui::Selectable(name, selected_template_index == i)) {
                 selected_template_index = i;
+                memset(template_name, 0, 256);
                 memcpy(template_name, name, strlen(name));
                 rows = (*it)->rows;
                 columns = (*it)->columns;
@@ -124,7 +161,7 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
             // Rows & Columns
             {
                 ImGui::PushItemWidth(100);
-                if (ImGui::InputInt("Rows", &rows)) {
+                if (ImGui::InputInt("Rows", &rows, 1, 1, ImGuiInputTextFlags_None)) {
                     room_templates_dirty = true;
 
                     if (rows <= 0) {
@@ -133,11 +170,16 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
                         rows = max_side;
                     } else {
                         if (rows != room_template->rows) {
+                            uint8_t old_rows = room_template->rows;
                             uint32_t old_size = array::size(*room_template->data);
                             int32_t adjust_by = rows > room_template->rows ? room_template->columns : -room_template->columns;
                             uint32_t new_size = old_size + adjust_by;
                             array::resize(*room_template->data, new_size);
                             room_template->rows = (uint8_t)rows;
+
+                            if (abs(old_rows - rows) != 1) {
+                                log_fatal("Adjusting room template by more than 1 row");
+                            }
 
                             if (adjust_by > 0) {
                                 memset(array::begin(*room_template->data) + old_size, 0, adjust_by);
@@ -150,7 +192,7 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
 
                 ImGui::SameLine();
 
-                if (ImGui::InputInt("Columns", &columns)) {
+                if (ImGui::InputInt("Columns", &columns, 1, 1, ImGuiInputTextFlags_None)) {
                     room_templates_dirty = true;
 
                     if (columns <= 0) {
