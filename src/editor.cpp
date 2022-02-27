@@ -31,7 +31,7 @@ EditorState::EditorState(Allocator &allocator)
 : allocator(allocator) {}
 
 char tile_tool_label(uint8_t tile_type) {
-    switch (tile_type) {
+    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
     case RoomTemplates::Template::TileType::Empty:
         return ' ';
     case RoomTemplates::Template::TileType::Floor:
@@ -46,7 +46,7 @@ char tile_tool_label(uint8_t tile_type) {
 }
 
 const char *tile_tool_description(uint8_t tile_type) {
-    switch (tile_type) {
+    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
     case RoomTemplates::Template::TileType::Empty:
         return "Empty";
     case RoomTemplates::Template::TileType::Floor:
