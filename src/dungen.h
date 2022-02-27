@@ -1,7 +1,9 @@
 #pragma once
 
+#pragma warning(push, 0)
 #include <collection_types.h>
 #include <engine/math.inl>
+#pragma warning(pop)
 
 namespace engine {
 struct Engine;

@@ -1,7 +1,9 @@
 #pragma once
 
+#pragma warning(push, 0)
 #include <collection_types.h>
 #include <glm/fwd.hpp>
+#pragma warning(pop)
 
 namespace std {
 class thread;

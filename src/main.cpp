@@ -1,9 +1,9 @@
 #include "game.h"
 
+#pragma warning(push, 0)
 #include <engine/engine.h>
 #include <engine/input.h>
 
-#pragma warning(push, 0)
 #include <backward.hpp>
 #include <memory.h>
 #pragma warning(pop)

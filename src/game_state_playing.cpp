@@ -1,5 +1,4 @@
 #include "action_binds.h"
-#include "array.h"
 #include "color.inl"
 #include "dungen.h"
 #include "game.h"

@@ -1,10 +1,10 @@
 #pragma once
 
+#pragma warning(push, 0)
 #include <functional>
 #include <stdint.h>
 #include <math.h>
 
-#pragma warning(push, 0)
 #include "array.h"
 #include "memory.h"
 #include "temp_allocator.h"
