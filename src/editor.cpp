@@ -30,6 +30,14 @@ EditorState::EditorState(Allocator &allocator)
 : allocator(allocator) {}
 
 void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState &state) {
+    static int32_t selected_template_index = -1;
+    static char template_name[256] = {'\0'};
+    static int rows = 0;
+    static int columns = 0;
+    const int max_side = 256;
+    static uint8_t room_template_tiles[max_side * max_side] = {0};
+    static uint8_t selected_tile_tool_index = 0;
+
     const char *menu_label = nullptr;
     if (room_templates_dirty) {
         menu_label = "Room Templates*###RoomTemplatesWindow";
@@ -62,16 +70,34 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
             ImGui::EndMenu();
         }
 
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Copy")) {
+                if (selected_template_index >= 0) {
+                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
+                    RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
+                    RoomTemplates::Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, RoomTemplates::Template, *selected_template);
+                    string_stream::push(*selected_template_copy->name, "_copy", 5);
+
+                    array::clear(game.room_templates->templates);
+
+                    for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
+                        array::push_back(game.room_templates->templates, room_templates_copy[i]);
+
+                        if (i == selected_template_index) {
+                            array::push_back(game.room_templates->templates, selected_template_copy);
+                        }
+                    }
+
+                    ++selected_template_index;
+                    room_templates_dirty = true;
+                }
+            }
+
+            ImGui::EndMenu();
+        }
+
         ImGui::EndMenuBar();
     }
-
-    static int32_t selected_template_index = -1;
-    static char template_name[256] = {'\0'};
-    static int rows = 0;
-    static int columns = 0;
-    const int max_side = 256;
-    static uint8_t room_template_tiles[max_side * max_side] = {0};
-    static uint8_t selected_tile_tool_index = 0;
 
     // Left
     if (did_reset || (selected_template_index >= 0 && selected_template_index > array::size(game.room_templates->templates))) {
@@ -132,6 +158,61 @@ void room_templates_editor(engine::Engine &engine, game::Game &game, EditorState
                 columns = (*it)->columns;
                 memcpy(room_template_tiles, (*it)->data, rows * columns);
             }
+
+            if (ImGui::BeginPopupContextItem()) {
+                ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
+                if (i == 0) {
+                    flags = ImGuiSelectableFlags_Disabled;
+                }
+
+                if (ImGui::Selectable("Move up", false, flags)) {
+                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
+                    array::clear(game.room_templates->templates);
+
+                    for (int32_t n = 0; n < array::size(room_templates_copy); ++n) {
+                        int32_t index = n;
+
+                        if (n == i - 1) {
+                            index = i;
+                        } else if (n == i) {
+                            index = i - 1;
+                        }
+
+                        array::push_back(game.room_templates->templates, room_templates_copy[index]);
+                    }
+
+                    --selected_template_index;
+                    room_templates_dirty = true;
+                }
+
+                flags = ImGuiSelectableFlags_None;
+                if (i == (int32_t)array::size(game.room_templates->templates) - 1) {
+                    flags = ImGuiSelectableFlags_Disabled;
+                }
+
+                if (ImGui::Selectable("Move down", false, flags)) {
+                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
+                    array::clear(game.room_templates->templates);
+
+                    for (int32_t n = 0; n < array::size(room_templates_copy); ++n) {
+                        int32_t index = n;
+
+                        if (n == i + 1) {
+                            index = i;
+                        } else if (n == i) {
+                            index = i + 1;
+                        }
+
+                        array::push_back(game.room_templates->templates, room_templates_copy[index]);
+                    }
+
+                    ++selected_template_index;
+                    room_templates_dirty = true;
+                }
+
+                ImGui::EndPopup();
+            }
+
             ++i;
         }
 
