@@ -207,6 +207,88 @@ void RoomTemplates::write(const char *filename) {
     fclose(file);
 }
 
+enum class ConnectionDirection {
+    North,
+    East,
+    South,
+    West
+};
+
+void connections_from_direction(const RoomTemplates::Template &room_template, ConnectionDirection direction, Array<uint32_t> &coordinates) {
+    TempAllocator128 ta;
+    Hash<uint32_t> side_data(ta);
+    uint8_t empty_tile_type = static_cast<uint8_t>(RoomTemplates::Template::TileType::Empty);
+    uint8_t connection_tile_type = static_cast<uint8_t>(RoomTemplates::Template::TileType::Connection);
+
+    switch (direction) {
+    case ConnectionDirection::North:
+    case ConnectionDirection::South: {
+        uint32_t start_row = direction == ConnectionDirection::North ? 0 : room_template.rows - 1;
+        int32_t row_offset = direction == ConnectionDirection::North ? 1 : -1;
+
+        for (uint32_t column = 0; column < room_template.columns; ++column) {
+            for (uint32_t row = start_row; row < room_template.rows; row += row_offset) {
+                uint32_t index = math::index(column, row, room_template.columns);
+                uint8_t tile_type = (*room_template.tiles)[index];
+                if (tile_type == empty_tile_type) {
+                    continue;
+                } else {
+                    if (tile_type == connection_tile_type) {
+                        hash::set(side_data, column, row);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    }
+    case ConnectionDirection::West:
+    case ConnectionDirection::East: {
+        uint32_t start_column = direction == ConnectionDirection::West ? 0 : room_template.columns - 1;
+        int32_t column_offset = direction == ConnectionDirection::West ? 1 : -1;
+
+        for (uint32_t row = 0; row < room_template.rows; ++row) {
+            for (uint32_t column = start_column; column < room_template.columns; column += column_offset) {
+                uint32_t index = math::index(column, row, room_template.columns);
+                uint8_t tile_type = (*room_template.tiles)[index];
+                if (tile_type == empty_tile_type) {
+                    continue;
+                } else {
+                    if (tile_type == connection_tile_type) {
+                        hash::set(side_data, column, row);
+                    }
+                    break;
+                }
+            }
+        }
+        break;
+    }
+    }
+
+    for (auto iter = hash::begin(side_data); iter != hash::end(side_data); ++iter) {
+        uint32_t index = 0;
+
+        switch (direction) {
+        case ConnectionDirection::North:
+        case ConnectionDirection::South: {
+            uint32_t column = (uint32_t)iter->key;
+            uint32_t row = iter->value;
+            index = math::index(column, row, room_template.columns);
+            break;
+        }
+        case ConnectionDirection::East:
+        case ConnectionDirection::West: {
+            uint32_t row = (uint32_t)iter->key;
+            uint32_t column = iter->value;
+            index = math::index(column, row, room_template.columns);
+            break;
+        }
+        }
+
+        array::push_back(coordinates, index);
+    }
+}
+
 Level::Level(Allocator &allocator)
 : rooms(allocator)
 , tiles(allocator)
@@ -215,7 +297,6 @@ Level::Level(Allocator &allocator)
 , depth(0)
 , stairs_up_index(0)
 , stairs_down_index(0) {}
-
 
 void dungen(engine::Engine *engine, game::Game *game) {
     assert(engine);
