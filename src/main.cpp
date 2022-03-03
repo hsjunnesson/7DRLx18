@@ -9,11 +9,21 @@
 
 #include <backward.hpp>
 #include <memory.h>
+
+#if defined(LIVE_PP)
+#include "LPP_API.h"
+#include <Windows.h>
+#endif
 #pragma warning(pop)
 
 int main(int argc, char *argv[]) {
     (void)argc;
     (void)argv;
+
+#if defined(LIVE_PP)
+    HMODULE livePP = lpp::lppLoadAndRegister(L"LivePP", "AGroupName");
+    lpp::lppEnableAllCallingModulesSync(livePP);
+#endif
 
     int status = 0;
 
@@ -41,6 +51,11 @@ int main(int argc, char *argv[]) {
     }
 
     foundation::memory_globals::shutdown();
+
+#if defined(LIVE_PP)
+    lpp::lppShutdown(livePP);
+    ::FreeLibrary(livePP);
+#endif
 
     return status;
 }

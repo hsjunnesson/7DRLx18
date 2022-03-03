@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(LIVE_PP True)
 
 # Find locally installed dependencies. Tip: Use VCPKG for these.
 
@@ -55,6 +56,10 @@ add_executable(${PROJECT_NAME}
 include_directories(SYSTEM ${backward_SOURCE_DIR})
 include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/generated_src)
 
+if (LIVE_PP)
+    include_directories(SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/LivePP/API)
+endif()
+
 
 # Linked libraries
 
@@ -76,6 +81,12 @@ if (MSVC)
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
     set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}")
     set_source_files_properties(${SRC_7DRLx18} PROPERTIES COMPILE_FLAGS "/W4")
+
+    if (LIVE_PP)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE LIVE_PP=1)
+        target_compile_options(${PROJECT_NAME} PRIVATE /Zi /hotpatch /Gm-)
+        target_link_options(${PROJECT_NAME} PRIVATE /FUNCTIONPADMIN /OPT:NOREF /OPT:NOICF)
+    endif()
 endif()
 
 # Enable tests
