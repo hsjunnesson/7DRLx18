@@ -3,6 +3,8 @@
 #include "line.hpp"
 
 #pragma warning(push, 0)
+#include "rnd.h"
+
 #include "engine/config.inl"
 #include "engine/engine.h"
 #include "engine/log.h"
@@ -191,15 +193,13 @@ void RoomTemplates::write(const char *filename) {
     // Write rooms
     for (RoomTemplates::Template **it = array::begin(this->templates); it != array::end(templates); ++it) {
         RoomTemplates::Template *room_template = *it;
-        const uint8_t name_length = array::size(*room_template->name);
+        const uint8_t name_length = (uint8_t)array::size(*room_template->name);
         fwrite(&name_length, sizeof(uint8_t), 1, file);
         
         fwrite(array::begin(*room_template->name), sizeof(char), name_length, file);
 
         fwrite(&room_template->rows, sizeof(uint8_t), 1, file);
         fwrite(&room_template->columns, sizeof(uint8_t), 1, file);
-
-        uint32_t data_length = array::size(*room_template->tiles);
 
         fwrite(array::begin(*room_template->tiles), sizeof(uint8_t), array::size(*room_template->tiles), file);
     }
@@ -255,7 +255,7 @@ void connections_from_direction(const RoomTemplates::Template &room_template, Co
                     continue;
                 } else {
                     if (tile_type == connection_tile_type) {
-                        hash::set(side_data, column, row);
+                        hash::set(side_data, row, column);
                     }
                     break;
                 }
@@ -310,15 +310,21 @@ void dungen(engine::Engine *engine, game::Game *game) {
     Hash<Tile> terrain_tiles = Hash<Tile>(allocator);
 
     const uint32_t map_width = params.map_width();
-    const uint32_t rooms_count_wide = (uint32_t)ceil(sqrt(params.room_count()));
-    const uint32_t rooms_count_tall = (uint32_t)ceil(sqrt(params.room_count()));
+    const uint32_t room_count = params.room_count();
+    const uint32_t rooms_count_wide = (uint32_t)ceil(sqrt(room_count));
+    const uint32_t rooms_count_tall = (uint32_t)ceil(sqrt(room_count));
     const uint32_t section_width = map_width / rooms_count_wide;
     const uint32_t section_height = map_width / rooms_count_tall;
 
+    log_debug("Dungen rooms count %u", room_count);
     log_debug("Dungen rooms count wide %u", rooms_count_wide);
     log_debug("Dungen rooms count tall %u", rooms_count_tall);
     log_debug("Dungen section width %u", section_width);
     log_debug("Dungen section height %u", section_height);
+
+    if (floor(sqrt(room_count)) != ceil(sqrt(room_count))) {
+        log_fatal("room_count parameter not a square.");
+    }
 
     std::random_device random_device;
     std::mt19937 random_engine(random_device());
@@ -330,7 +336,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     log_debug("Dungen seeded with %u", seed);
 
-    std::uniform_int_distribution<int32_t> room_size_distribution(params.min_room_size(), params.max_room_size());
+    std::uniform_int_distribution<uint32_t> room_template_distribution(0, array::size(game->room_templates->templates) - 1);
     std::uniform_int_distribution<int> fifty_fifty(0, 1);
     std::uniform_int_distribution<int> percentage(1, 100);
 
@@ -381,12 +387,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         }
 
-        if (start_room_index > (uint32_t)params.room_count()) {
-            start_room_index = params.room_count() - 1;
+        if (start_room_index > room_count) {
+            start_room_index = room_count - 1;
         }
 
-        if (boss_room_index > (uint32_t)params.room_count()) {
-            boss_room_index = params.room_count() - 1;
+        if (boss_room_index > room_count) {
+            boss_room_index = room_count - 1;
         }
 
         log_debug("Dungen start room index %d", start_room_index);
@@ -395,7 +401,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Place rooms in grids sections, referenced by their index.
     {
-        for (uint32_t room_index = 0; room_index < (uint32_t)params.room_count(); ++room_index) {
+        for (uint32_t room_index = 0; room_index < room_count; ++room_index) {
             uint32_t room_index_x, room_index_y;
             coord(room_index, room_index_x, room_index_y, rooms_count_wide);
 
@@ -404,16 +410,27 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t section_min_y = room_index_y * section_height;
             const uint32_t section_max_y = section_min_y + section_height;
 
-            const uint32_t room_width = room_size_distribution(random_engine);
-            const uint32_t room_height = room_size_distribution(random_engine);
+            const uint32_t room_template_index = room_template_distribution(random_engine);
+            const RoomTemplates::Template &room_template = *game->room_templates->templates[room_template_index];
 
-            std::uniform_int_distribution<uint32_t> x_offset(section_min_x + 2, section_max_x - 2 - room_width);
-            std::uniform_int_distribution<uint32_t> y_offset(section_min_y + 2, section_max_y - 2 - room_height);
+            // TODO: Randomize positions in section
 
-            const uint32_t room_x = x_offset(random_engine);
-            const uint32_t room_y = y_offset(random_engine);
+            // const uint32_t room_width = room_size_distribution(random_engine);
+            // const uint32_t room_height = room_size_distribution(random_engine);
 
-            Room room = Room{room_index, room_x, room_y, room_width, room_height};
+            // std::uniform_int_distribution<uint32_t> x_offset(section_min_x + 2, section_max_x - 2 - room_width);
+            // std::uniform_int_distribution<uint32_t> y_offset(section_min_y + 2, section_max_y - 2 - room_height);
+
+            // const uint32_t room_x = x_offset(random_engine);
+            // const uint32_t room_y = y_offset(random_engine);
+
+            const uint32_t room_width = room_template.columns;
+            const uint32_t room_height = room_template.rows;
+
+            const uint32_t room_x = section_min_x;
+            const uint32_t room_y = section_min_y;
+
+            Room room(room_index, room_template_index, room_x, room_y, room_width, room_height);
 
             if (room_index == start_room_index) {
                 room.start_room = true;
@@ -447,6 +464,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             array::push_back(corridors, Corridor{from_room_index, to_room_index});
         }
     }
+
+    log_debug("Corridors size %u", array::size(corridors));
 
     // Expand some branches
     {
@@ -511,12 +530,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
             uint32_t room_index = corridor.from_room_index;
 
             // Expand branches, perhaps multiple times
-            bool expansion_done = percentage(random_engine) > params.expand_chance();
+            bool expansion_done = percentage(random_engine) >= params.expand_chance();
             while (!expansion_done) {
                 uint32_t next_room_index = expand(room_index);
                 if (next_room_index >= 0) {
                     room_index = next_room_index;
-                    expansion_done = percentage(random_engine) > params.expand_chance();
+                    expansion_done = percentage(random_engine) >= params.expand_chance();
                 } else {
                     expansion_done = true;
                 }
@@ -527,12 +546,17 @@ void dungen(engine::Engine *engine, game::Game *game) {
             Corridor branch = *iter;
             array::push_back(corridors, branch);
         }
+
+        log_debug("Branches size %u", array::size(branches));
+        log_debug("Corridors after size %u", array::size(corridors));
     }
 
     // Prune disconnected rooms
+    // TODO: Prune rooms that aren't connected to main path.
+    // Clusters of connected rooms aren't pruned properly.
     {
         Queue<uint32_t> disconnected_room_indices = Queue<uint32_t>(allocator);
-        for (uint32_t i = 0; i < (uint32_t)params.room_count(); ++i) {
+        for (uint32_t i = 0; i < room_count; ++i) {
             bool found = false;
 
             for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
@@ -579,41 +603,35 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Draw rooms as tiles
     {
-        Tile floor_tile = Tile::Floor;
-
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
-            Room &room = iter->value;
+            const Room &room = iter->value;
+            const RoomTemplates::Template &room_template = *game->room_templates->templates[room.room_template_index];
 
-            for (uint32_t y = 0; y < room.h; ++y) {
-                for (uint32_t x = 0; x < room.w; ++x) {
-                    Tile tile = Tile::None;
+            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+                Tile tile = Tile::None;
+                RoomTemplates::Template::TileType tile_type = static_cast<RoomTemplates::Template::TileType>((*room_template.tiles)[i]);
 
-                    if (y == 0) {
-                        if (x == 0) {
-                            tile = Tile::WallCornerTopLeft;
-                        } else if (x == room.w - 1) {
-                            tile = Tile::WallCornerTopRight;
-                        } else {
-                            tile = Tile::WallTop;
-                        }
-                    } else if (y == room.h - 1) {
-                        if (x == 0) {
-                            tile = Tile::WallCornerBottomLeft;
-                        } else if (x == room.w - 1) {
-                            tile = Tile::WallCornerBottomRight;
-                        } else {
-                            tile = Tile::WallBottom;
-                        }
-                    } else if (x == 0) {
-                        tile = Tile::WallLeft;
-                    } else if (x == room.w - 1) {
-                        tile = Tile::WallRight;
-                    } else {
-                        tile = floor_tile;
-                    }
+                uint32_t x, y;
+                coord(i, x, y, room_template.columns);
+                y = room_template.rows - y - 1;
 
-                    hash::set(terrain_tiles, index(room.x + x, room.y + y, map_width), {tile});
+                switch (tile_type) {
+                case RoomTemplates::Template::TileType::Empty:
+                    tile = Tile::None;
+                    break;
+                case RoomTemplates::Template::TileType::Floor:
+                    tile = Tile::Floor;
+                    break;
+                case RoomTemplates::Template::TileType::Wall:
+                case RoomTemplates::Template::TileType::Connection:
+                    tile = Tile::Wall;
+                    break;
+                default:
+                    tile = Tile::Missing;
+                    break;
                 }
+
+                hash::set(terrain_tiles, index(room.x + x, room.y + y, map_width), {tile});
             }
         }
     }
@@ -643,18 +661,79 @@ void dungen(engine::Engine *engine, game::Game *game) {
         // Added walls which needs to be properly placed.
         Hash<bool> placeholder_walls = Hash<bool>(allocator);
 
+        int line_draw_count = 0;
+
         // Function to iterate through corridors, applying a function on each coordinate.
+        // Note: These will randomize connection points for corridors, and since iterate_corridor is used multiple times
+        // the random functions are seeded based on the rooms' indices.
         auto iterate_corridor = [&](std::function<void(line::Coordinate prev, line::Coordinate coord, line::Coordinate next)> apply) {
-            for (auto iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
+            std::random_device random_device;
+            std::mt19937 random_engine(random_device());
+
+            for (Corridor *iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
                 Corridor corridor = *iter;
 
-                Room start_room = hash::get(rooms, corridor.from_room_index, {});
-                Room to_room = hash::get(rooms, corridor.to_room_index, {});
+                const Room start_room = hash::get(rooms, corridor.from_room_index, {});
+                const Room to_room = hash::get(rooms, corridor.to_room_index, {});
+                const RoomTemplates::Template &start_room_template = *game->room_templates->templates[start_room.room_template_index];
+                const RoomTemplates::Template &to_room_template = *game->room_templates->templates[to_room.room_template_index];
 
-                line::Coordinate a = {(int32_t)start_room.x + (int32_t)start_room.w / 2, (int32_t)start_room.y + (int32_t)start_room.h / 2};
-                line::Coordinate b = {(int32_t)to_room.x + (int32_t)to_room.w / 2, (int32_t)to_room.y + (int32_t)to_room.h / 2};
+                line::Coordinate start_coordinate, to_coordinate;
 
-                Array<line::Coordinate> coordinates = line::zig_zag(allocator, a, b);
+                {
+                    uint32_t start_room_section_x, start_room_section_y;
+                    coord(start_room.room_index, start_room_section_x, start_room_section_y, rooms_count_wide);
+
+                    uint32_t to_room_section_x, to_room_section_y;
+                    coord(to_room.room_index, to_room_section_x, to_room_section_y, rooms_count_wide);
+
+                    TempAllocator128 ta;
+
+                    if (start_room_section_x != to_room_section_x && start_room_section_y != to_room_section_y) {
+                        log_error("Rooms connected aren't orthogonally adjacent");
+                        start_coordinate = {(int32_t)start_room.x + (int32_t)start_room.w / 2, (int32_t)start_room.y + (int32_t)start_room.h / 2};
+                        to_coordinate = {(int32_t)to_room.x + (int32_t)to_room.w / 2, (int32_t)to_room.y + (int32_t)to_room.h / 2};
+                    } else {
+                        ConnectionDirection start_direction, to_direction;
+                        if (start_room_section_y == to_room_section_y) { // horizontally adjacent
+                            start_direction = start_room_section_x < to_room_section_x ? ConnectionDirection::East : ConnectionDirection::West;
+                            to_direction = start_room_section_x < to_room_section_x ? ConnectionDirection::West : ConnectionDirection::East;
+                        } else {
+                            start_direction = start_room_section_y < to_room_section_y ? ConnectionDirection::North : ConnectionDirection::South;
+                            to_direction = start_room_section_y < to_room_section_y ? ConnectionDirection::South : ConnectionDirection::North;
+                        }
+
+                        Array<uint32_t> start_connections(ta);
+                        connections_from_direction(start_room_template, start_direction, start_connections);
+                        if (array::empty(start_connections)) {
+                            log_fatal("Room template %s missing connections side %u", string_stream::c_str(*start_room_template.name), start_direction);
+                        }
+
+                        Array<uint32_t> to_connections(ta);
+                        connections_from_direction(to_room_template, to_direction, to_connections);
+                        if (array::empty(to_connections)) {
+                            log_fatal("Room template %s missing connections side %u", string_stream::c_str(*to_room_template.name), to_direction);
+                        }
+
+                        rnd_pcg_t pcg;
+                        rnd_pcg_seed(&pcg, start_room.room_index);
+                        uint32_t start_connection_index = rnd_pcg_range(&pcg, 0, array::size(start_connections) - 1);
+
+                        rnd_pcg_seed(&pcg, to_room.room_index);
+                        uint32_t to_connection_index = rnd_pcg_range(&pcg, 0, array::size(to_connections) - 1);
+
+                        uint32_t start_connection_x, start_connection_y;
+                        coord(start_connections[start_connection_index], start_connection_x, start_connection_y, start_room_template.columns);
+
+                        uint32_t to_connection_x, to_connection_y;
+                        coord(to_connections[to_connection_index], to_connection_x, to_connection_y, to_room_template.columns);
+
+                        start_coordinate = {(int32_t)start_room.x + (int32_t)start_connection_x, (int32_t)start_room.y + start_room_template.rows - (int32_t)start_connection_y - 1};
+                        to_coordinate = {(int32_t)to_room.x + (int32_t)to_connection_x, (int32_t)to_room.y + to_room_template.rows - (int32_t)to_connection_y - 1};
+                    }
+                }
+
+                Array<line::Coordinate> coordinates = line::zig_zag(allocator, start_coordinate, to_coordinate);
 
                 for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
                     line::Coordinate prev;
@@ -695,6 +774,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
                     apply(prev, coord, next);
                 }
+
+                ++line_draw_count;
             }
         };
 
@@ -754,6 +835,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         });
 
+        log_debug("Drew line %u", line_draw_count);
+
         // Function to update the correct wall tile on a coordinate. Depends on surrounding walls and placeholder walls.
         auto place_wall = [&](uint32_t index_wall) {
             uint32_t coord_x, coord_y;
@@ -797,8 +880,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
 #pragma warning(pop)
 
-            // TODO: Handle tri-wall corners
-
             if (floor_e && floor_w && wall_n && wall_s) { // Vertical wall between two floor tiles
                 hash::set(terrain_tiles, index_wall, Tile::WallLeftRight);
             } else if (floor_e && floor_w && floor_n && wall_s) { // Vertical wall cap north between two floor tiles
@@ -836,7 +917,9 @@ void dungen(engine::Engine *engine, game::Game *game) {
             } else if (wall_n && wall_w && floor_nw) { // Corner cap left and up below a corridor
                 hash::set(terrain_tiles, index_wall, Tile::WallCornerBottomRight);
             } else {
-                hash::set(terrain_tiles, index_wall, Tile::Missing);
+                // TODO: Handle tri-wall corners
+                // hash::set(terrain_tiles, index_wall, Tile::Missing);
+                hash::set(terrain_tiles, index_wall, Tile::Wall);
             }
         };
 

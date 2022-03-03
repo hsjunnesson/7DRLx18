@@ -19,7 +19,21 @@ struct Game;
  * 
  */
 struct Room {
+    Room() {
+    }
+
+    Room(uint32_t room_index, uint32_t room_template_index, uint32_t x, uint32_t y, uint32_t w, uint32_t h, bool start_room = false, bool boss_room = false)
+    : room_index(room_index)
+    , room_template_index(room_template_index)
+    , x(x)
+    , y(y)
+    , w(w)
+    , h(h)
+    , start_room(start_room)
+    , boss_room(boss_room) {}
+
     uint32_t room_index;
+    uint32_t room_template_index;
     uint32_t x, y;
     uint32_t w, h;
     bool start_room = false;
@@ -78,6 +92,7 @@ enum class Tile {
     None,
     Missing,
     Floor,
+    FloorGrass,
     Wall,
     WallCornerTopLeft,
     WallCornerTopRight,
@@ -105,9 +120,11 @@ enum class Tile {
 constexpr const char *tile_sprite_name(const Tile tile) {
     switch (tile) {
     case Tile::None:
-        return "none";
+        return "floor";
     case Tile::Floor:
         return "floor";
+    case Tile::FloorGrass:
+        return "floor_grass";
     case Tile::Wall:
     case Tile::WallCornerTopLeft:
     case Tile::WallCornerTopRight:
