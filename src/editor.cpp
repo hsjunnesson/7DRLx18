@@ -505,8 +505,90 @@ void room_templates_editor(game::Game &game, bool *show_window) {
     }
 
     ImGui::End();
+}
 
-    did_reset = false;
+void gamestate_controls_window(engine::Engine &engine, game::Game &game, bool *show_window) {
+    if (*show_window == false) {
+        return;
+    }
+
+    if (!ImGui::Begin("Gamestate Controls", show_window, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::End();
+        return;
+    }
+
+    // Game state label
+    {
+        const char *game_state_label = nullptr;
+        
+        switch (game.game_state) {
+        case GameState::None:
+            game_state_label = "None";
+            break;
+        case GameState::Initializing:
+            game_state_label = "Initializing";
+            break;
+        case GameState::Menus:
+            game_state_label = "Menus";
+            break;
+        case GameState::Dungen:
+            game_state_label = "Dungen";
+            break;
+        case GameState::Playing:
+            game_state_label = "Playing";
+            break;
+        case GameState::Quitting:
+            game_state_label = "Quitting";
+            break;
+        case GameState::Terminate:
+            game_state_label = "Terminate";
+            break;
+        }
+
+        static char state_buf[256];
+        snprintf(state_buf, 256, "State (%s)", game_state_label);
+
+        ImGui::Text(state_buf);
+    }
+    
+    // State buttons
+    {
+        if (ImGui::Button("Initializing")) {
+            transition(engine, &game, GameState::Initializing);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Menus")) {
+            transition(engine, &game, GameState::Menus);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Dungen")) {
+            transition(engine, &game, GameState::Dungen);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Playing")) {
+            transition(engine, &game, GameState::Playing);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Quitting")) {
+            transition(engine, &game, GameState::Quitting);
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Terminate")) {
+            transition(engine, &game, GameState::Terminate);
+        }
+    }
+
+    ImGui::End();
 }
 
 void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) {
@@ -514,11 +596,16 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     (void)state;
 
     static bool show_room_templates_window = true;
+    static bool show_gamestate_controls_window = true;
 
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Windows")) {
             if (ImGui::MenuItem("Room templates", nullptr, show_room_templates_window)) {
                 show_room_templates_window = !show_room_templates_window;
+            }
+
+            if (ImGui::MenuItem("Gamestate Controls", nullptr, show_gamestate_controls_window)) {
+                show_gamestate_controls_window = !show_gamestate_controls_window;
             }
 
             ImGui::EndMenu();
@@ -528,6 +615,9 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     }
 
     room_templates_editor(game, &show_room_templates_window);
+    gamestate_controls_window(engine, game, &show_gamestate_controls_window);
+
+    did_reset = false;
 }
 
 } // namespace editor
