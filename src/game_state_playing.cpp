@@ -259,7 +259,7 @@ void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::Inp
                 zoom = zoom * 0.5f;
             }
 
-            zoom = std::clamp(zoom, 0.25f, 4.0f);
+            zoom = std::clamp(zoom, 0.125f, 4.0f);
             engine::zoom_camera(engine, zoom);
         }
     }

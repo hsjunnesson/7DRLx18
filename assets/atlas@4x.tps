@@ -4,7 +4,7 @@
         <key>fileFormatVersion</key>
         <int>5</int>
         <key>texturePackerVersion</key>
-        <string>6.0.0</string>
+        <string>6.0.1</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -186,8 +186,9 @@
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
             <key type="filename">sprites@4x/farmer.png</key>
+            <key type="filename">sprites@4x/floor.png</key>
+            <key type="filename">sprites@4x/floor_grass.png</key>
             <key type="filename">sprites@4x/missing.png</key>
-            <key type="filename">sprites@4x/sprite-0.png</key>
             <key type="filename">sprites@4x/sprite-1.png</key>
             <key type="filename">sprites@4x/sprite-10.png</key>
             <key type="filename">sprites@4x/sprite-100.png</key>

@@ -1,6 +1,9 @@
 #include "game.h"
 
 #pragma warning(push, 0)
+#define RND_IMPLEMENTATION
+#include "rnd.h"
+
 #include <engine/engine.h>
 #include <engine/input.h>
 
