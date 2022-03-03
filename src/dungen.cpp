@@ -26,7 +26,6 @@
 
 #include <cassert>
 #include <mutex>
-#include <random>
 #include <thread>
 #pragma warning(pop)
 
@@ -357,19 +356,11 @@ void dungen(engine::Engine *engine, game::Game *game) {
         log_fatal("room_count parameter not a square.");
     }
 
-    std::random_device random_device;
-    std::mt19937 random_engine(random_device());
+    rnd_pcg_t random_device;
     unsigned int seed = (unsigned int)time(nullptr);
-    // seed = 1642864096; // orphaned island
-    //    seed = 1644687731;
-
-    random_engine.seed(seed);
+    rnd_pcg_seed(&random_device, seed);
 
     log_debug("Dungen seeded with %u", seed);
-
-    std::uniform_int_distribution<uint32_t> room_template_distribution(0, array::size(game->room_templates->templates) - 1);
-    std::uniform_int_distribution<int> fifty_fifty(0, 1);
-    std::uniform_int_distribution<int> percentage(1, 100);
 
     uint32_t start_room_index = 0;
     uint32_t boss_room_index = 0;
@@ -377,40 +368,64 @@ void dungen(engine::Engine *engine, game::Game *game) {
     uint32_t stairs_up_index = 0;
     uint32_t stairs_down_index = 0;
 
+    // Collections of room templates
+    Array<RoomTemplates::Template *> common_room_templates(allocator);
+    Array<RoomTemplates::Template *> start_room_templates(allocator);
+    Array<RoomTemplates::Template *> boss_room_templates(allocator);
+
+    {
+        for (RoomTemplates::Template **it = array::begin(game->room_templates->templates); it != array::end(game->room_templates->templates); ++it) {
+            bool common_room = true;
+            uint8_t tags = (*it)->tags;
+            
+            if ((tags & RoomTemplates::Template::RoomTemplateTagsStartRoom) != 0) {
+                array::push_back(start_room_templates, *it);
+                common_room = false;
+            }
+
+            if ((tags & RoomTemplates::Template::RoomTemplateTagsBossRoom) != 0) {
+                array::push_back(boss_room_templates, *it);
+                common_room = false;
+            }
+
+            if (common_room) {
+                array::push_back(common_room_templates, *it);
+            }
+        }
+    }
+
     // Rooms and corridors collections
     Hash<Room> rooms = Hash<Room>(allocator);
     Array<Corridor> corridors = Array<Corridor>(allocator);
 
     // Decide whether main orientation is vertical or horizontal
     {
-        bool start_room_vertical_side = fifty_fifty(random_engine) == 0;
-        bool start_room_first_side = fifty_fifty(random_engine) == 0;
+        bool start_room_vertical_side = rnd_pcg_range(&random_device, 0, 1) == 0;
+        bool start_room_first_side = rnd_pcg_range(&random_device, 0, 1) == 0;
 
         if (start_room_vertical_side) {
-            std::uniform_int_distribution<int32_t> tall_side_distribution(0, rooms_count_tall - 1);
-            int32_t y = tall_side_distribution(random_engine);
+            uint32_t y = rnd_pcg_range(&random_device, 0, rooms_count_tall - 1);
             start_room_index = y * rooms_count_wide;
 
             if (!start_room_first_side) {
                 start_room_index += (rooms_count_wide - 1);
             }
 
-            y = tall_side_distribution(random_engine);
+            y = rnd_pcg_range(&random_device, 0, rooms_count_tall - 1);
             boss_room_index = y * rooms_count_wide;
 
             if (start_room_first_side) {
                 boss_room_index += (rooms_count_wide - 1);
             }
         } else {
-            std::uniform_int_distribution<int32_t> wide_side_distribution(0, rooms_count_wide - 1);
-            int32_t x = wide_side_distribution(random_engine);
+            uint32_t x = rnd_pcg_range(&random_device, 0, rooms_count_wide - 1);
             start_room_index = x;
 
             if (!start_room_first_side) {
                 start_room_index += rooms_count_wide * (rooms_count_tall - 1);
             }
 
-            x = wide_side_distribution(random_engine);
+            x = rnd_pcg_range(&random_device, 0, rooms_count_wide - 1);
             boss_room_index = x;
 
             if (start_room_first_side) {
@@ -441,7 +456,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t section_min_y = room_index_y * section_height;
             const uint32_t section_max_y = section_min_y + section_height;
 
-            const uint32_t room_template_index = room_template_distribution(random_engine);
+            const uint32_t room_template_index = rnd_pcg_range(&random_device, 0, array::size(common_room_templates) - 1);
             const RoomTemplates::Template &room_template = *game->room_templates->templates[room_template_index];
 
             // TODO: Randomize positions in section
@@ -540,8 +555,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
 
             if (array::size(available_adjacent_room_indices) > 0) {
-                std::uniform_int_distribution<int> random_distribution(0, array::size(available_adjacent_room_indices) - 1);
-                int random_selection = random_distribution(random_engine);
+                uint32_t random_selection = rnd_pcg_range(&random_device, 0, array::size(available_adjacent_room_indices) - 1);
                 uint32_t next_room_index = available_adjacent_room_indices[random_selection];
                 Corridor branching_corridor = Corridor{room_index, next_room_index};
                 array::push_back(corridors, branching_corridor);
@@ -561,12 +575,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
             uint32_t room_index = corridor.from_room_index;
 
             // Expand branches, perhaps multiple times
-            bool expansion_done = percentage(random_engine) >= params.expand_chance();
+            bool expansion_done = rnd_pcg_range(&random_device, 0, 100) >= params.expand_chance();
             while (!expansion_done) {
                 uint32_t next_room_index = expand(room_index);
                 if (next_room_index >= 0) {
                     room_index = next_room_index;
-                    expansion_done = percentage(random_engine) >= params.expand_chance();
+                    expansion_done = rnd_pcg_range(&random_device, 0, 100) >= params.expand_chance();
                 } else {
                     expansion_done = true;
                 }
@@ -698,9 +712,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
         // Note: These will randomize connection points for corridors, and since iterate_corridor is used multiple times
         // the random functions are seeded based on the rooms' indices.
         auto iterate_corridor = [&](std::function<void(line::Coordinate prev, line::Coordinate coord, line::Coordinate next)> apply) {
-            std::random_device random_device;
-            std::mt19937 random_engine(random_device());
-
             for (Corridor *iter = array::begin(corridors); iter != array::end(corridors); ++iter) {
                 Corridor corridor = *iter;
 
