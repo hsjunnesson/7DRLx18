@@ -1040,11 +1040,9 @@ class DungenParams final :
 
   enum : int {
     kRoomCountFieldNumber = 1,
-    kMinRoomSizeFieldNumber = 2,
-    kMaxRoomSizeFieldNumber = 3,
-    kMapWidthFieldNumber = 4,
-    kMapHeightFieldNumber = 5,
-    kExpandChanceFieldNumber = 6,
+    kMapWidthFieldNumber = 2,
+    kMapHeightFieldNumber = 3,
+    kExpandChanceFieldNumber = 4,
   };
   // int32 room_count = 1;
   void clear_room_count();
@@ -1055,25 +1053,7 @@ class DungenParams final :
   void _internal_set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 min_room_size = 2;
-  void clear_min_room_size();
-  ::PROTOBUF_NAMESPACE_ID::int32 min_room_size() const;
-  void set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_min_room_size() const;
-  void _internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // int32 max_room_size = 3;
-  void clear_max_room_size();
-  ::PROTOBUF_NAMESPACE_ID::int32 max_room_size() const;
-  void set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_max_room_size() const;
-  void _internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // int32 map_width = 4;
+  // int32 map_width = 2;
   void clear_map_width();
   ::PROTOBUF_NAMESPACE_ID::int32 map_width() const;
   void set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -1082,7 +1062,7 @@ class DungenParams final :
   void _internal_set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 map_height = 5;
+  // int32 map_height = 3;
   void clear_map_height();
   ::PROTOBUF_NAMESPACE_ID::int32 map_height() const;
   void set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -1091,7 +1071,7 @@ class DungenParams final :
   void _internal_set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
-  // int32 expand_chance = 6;
+  // int32 expand_chance = 4;
   void clear_expand_chance();
   ::PROTOBUF_NAMESPACE_ID::int32 expand_chance() const;
   void set_expand_chance(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -1108,8 +1088,6 @@ class DungenParams final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::int32 room_count_;
-  ::PROTOBUF_NAMESPACE_ID::int32 min_room_size_;
-  ::PROTOBUF_NAMESPACE_ID::int32 max_room_size_;
   ::PROTOBUF_NAMESPACE_ID::int32 map_width_;
   ::PROTOBUF_NAMESPACE_ID::int32 map_height_;
   ::PROTOBUF_NAMESPACE_ID::int32 expand_chance_;
@@ -1505,47 +1483,7 @@ inline void DungenParams::set_room_count(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:game.DungenParams.room_count)
 }
 
-// int32 min_room_size = 2;
-inline void DungenParams::clear_min_room_size() {
-  min_room_size_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_min_room_size() const {
-  return min_room_size_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::min_room_size() const {
-  // @@protoc_insertion_point(field_get:game.DungenParams.min_room_size)
-  return _internal_min_room_size();
-}
-inline void DungenParams::_internal_set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  min_room_size_ = value;
-}
-inline void DungenParams::set_min_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_min_room_size(value);
-  // @@protoc_insertion_point(field_set:game.DungenParams.min_room_size)
-}
-
-// int32 max_room_size = 3;
-inline void DungenParams::clear_max_room_size() {
-  max_room_size_ = 0;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::_internal_max_room_size() const {
-  return max_room_size_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 DungenParams::max_room_size() const {
-  // @@protoc_insertion_point(field_get:game.DungenParams.max_room_size)
-  return _internal_max_room_size();
-}
-inline void DungenParams::_internal_set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  
-  max_room_size_ = value;
-}
-inline void DungenParams::set_max_room_size(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_max_room_size(value);
-  // @@protoc_insertion_point(field_set:game.DungenParams.max_room_size)
-}
-
-// int32 map_width = 4;
+// int32 map_width = 2;
 inline void DungenParams::clear_map_width() {
   map_width_ = 0;
 }
@@ -1565,7 +1503,7 @@ inline void DungenParams::set_map_width(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:game.DungenParams.map_width)
 }
 
-// int32 map_height = 5;
+// int32 map_height = 3;
 inline void DungenParams::clear_map_height() {
   map_height_ = 0;
 }
@@ -1585,7 +1523,7 @@ inline void DungenParams::set_map_height(::PROTOBUF_NAMESPACE_ID::int32 value) {
   // @@protoc_insertion_point(field_set:game.DungenParams.map_height)
 }
 
-// int32 expand_chance = 6;
+// int32 expand_chance = 4;
 inline void DungenParams::clear_expand_chance() {
   expand_chance_ = 0;
 }

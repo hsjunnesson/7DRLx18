@@ -50,8 +50,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT GameParamsDefaultTypeInternal _
 constexpr DungenParams::DungenParams(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : room_count_(0)
-  , min_room_size_(0)
-  , max_room_size_(0)
   , map_width_(0)
   , map_height_(0)
   , expand_chance_(0){}
@@ -107,8 +105,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_proto_2fgame_2eproto::offsets[
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, room_count_),
-  PROTOBUF_FIELD_OFFSET(::game::DungenParams, min_room_size_),
-  PROTOBUF_FIELD_OFFSET(::game::DungenParams, max_room_size_),
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, map_width_),
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, map_height_),
   PROTOBUF_FIELD_OFFSET(::game::DungenParams, expand_chance_),
@@ -124,7 +120,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 0, -1, -1, sizeof(::game::ActionBindEntry)},
   { 8, -1, -1, sizeof(::game::GameParams)},
   { 18, -1, -1, sizeof(::game::DungenParams)},
-  { 30, -1, -1, sizeof(::game::ActionBinds)},
+  { 28, -1, -1, sizeof(::game::ActionBinds)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -190,17 +186,16 @@ const char descriptor_table_protodef_proto_2fgame_2eproto[] PROTOBUF_SECTION_VAR
   "_ALT\020\332\002\022\024\n\017KEY_RIGHT_SUPER\020\333\002\"|\n\nGamePar"
   "ams\022\033\n\023game_atlas_filename\030\001 \001(\t\022\036\n\026dung"
   "en_params_filename\030\002 \001(\t\022\037\n\027room_templat"
-  "es_filename\030\003 \001(\t\022\020\n\010tilesize\030\004 \001(\005\"\216\001\n\014"
-  "DungenParams\022\022\n\nroom_count\030\001 \001(\005\022\025\n\rmin_"
-  "room_size\030\002 \001(\005\022\025\n\rmax_room_size\030\003 \001(\005\022\021"
-  "\n\tmap_width\030\004 \001(\005\022\022\n\nmap_height\030\005 \001(\005\022\025\n"
-  "\rexpand_chance\030\006 \001(\005\":\n\013ActionBinds\022+\n\014a"
-  "ction_binds\030\001 \003(\0132\025.game.ActionBindEntry"
-  "b\006proto3"
+  "es_filename\030\003 \001(\t\022\020\n\010tilesize\030\004 \001(\005\"`\n\014D"
+  "ungenParams\022\022\n\nroom_count\030\001 \001(\005\022\021\n\tmap_w"
+  "idth\030\002 \001(\005\022\022\n\nmap_height\030\003 \001(\005\022\025\n\rexpand"
+  "_chance\030\004 \001(\005\":\n\013ActionBinds\022+\n\014action_b"
+  "inds\030\001 \003(\0132\025.game.ActionBindEntryb\006proto"
+  "3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_proto_2fgame_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_proto_2fgame_2eproto = {
-  false, false, 2448, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 
+  false, false, 2401, descriptor_table_protodef_proto_2fgame_2eproto, "proto/game.proto", 
   &descriptor_table_proto_2fgame_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_proto_2fgame_2eproto::offsets,
   file_level_metadata_proto_2fgame_2eproto, file_level_enum_descriptors_proto_2fgame_2eproto, file_level_service_descriptors_proto_2fgame_2eproto,
@@ -1118,41 +1113,25 @@ const char* DungenParams::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         } else
           goto handle_unusual;
         continue;
-      // int32 min_room_size = 2;
+      // int32 map_width = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          min_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // int32 max_room_size = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          max_room_size_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // int32 map_width = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           map_width_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 map_height = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
+      // int32 map_height = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           map_height_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
-      // int32 expand_chance = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
+      // int32 expand_chance = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
           expand_chance_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
@@ -1193,34 +1172,22 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(1, this->_internal_room_count(), target);
   }
 
-  // int32 min_room_size = 2;
-  if (this->_internal_min_room_size() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_min_room_size(), target);
-  }
-
-  // int32 max_room_size = 3;
-  if (this->_internal_max_room_size() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_max_room_size(), target);
-  }
-
-  // int32 map_width = 4;
+  // int32 map_width = 2;
   if (this->_internal_map_width() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_map_width(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(2, this->_internal_map_width(), target);
   }
 
-  // int32 map_height = 5;
+  // int32 map_height = 3;
   if (this->_internal_map_height() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(5, this->_internal_map_height(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_map_height(), target);
   }
 
-  // int32 expand_chance = 6;
+  // int32 expand_chance = 4;
   if (this->_internal_expand_chance() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(6, this->_internal_expand_chance(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(4, this->_internal_expand_chance(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1244,27 +1211,17 @@ size_t DungenParams::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_room_count());
   }
 
-  // int32 min_room_size = 2;
-  if (this->_internal_min_room_size() != 0) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_min_room_size());
-  }
-
-  // int32 max_room_size = 3;
-  if (this->_internal_max_room_size() != 0) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_max_room_size());
-  }
-
-  // int32 map_width = 4;
+  // int32 map_width = 2;
   if (this->_internal_map_width() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_map_width());
   }
 
-  // int32 map_height = 5;
+  // int32 map_height = 3;
   if (this->_internal_map_height() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_map_height());
   }
 
-  // int32 expand_chance = 6;
+  // int32 expand_chance = 4;
   if (this->_internal_expand_chance() != 0) {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32SizePlusOne(this->_internal_expand_chance());
   }
@@ -1293,12 +1250,6 @@ void DungenParams::MergeFrom(const DungenParams& from) {
 
   if (from._internal_room_count() != 0) {
     _internal_set_room_count(from._internal_room_count());
-  }
-  if (from._internal_min_room_size() != 0) {
-    _internal_set_min_room_size(from._internal_min_room_size());
-  }
-  if (from._internal_max_room_size() != 0) {
-    _internal_set_max_room_size(from._internal_max_room_size());
   }
   if (from._internal_map_width() != 0) {
     _internal_set_map_width(from._internal_map_width());
