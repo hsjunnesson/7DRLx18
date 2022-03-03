@@ -697,16 +697,34 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
         Room start_room = hash::get(rooms, start_room_index, {});
         if (start_room.start_room) {
-            // TODO: randomize this
-            stairs_up_index = index(start_room.x + start_room.w / 2, start_room.y + start_room.h / 2, map_width);
-            hash::set(terrain_tiles, stairs_up_index, {stairs_up_tile});
+            const RoomTemplates::Template &room_template = *game->room_templates->templates[start_room.room_template_index];
+            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+                uint8_t tile_type = (*room_template.tiles)[i];
+                if (RoomTemplates::Template::TileType::Stair == static_cast<RoomTemplates::Template::TileType>(tile_type)) {
+                    uint32_t x, y;
+                    coord(i, x, y, room_template.columns);
+                    y = room_template.rows - y - 1;
+                    stairs_up_index = index(start_room.x + x, start_room.y + y, map_width);
+                    hash::set(terrain_tiles, stairs_up_index, {stairs_up_tile});
+                    break;
+                }
+            }
         }
 
         Room boss_room = hash::get(rooms, boss_room_index, {});
         if (boss_room.boss_room) {
-            // TODO: randomize this
-            stairs_down_index = index(boss_room.x + boss_room.w / 2, boss_room.y + boss_room.h / 2, map_width);
-            hash::set(terrain_tiles, stairs_down_index, {stairs_down_tile});
+            const RoomTemplates::Template &room_template = *game->room_templates->templates[boss_room.room_template_index];
+            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+                uint8_t tile_type = (*room_template.tiles)[i];
+                if (RoomTemplates::Template::TileType::Stair == static_cast<RoomTemplates::Template::TileType>(tile_type)) {
+                    uint32_t x, y;
+                    coord(i, x, y, room_template.columns);
+                    y = room_template.rows - y - 1;
+                    stairs_down_index = index(boss_room.x + x, boss_room.y + y, map_width);
+                    hash::set(terrain_tiles, stairs_down_index, {stairs_down_tile});
+                    break;
+                }
+            }
         }
     }
 
