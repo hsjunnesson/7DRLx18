@@ -369,27 +369,28 @@ void dungen(engine::Engine *engine, game::Game *game) {
     uint32_t stairs_down_index = 0;
 
     // Collections of room templates
-    Array<RoomTemplates::Template *> common_room_templates(allocator);
-    Array<RoomTemplates::Template *> start_room_templates(allocator);
-    Array<RoomTemplates::Template *> boss_room_templates(allocator);
+    Array<uint32_t> common_room_template_indices(allocator);
+    Array<uint32_t> start_room_template_indices(allocator);
+    Array<uint32_t> boss_room_template_indices(allocator);
 
     {
-        for (RoomTemplates::Template **it = array::begin(game->room_templates->templates); it != array::end(game->room_templates->templates); ++it) {
+        for (uint32_t i = 0; i < array::size(game->room_templates->templates); ++i) {
+            RoomTemplates::Template *room_template = game->room_templates->templates[i];
             bool common_room = true;
-            uint8_t tags = (*it)->tags;
+            uint8_t tags = room_template->tags;
             
             if ((tags & RoomTemplates::Template::RoomTemplateTagsStartRoom) != 0) {
-                array::push_back(start_room_templates, *it);
+                array::push_back(start_room_template_indices, i);
                 common_room = false;
             }
 
             if ((tags & RoomTemplates::Template::RoomTemplateTagsBossRoom) != 0) {
-                array::push_back(boss_room_templates, *it);
+                array::push_back(boss_room_template_indices, i);
                 common_room = false;
             }
 
             if (common_room) {
-                array::push_back(common_room_templates, *it);
+                array::push_back(common_room_template_indices, i);
             }
         }
     }
@@ -456,7 +457,15 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const uint32_t section_min_y = room_index_y * section_height;
             const uint32_t section_max_y = section_min_y + section_height;
 
-            const uint32_t room_template_index = rnd_pcg_range(&random_device, 0, array::size(common_room_templates) - 1);
+            uint32_t room_template_index = 0;
+            if (room_index == start_room_index) {
+                room_template_index = start_room_template_indices[rnd_pcg_range(&random_device, 0, array::size(start_room_template_indices) - 1)];
+            } else if (room_index == boss_room_index) {
+                room_template_index = boss_room_template_indices[rnd_pcg_range(&random_device, 0, array::size(boss_room_template_indices) - 1)];
+            } else {
+                room_template_index = common_room_template_indices[rnd_pcg_range(&random_device, 0, array::size(common_room_template_indices) - 1)];
+            }
+             
             const RoomTemplates::Template &room_template = *game->room_templates->templates[room_template_index];
 
             // TODO: Randomize positions in section
