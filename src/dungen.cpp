@@ -118,10 +118,17 @@ void RoomTemplates::read(const char *filename) {
     const uint8_t version = *p;
     ++p;
 
-    const uint8_t max_version = 1;
+    // Version 1 original
+    // Version 2 added rarity and tags
+    const uint8_t max_version = 2;
+    const uint8_t min_version = 1;
 
     if (version > max_version) {
-        log_fatal("Could not parse: %s version %u not supported", version);
+        log_fatal("Could not parse: %s version %u not supported, max version is %u", version, max_version);
+    }
+
+    if (version < min_version) {
+        log_fatal("Could not parse: %s version %u not supported, min version is %u", version, min_version);
     }
 
     while (p < pe) {
@@ -139,6 +146,26 @@ void RoomTemplates::read(const char *filename) {
 
         if (p >= pe) {
             log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        uint8_t rarity = 1;
+        if (version >= 2) {
+            rarity = *p;
+            ++p;
+
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
+        }
+
+        uint8_t tags = 0;
+        if (version >= 2) {
+            tags = *p;
+            ++p;
+
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
         }
 
         const uint8_t rows = *p;
@@ -166,12 +193,14 @@ void RoomTemplates::read(const char *filename) {
         Template *room_template = MAKE_NEW(this->allocator, Template, this->allocator);
         MAKE_DELETE(this->allocator, Array, room_template->name);
         room_template->name = name_buffer;
+        room_template->rarity = rarity;
+        room_template->tags = tags;
         room_template->rows = rows;
         room_template->columns = columns;
         MAKE_DELETE(this->allocator, Array, room_template->tiles);
         room_template->tiles = data;
 
-        array::push_back(this->templates, room_template);
+        array::push_back(this->templates, room_template);   
     }
 }
 
@@ -187,7 +216,7 @@ void RoomTemplates::write(const char *filename) {
     fwrite(room_templates_header, room_templates_header_len, 1, file);
 
     // Version
-    uint8_t version = 1;
+    const uint8_t version = 2;
     fwrite(&version, sizeof(uint8_t), 1, file);
 
     // Write rooms
@@ -198,6 +227,8 @@ void RoomTemplates::write(const char *filename) {
         
         fwrite(array::begin(*room_template->name), sizeof(char), name_length, file);
 
+        fwrite(&room_template->rarity, sizeof(uint8_t), 1, file);
+        fwrite(&room_template->tags, sizeof(uint8_t), 1, file);
         fwrite(&room_template->rows, sizeof(uint8_t), 1, file);
         fwrite(&room_template->columns, sizeof(uint8_t), 1, file);
 

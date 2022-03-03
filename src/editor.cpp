@@ -15,12 +15,6 @@
 namespace {
 bool did_reset = false;
 bool room_templates_dirty = false;
-// const char tile_tool_labels[] = {' ', '.', '#', '%'};
-// const char *tile_tool_descriptions[] = {"Empty", "Floor", "Wall", "Connection"};
-
-// salmon  217, 105, 65
-// red  166, 43, 31
-const ImVec4 tile_tool_colors[] = {ImColor(0, 0, 0), ImColor(25, 60, 64), ImColor(33, 64, 1), ImColor(46, 89, 2)};
 }
 
 namespace game {
@@ -40,8 +34,10 @@ char tile_tool_label(uint8_t tile_type) {
         return '#';
     case RoomTemplates::Template::TileType::Connection:
         return '%';
-    case RoomTemplates::Template::TileType::Count:
-        return 'X';
+    case RoomTemplates::Template::TileType::Stair:
+        return '>';
+    default:
+        log_fatal("Unsupported TileType %u", tile_type);
     }
 }
 
@@ -55,8 +51,30 @@ const char *tile_tool_description(uint8_t tile_type) {
         return "Wall";
     case RoomTemplates::Template::TileType::Connection:
         return "Connection";
-    case RoomTemplates::Template::TileType::Count:
-        return "Invalid";
+    case RoomTemplates::Template::TileType::Stair:
+        return "Stair";
+    default:
+        log_fatal("Unsupported TileType %u", tile_type);
+    }
+}
+
+ImVec4 tile_tool_color(uint8_t tile_type) {
+    // salmon  217, 105, 65
+    // red  166, 43, 31
+
+    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
+    case RoomTemplates::Template::TileType::Empty:
+        return ImColor(0, 0, 0);
+    case RoomTemplates::Template::TileType::Floor:
+        return ImColor(25, 60, 64);
+    case RoomTemplates::Template::TileType::Wall:
+        return ImColor(33, 64, 1);
+    case RoomTemplates::Template::TileType::Connection:
+        return ImColor(46, 89, 2);
+    case RoomTemplates::Template::TileType::Stair:
+        return ImColor(25, 60, 64);
+    default:
+        log_fatal("Unsupported TileType %u", tile_type);
     }
 }
 
@@ -67,6 +85,10 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
     static int32_t selected_template_index = -1;
     static char template_name[256] = {'\0'};
+    static int rarity = 0;
+    static uint8_t tags = 0;
+    static bool tags_start_room = false;
+    static bool tags_boss_room = false;
     static int rows = 0;
     static int columns = 0;
     const int max_side = 256;
@@ -89,14 +111,14 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
-            if (ImGui::MenuItem("Open", "CTRL+O")) {
+            if (ImGui::MenuItem("Open")) {
                 const char *filename = game.params->room_templates_filename().c_str();
                 game.room_templates->read(filename);
                 did_reset = true;
                 room_templates_dirty = false;
             }
 
-            if (ImGui::MenuItem("Save", "CTRL+S", false, room_templates_dirty)) {
+            if (ImGui::MenuItem("Save", nullptr, false, room_templates_dirty)) {
                 const char *filename = game.params->room_templates_filename().c_str();
                 game.room_templates->write(filename);
                 room_templates_dirty = false;
@@ -134,16 +156,18 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndMenuBar();
     }
 
-    // Left
     if (did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
         selected_template_index = -1;
         memset(template_name, 0, 256);
     }
 
+    // Left
     {
         if (ImGui::Button("Add")) {
             RoomTemplates::Template *t = MAKE_NEW(game.room_templates->allocator, game::RoomTemplates::Template, game.room_templates->allocator);
             string_stream::push(*t->name, "Room", 4);
+            t->rarity = 1;
+            t->tags = 0;
             t->columns = 3;
             t->rows = 3;
 
@@ -185,14 +209,20 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         for (auto it = array::begin(game.room_templates->templates); it != array::end(game.room_templates->templates); ++it) {
             string_stream::Buffer *name_buffer = (*it)->name;
             const char *name = string_stream::c_str(*name_buffer);
+            ImGui::PushID(i);
             if (ImGui::Selectable(name, selected_template_index == i)) {
                 selected_template_index = i;
                 memset(template_name, 0, 256);
                 memcpy(template_name, name, strlen(name));
+                rarity = (*it)->rarity;
+                tags = (*it)->tags;
+                tags_start_room = (tags & RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom) != 0;
+                tags_boss_room = (tags & RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom) != 0;
                 rows = (*it)->rows;
                 columns = (*it)->columns;
                 memcpy(room_template_tiles, (*it)->tiles, rows * columns);
             }
+            ImGui::PopID();
 
             if (ImGui::BeginPopupContextItem()) {
                 ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
@@ -275,12 +305,24 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     string_stream::push(*name, template_name, (uint32_t)strlen(template_name));
                     room_templates_dirty = true;
                 }
+
+                ImGui::SameLine();
+
+                ImGui::PushItemWidth(80);
+                if (ImGui::InputInt("Rarity", &rarity)) {
+                    room_templates_dirty = true;
+                    if (rarity <= 0) {
+                        rarity = 1;
+                    }
+
+                    room_template->rarity = (uint8_t)rarity;
+                }
             }
 
             // Rows & Columns
             {
                 ImGui::PushItemWidth(100);
-                if (ImGui::InputInt("Rows", &rows, 1, 1, ImGuiInputTextFlags_None)) {
+                if (ImGui::InputInt("Rows", &rows)) {
                     room_templates_dirty = true;
 
                     if (rows <= 0) {
@@ -360,6 +402,31 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                 }
             }
 
+            // Tags
+            {
+                if (ImGui::Checkbox("Start room", &tags_start_room)) {
+                    if (tags_start_room) {
+                        tags = tags | RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom;
+                    } else {
+                        tags = tags ^ RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom;
+                    }
+
+                    room_template->tags = tags;
+                }
+
+                ImGui::SameLine();
+
+                if (ImGui::Checkbox("Boss room", &tags_boss_room)) {
+                    if (tags_boss_room) {
+                        tags = tags | RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom;
+                    } else {
+                        tags = tags ^ RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom;
+                    }
+
+                    room_template->tags = tags;
+                }
+            }
+
             // Tile tool palette
             {
                 ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
@@ -381,7 +448,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     draw_list->ChannelsSetCurrent(0);
                     ImVec2 p_min = ImGui::GetItemRectMin();
                     ImVec2 p_max = ImGui::GetItemRectMax();
-                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_colors[i]));
+                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_color(i)));
 
                     draw_list->ChannelsMerge();
                 }
@@ -425,7 +492,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     draw_list->ChannelsSetCurrent(0);
                     ImVec2 p_min = ImGui::GetItemRectMin();
                     ImVec2 p_max = ImGui::GetItemRectMax();
-                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_colors[tile]));
+                    ImGui::GetWindowDrawList()->AddRectFilled(p_min, p_max, ImGui::GetColorU32(tile_tool_color(tile)));
 
                     draw_list->ChannelsMerge();
                 }

@@ -51,7 +51,14 @@ struct RoomTemplates {
             Floor,
             Wall,
             Connection,
+            Stair,
             Count
+        };
+
+        enum Tags {
+            RoomTemplateTagsNone         = 0,
+            RoomTemplateTagsStartRoom    = 1 << 0,
+            RoomTemplateTagsBossRoom     = 1 << 1,
         };
 
         Template(Allocator &allocator);
@@ -60,6 +67,8 @@ struct RoomTemplates {
 
         Allocator &allocator;
         Array<char> *name;
+        uint8_t rarity;
+        uint8_t tags;
         uint8_t rows;
         uint8_t columns;
         Array<uint8_t> *tiles;
