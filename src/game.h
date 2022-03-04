@@ -8,6 +8,7 @@
 namespace std {
 class thread;
 class mutex;
+class atomic_flag;
 } // namespace std
 
 namespace engine {
@@ -75,10 +76,11 @@ struct Game {
     Level *level;
     RoomTemplates *room_templates;
 
-    Mob player_mob;
+    Mob *player_mob;
 
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
+    bool dungen_done;
 
     bool presenting_imgui_demo;
     bool presenting_editor;

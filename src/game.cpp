@@ -28,7 +28,8 @@
 namespace game {
 using namespace math;
 
-void game_state_playing_started(engine::Engine &engine, Game &game);
+void game_state_playing_enter(engine::Engine &engine, Game &game);
+void game_state_playing_leave(engine::Engine &engine, Game &game);
 void game_state_playing_on_input(engine::Engine &engine, Game &game, engine::InputCommand &input_command);
 void game_state_playing_update(engine::Engine &engine, Game &game, float t, float dt);
 void game_state_playing_render(engine::Engine &engine, Game &game);
@@ -40,9 +41,10 @@ Game::Game(Allocator &allocator)
 , game_state(GameState::None)
 , level(nullptr)
 , room_templates(nullptr)
-, player_mob()
+, player_mob(nullptr)
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
+, dungen_done(nullptr)
 , presenting_imgui_demo(false)
 , presenting_editor(false)
 , editor_state(nullptr)
@@ -66,10 +68,10 @@ Game::Game(Allocator &allocator)
         }
     }
 
-    // level
+    // dungen
     {
-        level = MAKE_NEW(allocator, Level, allocator);
         dungen_mutex = MAKE_NEW(allocator, std::mutex);
+        dungen_done = false;
     }
 
     // room templates
@@ -127,6 +129,10 @@ void update(engine::Engine &engine, void *game_object, float t, float dt) {
         break;
     }
     case GameState::Dungen: {
+        std::scoped_lock lock(*game->dungen_mutex);
+        if (game->dungen_done) {
+            game::transition(engine, game_object, GameState::Playing);
+        }
         break;
     }
     case GameState::Playing: {
@@ -243,6 +249,10 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         }
         break;
     }
+    case GameState::Playing: {
+        game_state_playing_leave(engine, *game);
+        break;
+    }
     case GameState::Terminate: {
         return;
     }
@@ -272,13 +282,14 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     }
     case GameState::Dungen: {
         log_info("Dungen");
+        game->dungen_done = false;
         game->dungen_thread = MAKE_NEW(game->allocator, std::thread, game::dungen, &engine, game);
         game->dungen_thread->detach();
         break;
     }
     case GameState::Playing: {
         log_info("Playing");
-        game_state_playing_started(engine, *game);
+        game_state_playing_enter(engine, *game);
         break;
     }
     case GameState::Quitting: {

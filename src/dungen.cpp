@@ -1002,17 +1002,17 @@ void dungen(engine::Engine *engine, game::Game *game) {
     // Finalize and output.
     {
         std::scoped_lock lock(*game->dungen_mutex);
-        hash::clear(game->level->tiles);
-        hash::clear(game->level->rooms);
+
+        MAKE_DELETE(game->allocator, Level, game->level);
+        game->level = MAKE_NEW(game->allocator, Level, game->allocator);
 
         game->level->tiles = terrain_tiles;
         game->level->rooms = rooms;
         game->level->max_width = map_width;
         game->level->stairs_up_index = stairs_up_index;
         game->level->stairs_down_index = stairs_down_index;
+        game->dungen_done = true;
     }
-
-    game::transition(*engine, game, GameState::Playing);
 }
 
 } // namespace game

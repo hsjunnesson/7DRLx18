@@ -147,11 +147,9 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
 void player_wait() {
 }
 
-void game_state_playing_started(engine::Engine &engine, Game &game) {
+void game_state_playing_enter(engine::Engine &engine, Game &game) {
     // Create level tiles
     {
-        hash::clear(game.level->tiles_sprite_ids);
-
         for (auto iter = hash::begin(game.level->tiles); iter != hash::end(game.level->tiles); ++iter) {
             uint32_t index = (uint32_t)iter->key;
 
@@ -164,10 +162,12 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
 
     // Create player
     {
-        game.player_mob.index = game.level->stairs_up_index;
-        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob.index, game.level->max_width, MOB_Z_LAYER, color::peach);
-        game.player_mob.sprite_id = sprite_id;
-        center_view_to_tile_index(engine, game, game.player_mob.index);
+        game.player_mob = MAKE_NEW(game.allocator, Mob);
+
+        game.player_mob->index = game.level->stairs_up_index;
+        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob->index, game.level->max_width, MOB_Z_LAYER, color::peach);
+        game.player_mob->sprite_id = sprite_id;
+        center_view_to_tile_index(engine, game, game.player_mob->index);
 
         const uint64_t stairs_sprite_id = hash::get(game.level->tiles_sprite_ids, game.level->stairs_up_index, (uint64_t)0);
         if (stairs_sprite_id) {
@@ -176,6 +176,23 @@ void game_state_playing_started(engine::Engine &engine, Game &game) {
             color.a = 0.0f;
             engine::color_sprite(*engine.sprites, stairs_sprite_id, color);
         }
+    }
+}
+
+void game_state_playing_leave(engine::Engine &engine, Game &game) {
+    if (game.level) {
+        for (auto iter = hash::begin(game.level->tiles_sprite_ids); iter != hash::end(game.level->tiles_sprite_ids); ++iter) {
+            engine::remove_sprite(*engine.sprites, iter->value);
+        }
+
+        MAKE_DELETE(game.allocator, Level, game.level);
+        game.level = nullptr;
+    }
+
+    if (game.player_mob) {
+        engine::remove_sprite(*engine.sprites, game.player_mob->sprite_id);
+        MAKE_DELETE(game.allocator, Mob, game.player_mob);
+        game.player_mob = nullptr;
     }
 }
 
@@ -296,42 +313,42 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
 
         switch (game.queued_action) {
         case ActionBindEntry::MOVE_N: {
-            mob_walk(engine, game, game.player_mob, 0, 1);
+            mob_walk(engine, game, *game.player_mob, 0, 1);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_NE: {
-            mob_walk(engine, game, game.player_mob, 1, 1);
+            mob_walk(engine, game, *game.player_mob, 1, 1);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_E: {
-            mob_walk(engine, game, game.player_mob, 1, 0);
+            mob_walk(engine, game, *game.player_mob, 1, 0);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_SE: {
-            mob_walk(engine, game, game.player_mob, 1, -1);
+            mob_walk(engine, game, *game.player_mob, 1, -1);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_S: {
-            mob_walk(engine, game, game.player_mob, 0, -1);
+            mob_walk(engine, game, *game.player_mob, 0, -1);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_SW: {
-            mob_walk(engine, game, game.player_mob, -1, -1);
+            mob_walk(engine, game, *game.player_mob, -1, -1);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_W: {
-            mob_walk(engine, game, game.player_mob, -1, 0);
+            mob_walk(engine, game, *game.player_mob, -1, 0);
             game.camera_locked_on_player = true;
             break;
         }
         case ActionBindEntry::MOVE_NW: {
-            mob_walk(engine, game, game.player_mob, -1, 1);
+            mob_walk(engine, game, *game.player_mob, -1, 1);
             game.camera_locked_on_player = true;
             break;
         }
@@ -352,14 +369,14 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
         game.queued_action = ActionBindEntry_Action_ACTION_UNKNOWN;
 
         if (!invalid_action) {
-            game.player_mob.energy = 0.0f;
+            game.player_mob->energy = 0.0f;
             game.processing_turn = true;
         }
     }
 
     // Update camera
     if (game.camera_locked_on_player) {
-        const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob.index);
+        const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob->index);
         const glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
         const glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
         const glm::vec2 direction = to_pos - from_pos;
