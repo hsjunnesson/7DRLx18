@@ -8,7 +8,6 @@
 namespace std {
 class thread;
 class mutex;
-class atomic_flag;
 } // namespace std
 
 namespace engine {
