@@ -22,7 +22,7 @@ struct Room {
     Room() {
     }
 
-    Room(uint32_t room_index, uint32_t room_template_index, uint32_t x, uint32_t y, uint32_t w, uint32_t h, bool start_room = false, bool boss_room = false)
+    Room(int32_t room_index, int32_t room_template_index, int32_t x, int32_t y, int32_t w, int32_t h, bool start_room = false, bool boss_room = false)
     : room_index(room_index)
     , room_template_index(room_template_index)
     , x(x)
@@ -32,10 +32,10 @@ struct Room {
     , start_room(start_room)
     , boss_room(boss_room) {}
 
-    uint32_t room_index;
-    uint32_t room_template_index;
-    uint32_t x, y;
-    uint32_t w, h;
+    int32_t room_index;
+    int32_t room_template_index;
+    int32_t x, y;
+    int32_t w, h;
     bool start_room = false;
     bool boss_room = false;
 };
@@ -89,8 +89,8 @@ struct RoomTemplates {
  * 
  */
 struct Corridor {
-    uint32_t from_room_index;
-    uint32_t to_room_index;
+    int32_t from_room_index;
+    int32_t to_room_index;
 };
 
 /**
@@ -175,10 +175,10 @@ struct Level {
     Hash<Room> rooms;
     Hash<Tile> tiles;
     Hash<uint64_t> tiles_sprite_ids;
-    uint32_t max_width;
-    uint32_t depth;
-    uint32_t stairs_up_index;
-    uint32_t stairs_down_index;
+    int32_t max_width;
+    int32_t depth;
+    int32_t stairs_up_index;
+    int32_t stairs_down_index;
 };
 
 /**

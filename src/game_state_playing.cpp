@@ -37,8 +37,8 @@ namespace game {
 using namespace math;
 
 /// Return the world position of the center of a tile at coord.
-const Vector2 tile_index_to_world_position(const Game &game, const uint32_t index) {
-    uint32_t x, y;
+const Vector2 tile_index_to_world_position(const Game &game, const int32_t index) {
+    int32_t x, y;
     coord(index, x, y, game.level->max_width);
     int32_t tilesize = game.params->tilesize();
 
@@ -46,8 +46,8 @@ const Vector2 tile_index_to_world_position(const Game &game, const uint32_t inde
 }
 
 /// Return the screen position of the center of a tile at coord, scaled by zoom and render scale.
-const Vector2 tile_index_to_screen_position(const engine::Engine &engine, const Game &game, const uint32_t index) {
-    uint32_t x, y;
+const Vector2 tile_index_to_screen_position(const engine::Engine &engine, const Game &game, const int32_t index) {
+    int32_t x, y;
     coord(index, x, y, game.level->max_width);
     int32_t tilesize = game.params->tilesize();
 
@@ -58,7 +58,7 @@ const Vector2 tile_index_to_screen_position(const engine::Engine &engine, const 
 }
 
 /// Whether a tile at index is traversible.
-bool is_traversible(const Game &game, const uint32_t index) {
+bool is_traversible(const Game &game, const int32_t index) {
     const Tile &tile = hash::get(game.level->tiles, index, Tile::None);
 
     switch (tile) {
@@ -72,16 +72,16 @@ bool is_traversible(const Game &game, const uint32_t index) {
 }
 
 /// Centers the view on the tile at index.
-void center_view_to_tile_index(engine::Engine &engine, const Game &game, const uint32_t index) {
+void center_view_to_tile_index(engine::Engine &engine, const Game &game, const int32_t index) {
     Vector2 pos = tile_index_to_screen_position(engine, game, index);
     engine::move_camera(engine, pos.x - engine.window_rect.size.x / 2, pos.y - engine.window_rect.size.y / 2);
 }
 
 /// Utility to add a sprite to the game.
-uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t tilesize, const uint32_t index, const uint32_t max_width, const float z_layer, Color4f color = color::white) {
+uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, int32_t tilesize, const int32_t index, const int32_t max_width, const float z_layer, Color4f color = color::white) {
     const engine::Sprite sprite = engine::add_sprite(sprites, sprite_name);
 
-    uint32_t x, y;
+    int32_t x, y;
     coord(index, x, y, max_width);
 
     glm::mat4 transform = glm::mat4(1.0f);
@@ -94,7 +94,7 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, uint32_t 
 }
 
 void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int32_t yoffset) {
-    uint32_t new_index = index_offset(mob.index, xoffset, yoffset, game.level->max_width);
+    int32_t new_index = index_offset(mob.index, xoffset, yoffset, game.level->max_width);
     bool legal_move = is_traversible(game, new_index);
 
     if (legal_move) {
@@ -105,7 +105,7 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
             hash::set(game.processing_animations, animation_id, true);
         }
 
-        const uint32_t old_index = mob.index;
+        const int32_t old_index = mob.index;
         mob.index = new_index;
 
         // Unhide and hide level tiles
@@ -151,7 +151,7 @@ void game_state_playing_enter(engine::Engine &engine, Game &game) {
     // Create level tiles
     {
         for (auto iter = hash::begin(game.level->tiles); iter != hash::end(game.level->tiles); ++iter) {
-            uint32_t index = (uint32_t)iter->key;
+            int32_t index = (int32_t)iter->key;
 
             Tile tile = static_cast<Tile>(iter->value);
             const char *sprite_name = tile_sprite_name(tile);

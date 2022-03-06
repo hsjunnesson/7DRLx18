@@ -314,6 +314,10 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     if (rarity <= 0) {
                         rarity = 1;
                     }
+                    
+                    if (rarity > 4) {
+                        rarity = 4;
+                    }
 
                     room_template->rarity = (uint8_t)rarity;
                 }

@@ -32,7 +32,7 @@ struct EditorState;
 
 struct Mob {
     uint64_t sprite_id;
-    uint32_t index; // Tile index
+    int32_t index; // Tile index
     float energy;
 };
 
