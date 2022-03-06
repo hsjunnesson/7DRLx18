@@ -7,10 +7,10 @@
 
 #include "engine/config.inl"
 #include "engine/engine.h"
+#include "engine/file.h"
 #include "engine/log.h"
 #include "engine/math.inl"
 #include "engine/sprites.h"
-#include "engine/file.h"
 #include "proto/game.pb.h"
 
 #include <array.h>
@@ -18,8 +18,8 @@
 #include <memory.h>
 #include <murmur_hash.h>
 #include <queue.h>
-#include <temp_allocator.h>
 #include <string_stream.h>
+#include <temp_allocator.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,7 +32,7 @@
 namespace {
 const char *room_templates_header = "ROOMTEMPLATES";
 const size_t room_templates_header_len = strlen(room_templates_header);
-}
+} // namespace
 
 namespace game {
 using namespace foundation;
@@ -203,7 +203,7 @@ void RoomTemplates::read(const char *filename) {
         MAKE_DELETE(this->allocator, Array, room_template->tiles);
         room_template->tiles = data;
 
-        array::push_back(this->templates, room_template);   
+        array::push_back(this->templates, room_template);
     }
 }
 
@@ -227,7 +227,7 @@ void RoomTemplates::write(const char *filename) {
         RoomTemplates::Template *room_template = *it;
         const uint8_t name_length = (uint8_t)array::size(*room_template->name);
         fwrite(&name_length, sizeof(uint8_t), 1, file);
-        
+
         fwrite(array::begin(*room_template->name), sizeof(char), name_length, file);
 
         fwrite(&room_template->rarity, sizeof(uint8_t), 1, file);
@@ -385,7 +385,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             RoomTemplates::Template *room_template = game->room_templates->templates[i];
             bool common_room = true;
             uint8_t tags = room_template->tags;
-            
+
             if ((tags & RoomTemplates::Template::RoomTemplateTagsStartRoom) != 0) {
                 array::push_back(start_room_template_indices, i);
                 common_room = false;
@@ -527,7 +527,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
                     room_template_index = entry->value;
                 }
             }
-            
+
             const RoomTemplates::Template &room_template = *game->room_templates->templates[room_template_index];
 
             // TODO: Randomize positions in section

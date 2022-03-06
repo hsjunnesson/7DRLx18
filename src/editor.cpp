@@ -1,21 +1,20 @@
 #include "editor.h"
-#include "game.h"
 #include "dungen.h"
+#include "game.h"
 
 #pragma warning(push, 0)
 #include <array.h>
-#include <string_stream.h>
-#include <string_stream.h>
-#include <proto/game.pb.h>
 #include <engine/engine.h>
 #include <engine/log.h>
 #include <imgui.h>
+#include <proto/game.pb.h>
+#include <string_stream.h>
 #pragma warning(pop)
 
 namespace {
 bool did_reset = false;
 bool room_templates_dirty = false;
-}
+} // namespace
 
 namespace game {
 namespace editor {
@@ -103,7 +102,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
     }
 
     ImGui::SetNextWindowSize(ImVec2(500, 600), ImGuiCond_FirstUseEver);
-    
+
     if (!ImGui::Begin(menu_label, show_window, ImGuiWindowFlags_MenuBar)) {
         ImGui::End();
         return;
@@ -184,7 +183,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
             if (selected_template_index >= 0) {
                 Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
                 RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
-                
+
                 array::clear(game.room_templates->templates);
 
                 for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
@@ -282,7 +281,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
         ImGui::EndChild();
     }
-    
+
     ImGui::SameLine();
 
     // Right
@@ -313,7 +312,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     if (rarity <= 0) {
                         rarity = 1;
                     }
-                    
+
                     if (rarity > 4) {
                         rarity = 4;
                     }
@@ -381,7 +380,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                                 array::resize(*room_template->tiles, new_size);
                                 memset(array::begin(*room_template->tiles) + old_size, 0, adjust_by);
 
-                                for (uint8_t  i = room_template->rows - 1; i > 0; --i) {
+                                for (uint8_t i = room_template->rows - 1; i > 0; --i) {
                                     uint8_t *start = array::begin(*room_template->tiles) + i * old_columns;
                                     memcpy(copy_buf, start, old_columns);
                                     memset(start, 0, old_columns);
@@ -390,7 +389,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                             } else {
                                 uint8_t copy_buf[max_side];
 
-                                for (uint8_t  i = 1; i < room_template->rows; ++i) {
+                                for (uint8_t i = 1; i < room_template->rows; ++i) {
                                     uint8_t *start = array::begin(*room_template->tiles) + i * old_columns;
                                     memcpy(copy_buf, start, old_columns - 1);
                                     memcpy(start - i, copy_buf, old_columns - 1);
@@ -523,7 +522,7 @@ void gamestate_controls_window(engine::Engine &engine, game::Game &game, bool *s
     // Game state label
     {
         const char *game_state_label = nullptr;
-        
+
         switch (game.game_state) {
         case GameState::None:
             game_state_label = "None";
@@ -553,7 +552,7 @@ void gamestate_controls_window(engine::Engine &engine, game::Game &game, bool *s
 
         ImGui::Text(state_buf);
     }
-    
+
     // State buttons
     {
         if (ImGui::Button("Initializing")) {

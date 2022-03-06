@@ -46,7 +46,7 @@ struct Room {
  */
 struct RoomTemplates {
     struct Template {
-        enum class TileType: uint8_t {
+        enum class TileType : uint8_t {
             Empty = 0,
             Floor,
             Wall,
@@ -56,9 +56,9 @@ struct RoomTemplates {
         };
 
         enum Tags {
-            RoomTemplateTagsNone         = 0,
-            RoomTemplateTagsStartRoom    = 1 << 0,
-            RoomTemplateTagsBossRoom     = 1 << 1,
+            RoomTemplateTagsNone = 0,
+            RoomTemplateTagsStartRoom = 1 << 0,
+            RoomTemplateTagsBossRoom = 1 << 1,
         };
 
         Template(Allocator &allocator);
@@ -76,7 +76,7 @@ struct RoomTemplates {
 
     RoomTemplates(Allocator &allocator);
     ~RoomTemplates();
-    
+
     Allocator &allocator;
     Array<Template *> templates;
 

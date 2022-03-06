@@ -24,17 +24,12 @@ class GameParams;
 class ActionBinds;
 struct Level;
 struct RoomTemplates;
+struct Mob;
 enum ActionBindEntry_Action : int;
 
 namespace editor {
 struct EditorState;
 } // namespace editor
-
-struct Mob {
-    uint64_t sprite_id;
-    int32_t index; // Tile index
-    float energy;
-};
 
 /**
  * @brief An enum that describes a specific game state.

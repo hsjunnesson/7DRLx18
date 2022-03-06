@@ -2,8 +2,8 @@
 
 #pragma warning(push, 0)
 #include <functional>
-#include <stdint.h>
 #include <math.h>
+#include <stdint.h>
 
 #include "array.h"
 #include "memory.h"
