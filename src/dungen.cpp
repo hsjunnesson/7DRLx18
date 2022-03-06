@@ -42,6 +42,8 @@ using engine::index;
 RoomTemplates::Template::Template(Allocator &allocator)
 : allocator(allocator)
 , name(nullptr)
+, rarity(1)
+, tags(0)
 , rows(0)
 , columns(0)
 , tiles(nullptr) {
@@ -52,6 +54,8 @@ RoomTemplates::Template::Template(Allocator &allocator)
 RoomTemplates::Template::Template(const Template &other)
 : allocator(other.allocator)
 , name(nullptr)
+, rarity(1)
+, tags(0)
 , rows(other.rows)
 , columns(other.columns)
 , tiles(nullptr) {
@@ -308,7 +312,7 @@ void connections_from_direction(const RoomTemplates::Template &room_template, Co
         }
         case ConnectionDirection::East:
         case ConnectionDirection::West: {
-            uint64_t row = (int32_t)iter->key;
+            int32_t row = (int32_t)iter->key;
             int32_t column = iter->value;
             index = math::index(column, row, room_template.columns);
             break;
@@ -377,7 +381,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     Hash<int32_t> common_room_indices_by_rarity(allocator);
 
     {
-        for (int32_t i = 0; i < array::size(game->room_templates->templates); ++i) {
+        for (int32_t i = 0; i < (int32_t)array::size(game->room_templates->templates); ++i) {
             RoomTemplates::Template *room_template = game->room_templates->templates[i];
             bool common_room = true;
             uint8_t tags = room_template->tags;
@@ -684,7 +688,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         }
 
-        for (int32_t i = 0; i < queue::size(disconnected_room_indices); ++i) {
+        for (uint32_t i = 0; i < queue::size(disconnected_room_indices); ++i) {
             int32_t index = disconnected_room_indices[i];
             hash::remove(rooms, index);
         }
@@ -719,7 +723,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
             const Room &room = iter->value;
             const RoomTemplates::Template &room_template = *game->room_templates->templates[room.room_template_index];
 
-            for (int32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
                 Tile tile = Tile::None;
                 RoomTemplates::Template::TileType tile_type = static_cast<RoomTemplates::Template::TileType>((*room_template.tiles)[i]);
 

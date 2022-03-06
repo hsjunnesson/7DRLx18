@@ -145,7 +145,6 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                         }
                     }
 
-                    ++selected_template_index;
                     room_templates_dirty = true;
                 }
             }
