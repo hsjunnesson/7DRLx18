@@ -3,6 +3,7 @@
 #include "color.inl"
 #include "dungen.h"
 #include "editor.h"
+#include "mob.h"
 
 #pragma warning(push, 0)
 #include <engine/atlas.h>
@@ -41,6 +42,7 @@ Game::Game(Allocator &allocator)
 , game_state(GameState::None)
 , level(nullptr)
 , room_templates(nullptr)
+, mob_templates(nullptr)
 , player_mob(nullptr)
 , dungen_mutex(nullptr)
 , dungen_thread(nullptr)
@@ -74,7 +76,7 @@ Game::Game(Allocator &allocator)
         dungen_done = false;
     }
 
-    // room templates
+    // room_templates
     {
         room_templates = MAKE_NEW(allocator, RoomTemplates, allocator);
     }
@@ -100,6 +102,10 @@ Game::~Game() {
 
     if (room_templates) {
         MAKE_DELETE(allocator, RoomTemplates, room_templates);
+    }
+
+    if (mob_templates) {
+        MAKE_DELETE(allocator, Array, mob_templates);
     }
 
     if (dungen_thread) {
@@ -272,6 +278,12 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         engine::init_sprites(*engine.sprites, game->params->game_atlas_filename().c_str());
         game->room_templates->read(game->params->room_templates_filename().c_str());
 
+        if (game->mob_templates) {
+            MAKE_DELETE(game->allocator, Array, game->mob_templates);
+        }
+
+        game->mob_templates = init_mob_templates(game->allocator, game->params->mob_templates_filename().c_str());
+        
         transition(engine, game_object, GameState::Menus);
         break;
     }

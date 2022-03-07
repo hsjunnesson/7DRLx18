@@ -582,8 +582,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
         }
     }
 
-    log_debug("Corridors size %u", array::size(corridors));
-
     // Expand some branches
     {
         Array<Corridor> branches = Array<Corridor>(allocator);
@@ -662,9 +660,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
             Corridor branch = *iter;
             array::push_back(corridors, branch);
         }
-
-        log_debug("Branches size %u", array::size(branches));
-        log_debug("Corridors after size %u", array::size(corridors));
     }
 
     // Prune disconnected rooms
@@ -965,8 +960,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
                 }
             }
         });
-
-        log_debug("Drew line %u", line_draw_count);
 
         // Function to update the correct wall tile on a coordinate. Depends on surrounding walls and placeholder walls.
         auto place_wall = [&](int32_t index_wall) {

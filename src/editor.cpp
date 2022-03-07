@@ -12,8 +12,10 @@
 #pragma warning(pop)
 
 namespace {
-bool did_reset = false;
+bool room_templates_did_reset = false;
 bool room_templates_dirty = false;
+bool mob_templates_did_reset = false;
+bool mob_templates_dirty = false;
 } // namespace
 
 namespace game {
@@ -113,7 +115,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
             if (ImGui::MenuItem("Open")) {
                 const char *filename = game.params->room_templates_filename().c_str();
                 game.room_templates->read(filename);
-                did_reset = true;
+                room_templates_did_reset = true;
                 room_templates_dirty = false;
             }
 
@@ -154,7 +156,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndMenuBar();
     }
 
-    if (did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
+    if (room_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
         selected_template_index = -1;
         memset(template_name, 0, 256);
     }
@@ -593,21 +595,101 @@ void gamestate_controls_window(engine::Engine &engine, game::Game &game, bool *s
     ImGui::End();
 }
 
+void mob_templates_editor(game::Game &game, bool *show_window) {
+    if (*show_window == false) {
+        return;
+    }
+
+    static int32_t selected_template_index = -1;
+
+    const char *menu_label = nullptr;
+    if (mob_templates_dirty) {
+        menu_label = "Mob Templates*###MobTemplatesWindow";
+    } else {
+        menu_label = "Mob Templates###MobTemplatesWindow";
+    }
+
+    ImGui::SetNextWindowSize(ImVec2(500, 600), ImGuiCond_FirstUseEver);
+
+    if (!ImGui::Begin(menu_label, show_window, ImGuiWindowFlags_MenuBar)) {
+        ImGui::End();
+        return;
+    }
+
+    if (ImGui::BeginMenuBar()) {
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Open")) {
+                // const char *filename = game.params->room_templates_filename().c_str();
+                // game.room_templates->read(filename);
+                room_templates_did_reset = true;
+                mob_templates_dirty = false;
+            }
+
+            if (ImGui::MenuItem("Save", nullptr, false, room_templates_dirty)) {
+                // const char *filename = game.params->room_templates_filename().c_str();
+                // game.room_templates->write(filename);
+                mob_templates_dirty = false;
+            }
+
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Edit")) {
+            if (ImGui::MenuItem("Copy")) {
+                if (selected_template_index >= 0) {
+                    // Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
+                    // RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
+                    // RoomTemplates::Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, RoomTemplates::Template, *selected_template);
+                    // string_stream::push(*selected_template_copy->name, "_copy", 5);
+
+                    // array::clear(game.room_templates->templates);
+
+                    // for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
+                    //     array::push_back(game.room_templates->templates, room_templates_copy[i]);
+
+                    //     if (i == (uint32_t)selected_template_index) {
+                    //         array::push_back(game.room_templates->templates, selected_template_copy);
+                    //     }
+                    // }
+
+                    mob_templates_dirty = true;
+                }
+            }
+
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMenuBar();
+    }
+
+    // if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
+    //     selected_template_index = -1;
+    //     memset(template_name, 0, 256);
+    // }
+
+    ImGui::End();
+}
+
 void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) {
     (void)engine;
     (void)state;
 
-    static bool show_room_templates_window = true;
     static bool show_gamestate_controls_window = true;
+    static bool show_room_templates_window = true;
+    static bool show_mob_templates_window = true;
 
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Windows")) {
+            if (ImGui::MenuItem("Gamestate Controls", nullptr, show_gamestate_controls_window)) {
+                show_gamestate_controls_window = !show_gamestate_controls_window;
+            }
+
             if (ImGui::MenuItem("Room templates", nullptr, show_room_templates_window)) {
                 show_room_templates_window = !show_room_templates_window;
             }
 
-            if (ImGui::MenuItem("Gamestate Controls", nullptr, show_gamestate_controls_window)) {
-                show_gamestate_controls_window = !show_gamestate_controls_window;
+            if (ImGui::MenuItem("Mob templates", nullptr, show_mob_templates_window)) {
+                show_mob_templates_window = !show_mob_templates_window;
             }
 
             ImGui::EndMenu();
@@ -616,10 +698,12 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
         ImGui::EndMainMenuBar();
     }
 
-    room_templates_editor(game, &show_room_templates_window);
     gamestate_controls_window(engine, game, &show_gamestate_controls_window);
+    room_templates_editor(game, &show_room_templates_window);
+    mob_templates_editor(game, &show_mob_templates_window);
 
-    did_reset = false;
+    room_templates_did_reset = false;
+    mob_templates_did_reset = false;
 }
 
 } // namespace editor

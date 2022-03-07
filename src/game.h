@@ -25,6 +25,7 @@ class ActionBinds;
 struct Level;
 struct RoomTemplates;
 struct Mob;
+struct MobTemplate;
 enum ActionBindEntry_Action : int;
 
 namespace editor {
@@ -69,6 +70,7 @@ struct Game {
     GameState game_state;
     Level *level;
     RoomTemplates *room_templates;
+    Array<MobTemplate> *mob_templates;
 
     Mob *player_mob;
 

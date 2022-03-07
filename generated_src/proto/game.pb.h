@@ -851,7 +851,8 @@ class GameParams final :
     kGameAtlasFilenameFieldNumber = 1,
     kDungenParamsFilenameFieldNumber = 2,
     kRoomTemplatesFilenameFieldNumber = 3,
-    kTilesizeFieldNumber = 4,
+    kMobTemplatesFilenameFieldNumber = 4,
+    kTilesizeFieldNumber = 10,
   };
   // string game_atlas_filename = 1;
   void clear_game_atlas_filename();
@@ -895,7 +896,21 @@ class GameParams final :
   std::string* _internal_mutable_room_templates_filename();
   public:
 
-  // int32 tilesize = 4;
+  // string mob_templates_filename = 4;
+  void clear_mob_templates_filename();
+  const std::string& mob_templates_filename() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_mob_templates_filename(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_mob_templates_filename();
+  PROTOBUF_MUST_USE_RESULT std::string* release_mob_templates_filename();
+  void set_allocated_mob_templates_filename(std::string* mob_templates_filename);
+  private:
+  const std::string& _internal_mob_templates_filename() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_mob_templates_filename(const std::string& value);
+  std::string* _internal_mutable_mob_templates_filename();
+  public:
+
+  // int32 tilesize = 10;
   void clear_tilesize();
   ::PROTOBUF_NAMESPACE_ID::int32 tilesize() const;
   void set_tilesize(::PROTOBUF_NAMESPACE_ID::int32 value);
@@ -914,6 +929,7 @@ class GameParams final :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr game_atlas_filename_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr dungen_params_filename_;
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr room_templates_filename_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr mob_templates_filename_;
   ::PROTOBUF_NAMESPACE_ID::int32 tilesize_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_proto_2fgame_2eproto;
@@ -1439,7 +1455,53 @@ inline void GameParams::set_allocated_room_templates_filename(std::string* room_
   // @@protoc_insertion_point(field_set_allocated:game.GameParams.room_templates_filename)
 }
 
-// int32 tilesize = 4;
+// string mob_templates_filename = 4;
+inline void GameParams::clear_mob_templates_filename() {
+  mob_templates_filename_.ClearToEmpty();
+}
+inline const std::string& GameParams::mob_templates_filename() const {
+  // @@protoc_insertion_point(field_get:game.GameParams.mob_templates_filename)
+  return _internal_mob_templates_filename();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void GameParams::set_mob_templates_filename(ArgT0&& arg0, ArgT... args) {
+ 
+ mob_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:game.GameParams.mob_templates_filename)
+}
+inline std::string* GameParams::mutable_mob_templates_filename() {
+  std::string* _s = _internal_mutable_mob_templates_filename();
+  // @@protoc_insertion_point(field_mutable:game.GameParams.mob_templates_filename)
+  return _s;
+}
+inline const std::string& GameParams::_internal_mob_templates_filename() const {
+  return mob_templates_filename_.Get();
+}
+inline void GameParams::_internal_set_mob_templates_filename(const std::string& value) {
+  
+  mob_templates_filename_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* GameParams::_internal_mutable_mob_templates_filename() {
+  
+  return mob_templates_filename_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* GameParams::release_mob_templates_filename() {
+  // @@protoc_insertion_point(field_release:game.GameParams.mob_templates_filename)
+  return mob_templates_filename_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void GameParams::set_allocated_mob_templates_filename(std::string* mob_templates_filename) {
+  if (mob_templates_filename != nullptr) {
+    
+  } else {
+    
+  }
+  mob_templates_filename_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), mob_templates_filename,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:game.GameParams.mob_templates_filename)
+}
+
+// int32 tilesize = 10;
 inline void GameParams::clear_tilesize() {
   tilesize_ = 0;
 }

@@ -2,6 +2,7 @@
 #include "color.inl"
 #include "dungen.h"
 #include "game.h"
+#include "mob.h"
 
 #pragma warning(push, 0)
 #include <engine/engine.h>
@@ -94,29 +95,29 @@ uint64_t add_sprite(engine::Sprites &sprites, const char *sprite_name, int32_t t
 }
 
 void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int32_t yoffset) {
-    int32_t new_index = index_offset(mob.index, xoffset, yoffset, game.level->max_width);
-    bool legal_move = is_traversible(game, new_index);
+    int32_t new_tile_index = index_offset(mob.tile_index, xoffset, yoffset, game.level->max_width);
+    bool legal_move = is_traversible(game, new_tile_index);
 
     if (legal_move) {
-        const Vector2 world_position = tile_index_to_world_position(game, new_index);
+        const Vector2 world_position = tile_index_to_world_position(game, new_tile_index);
         const Vector3 to_position = {world_position.x, world_position.y, MOB_Z_LAYER};
         uint64_t animation_id = engine::animate_sprite_position(*engine.sprites, mob.sprite_id, to_position, MOB_WALK_SPEED);
         if (animation_id != 0) {
             hash::set(game.processing_animations, animation_id, true);
         }
 
-        const int32_t old_index = mob.index;
-        mob.index = new_index;
+        const int32_t old_tile_index = mob.tile_index;
+        mob.tile_index = new_tile_index;
 
         // Unhide and hide level tiles
         {
             const float fade_speed = MOB_WALK_SPEED / 2.0f;
 
-            const Tile old_tile = hash::get(game.level->tiles, old_index, Tile::None);
-            const Tile new_tile = hash::get(game.level->tiles, new_index, Tile::None);
+            const Tile old_tile = hash::get(game.level->tiles, old_tile_index, Tile::None);
+            const Tile new_tile = hash::get(game.level->tiles, new_tile_index, Tile::None);
 
             if (old_tile != Tile::None) {
-                const uint64_t old_index_sprite_id = hash::get(game.level->tiles_sprite_ids, old_index, (uint64_t)0);
+                const uint64_t old_index_sprite_id = hash::get(game.level->tiles_sprite_ids, old_tile_index, (uint64_t)0);
 
                 if (old_index_sprite_id > 0) {
                     const engine::Sprite *sprite = engine::get_sprite(*engine.sprites, old_index_sprite_id);
@@ -129,7 +130,7 @@ void mob_walk(engine::Engine &engine, Game &game, Mob &mob, int32_t xoffset, int
             }
 
             if (new_tile != Tile::None) {
-                const uint64_t new_index_sprite_id = hash::get(game.level->tiles_sprite_ids, new_index, (uint64_t)0);
+                const uint64_t new_index_sprite_id = hash::get(game.level->tiles_sprite_ids, new_tile_index, (uint64_t)0);
 
                 if (new_index_sprite_id > 0) {
                     const engine::Sprite *sprite = engine::get_sprite(*engine.sprites, new_index_sprite_id);
@@ -164,10 +165,10 @@ void game_state_playing_enter(engine::Engine &engine, Game &game) {
     {
         game.player_mob = MAKE_NEW(game.allocator, Mob);
 
-        game.player_mob->index = game.level->stairs_up_index;
-        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob->index, game.level->max_width, MOB_Z_LAYER, color::peach);
+        game.player_mob->tile_index = game.level->stairs_up_index;
+        uint64_t sprite_id = add_sprite(*engine.sprites, "farmer", game.params->tilesize(), game.player_mob->tile_index, game.level->max_width, MOB_Z_LAYER, color::peach);
         game.player_mob->sprite_id = sprite_id;
-        center_view_to_tile_index(engine, game, game.player_mob->index);
+        center_view_to_tile_index(engine, game, game.player_mob->tile_index);
 
         const uint64_t stairs_sprite_id = hash::get(game.level->tiles_sprite_ids, game.level->stairs_up_index, (uint64_t)0);
         if (stairs_sprite_id) {
@@ -376,7 +377,7 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
 
     // Update camera
     if (game.camera_locked_on_player) {
-        const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob->index);
+        const Vector2 pos = tile_index_to_screen_position(engine, game, game.player_mob->tile_index);
         const glm::vec2 to_pos = {pos.x - engine.window_rect.size.x / 2.0f, pos.y - engine.window_rect.size.y / 2.0f};
         const glm::vec2 from_pos = {engine.camera_offset.x, engine.camera_offset.y};
         const glm::vec2 direction = to_pos - from_pos;

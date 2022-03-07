@@ -63,6 +63,7 @@ struct RoomTemplates {
 
         Template(Allocator &allocator);
         Template(const Template &other);
+        Template &operator=(const Template &) = delete;
         ~Template();
 
         Allocator &allocator;
