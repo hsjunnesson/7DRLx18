@@ -4,6 +4,7 @@
 #include "dungen.h"
 #include "editor.h"
 #include "mob.h"
+#include "room.h"
 
 #pragma warning(push, 0)
 #include <engine/atlas.h>
@@ -28,6 +29,7 @@
 
 namespace game {
 using namespace math;
+using namespace foundation;
 
 void game_state_playing_enter(engine::Engine &engine, Game &game);
 void game_state_playing_leave(engine::Engine &engine, Game &game);
@@ -70,15 +72,15 @@ Game::Game(Allocator &allocator)
         }
     }
 
+    // room templates
+    {
+        room_templates = MAKE_NEW(allocator, RoomTemplates, allocator);
+    }
+
     // dungen
     {
         dungen_mutex = MAKE_NEW(allocator, std::mutex);
         dungen_done = false;
-    }
-
-    // room_templates
-    {
-        room_templates = MAKE_NEW(allocator, RoomTemplates, allocator);
     }
 
     // editor
@@ -105,6 +107,7 @@ Game::~Game() {
     }
 
     if (mob_templates) {
+        // TODO: Deallocate individual rooms.
         MAKE_DELETE(allocator, Array, mob_templates);
     }
 
@@ -276,12 +279,10 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
     case GameState::Initializing: {
         log_info("Initializing");
         engine::init_sprites(*engine.sprites, game->params->game_atlas_filename().c_str());
+
+        MAKE_DELETE(game->allocator, Array, game->mob_templates);
+
         game->room_templates->read(game->params->room_templates_filename().c_str());
-
-        if (game->mob_templates) {
-            MAKE_DELETE(game->allocator, Array, game->mob_templates);
-        }
-
         game->mob_templates = init_mob_templates(game->allocator, game->params->mob_templates_filename().c_str());
         
         transition(engine, game_object, GameState::Menus);

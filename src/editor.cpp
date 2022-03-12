@@ -1,6 +1,7 @@
 #include "editor.h"
 #include "dungen.h"
 #include "game.h"
+#include "room.h"
 
 #pragma warning(push, 0)
 #include <array.h>
@@ -26,16 +27,16 @@ EditorState::EditorState(Allocator &allocator)
 : allocator(allocator) {}
 
 char tile_tool_label(uint8_t tile_type) {
-    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
-    case RoomTemplates::Template::TileType::Empty:
+    switch (static_cast<RoomTemplate::TileType>(tile_type)) {
+    case RoomTemplate::TileType::Empty:
         return ' ';
-    case RoomTemplates::Template::TileType::Floor:
+    case RoomTemplate::TileType::Floor:
         return '.';
-    case RoomTemplates::Template::TileType::Wall:
+    case RoomTemplate::TileType::Wall:
         return '#';
-    case RoomTemplates::Template::TileType::Connection:
+    case RoomTemplate::TileType::Connection:
         return '%';
-    case RoomTemplates::Template::TileType::Stair:
+    case RoomTemplate::TileType::Stair:
         return '>';
     default:
         log_fatal("Unsupported TileType %u", tile_type);
@@ -43,16 +44,16 @@ char tile_tool_label(uint8_t tile_type) {
 }
 
 const char *tile_tool_description(uint8_t tile_type) {
-    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
-    case RoomTemplates::Template::TileType::Empty:
+    switch (static_cast<RoomTemplate::TileType>(tile_type)) {
+    case RoomTemplate::TileType::Empty:
         return "Empty";
-    case RoomTemplates::Template::TileType::Floor:
+    case RoomTemplate::TileType::Floor:
         return "Floor";
-    case RoomTemplates::Template::TileType::Wall:
+    case RoomTemplate::TileType::Wall:
         return "Wall";
-    case RoomTemplates::Template::TileType::Connection:
+    case RoomTemplate::TileType::Connection:
         return "Connection";
-    case RoomTemplates::Template::TileType::Stair:
+    case RoomTemplate::TileType::Stair:
         return "Stair";
     default:
         log_fatal("Unsupported TileType %u", tile_type);
@@ -63,16 +64,16 @@ ImVec4 tile_tool_color(uint8_t tile_type) {
     // salmon  217, 105, 65
     // red  166, 43, 31
 
-    switch (static_cast<RoomTemplates::Template::TileType>(tile_type)) {
-    case RoomTemplates::Template::TileType::Empty:
+    switch (static_cast<RoomTemplate::TileType>(tile_type)) {
+    case RoomTemplate::TileType::Empty:
         return ImColor(0, 0, 0);
-    case RoomTemplates::Template::TileType::Floor:
+    case RoomTemplate::TileType::Floor:
         return ImColor(25, 60, 64);
-    case RoomTemplates::Template::TileType::Wall:
+    case RoomTemplate::TileType::Wall:
         return ImColor(33, 64, 1);
-    case RoomTemplates::Template::TileType::Connection:
+    case RoomTemplate::TileType::Connection:
         return ImColor(46, 89, 2);
-    case RoomTemplates::Template::TileType::Stair:
+    case RoomTemplate::TileType::Stair:
         return ImColor(25, 60, 64);
     default:
         log_fatal("Unsupported TileType %u", tile_type);
@@ -131,18 +132,18 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         if (ImGui::BeginMenu("Edit")) {
             if (ImGui::MenuItem("Copy")) {
                 if (selected_template_index >= 0) {
-                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
-                    RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
-                    RoomTemplates::Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, RoomTemplates::Template, *selected_template);
+                    Array<RoomTemplate *> room_templates_copy = game.room_templates->room_templates;
+                    RoomTemplate *selected_template = game.room_templates->room_templates[selected_template_index];
+                    RoomTemplate *selected_template_copy = MAKE_NEW(game.room_templates->allocator, RoomTemplate, *selected_template);
                     string_stream::push(*selected_template_copy->name, "_copy", 5);
 
-                    array::clear(game.room_templates->templates);
+                    array::clear(game.room_templates->room_templates);
 
                     for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
-                        array::push_back(game.room_templates->templates, room_templates_copy[i]);
+                        array::push_back(game.room_templates->room_templates, room_templates_copy[i]);
 
                         if (i == (uint32_t)selected_template_index) {
-                            array::push_back(game.room_templates->templates, selected_template_copy);
+                            array::push_back(game.room_templates->room_templates, selected_template_copy);
                         }
                     }
 
@@ -156,7 +157,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndMenuBar();
     }
 
-    if (room_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
+    if (room_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->room_templates))) {
         selected_template_index = -1;
         memset(template_name, 0, 256);
     }
@@ -164,7 +165,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
     // Left
     {
         if (ImGui::Button("Add")) {
-            RoomTemplates::Template *t = MAKE_NEW(game.room_templates->allocator, game::RoomTemplates::Template, game.room_templates->allocator);
+            RoomTemplate *t = MAKE_NEW(game.room_templates->allocator, RoomTemplate, game.room_templates->allocator);
             string_stream::push(*t->name, "Room", 4);
             t->rarity = 1;
             t->tags = 0;
@@ -175,7 +176,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                 array::push_back(*t->tiles, (uint8_t)0);
             }
 
-            array::push_back(game.room_templates->templates, t);
+            array::push_back(game.room_templates->room_templates, t);
             room_templates_dirty = true;
         }
 
@@ -183,18 +184,18 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
         if (ImGui::Button("Delete")) {
             if (selected_template_index >= 0) {
-                Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
-                RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
+                Array<RoomTemplate *> room_templates_copy = game.room_templates->room_templates;
+                RoomTemplate *selected_template = game.room_templates->room_templates[selected_template_index];
 
-                array::clear(game.room_templates->templates);
+                array::clear(game.room_templates->room_templates);
 
                 for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
                     if (i != (uint32_t)selected_template_index) {
-                        array::push_back(game.room_templates->templates, room_templates_copy[i]);
+                        array::push_back(game.room_templates->room_templates, room_templates_copy[i]);
                     }
                 }
 
-                MAKE_DELETE(game.room_templates->allocator, Template, selected_template);
+                MAKE_DELETE(game.room_templates->allocator, RoomTemplate, selected_template);
                 selected_template = nullptr;
 
                 --selected_template_index;
@@ -206,21 +207,22 @@ void room_templates_editor(game::Game &game, bool *show_window) {
         ImGui::BeginChild("room_templates_left_pane", ImVec2(150, 0), true);
 
         int32_t i = 0;
-        for (auto it = array::begin(game.room_templates->templates); it != array::end(game.room_templates->templates); ++it) {
-            string_stream::Buffer *name_buffer = (*it)->name;
+        for (RoomTemplate **it = array::begin(game.room_templates->room_templates); it != array::end(game.room_templates->room_templates); ++it) {
+            const RoomTemplate *room_template = *it;
+            string_stream::Buffer *name_buffer = room_template->name;
             const char *name = string_stream::c_str(*name_buffer);
             ImGui::PushID(i);
             if (ImGui::Selectable(name, selected_template_index == i)) {
                 selected_template_index = i;
                 memset(template_name, 0, 256);
                 memcpy(template_name, name, strlen(name));
-                rarity = (*it)->rarity;
-                tags = (*it)->tags;
-                tags_start_room = (tags & RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom) != 0;
-                tags_boss_room = (tags & RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom) != 0;
-                rows = (*it)->rows;
-                columns = (*it)->columns;
-                memcpy(room_template_tiles, (*it)->tiles, rows * columns);
+                rarity = room_template->rarity;
+                tags = room_template->tags;
+                tags_start_room = (tags & RoomTemplate::Tags::RoomTemplateTagsStartRoom) != 0;
+                tags_boss_room = (tags & RoomTemplate::Tags::RoomTemplateTagsBossRoom) != 0;
+                rows = room_template->rows;
+                columns = room_template->columns;
+                memcpy(room_template_tiles, room_template->tiles, rows * columns);
             }
             ImGui::PopID();
 
@@ -231,8 +233,8 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                 }
 
                 if (ImGui::Selectable("Move up", false, flags)) {
-                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
-                    array::clear(game.room_templates->templates);
+                    Array<RoomTemplate *> room_templates_copy = game.room_templates->room_templates;
+                    array::clear(game.room_templates->room_templates);
 
                     for (uint32_t n = 0; n < array::size(room_templates_copy); ++n) {
                         uint32_t index = n;
@@ -243,7 +245,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                             index = i - 1;
                         }
 
-                        array::push_back(game.room_templates->templates, room_templates_copy[index]);
+                        array::push_back(game.room_templates->room_templates, room_templates_copy[index]);
                     }
 
                     --selected_template_index;
@@ -251,13 +253,13 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                 }
 
                 flags = ImGuiSelectableFlags_None;
-                if (i == (int32_t)array::size(game.room_templates->templates) - 1) {
+                if (i == (int32_t)array::size(game.room_templates->room_templates) - 1) {
                     flags = ImGuiSelectableFlags_Disabled;
                 }
 
                 if (ImGui::Selectable("Move down", false, flags)) {
-                    Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
-                    array::clear(game.room_templates->templates);
+                    Array<RoomTemplate *> room_templates_copy = game.room_templates->room_templates;
+                    array::clear(game.room_templates->room_templates);
 
                     for (int32_t n = 0; (uint32_t)n < array::size(room_templates_copy); ++n) {
                         int32_t index = n;
@@ -268,7 +270,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                             index = i + 1;
                         }
 
-                        array::push_back(game.room_templates->templates, room_templates_copy[index]);
+                        array::push_back(game.room_templates->room_templates, room_templates_copy[index]);
                     }
 
                     ++selected_template_index;
@@ -288,9 +290,9 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
     // Right
     {
-        RoomTemplates::Template *room_template = nullptr;
+        RoomTemplate *room_template = nullptr;
         if (selected_template_index >= 0) {
-            room_template = game.room_templates->templates[selected_template_index];
+            room_template = game.room_templates->room_templates[selected_template_index];
         }
 
         if (room_template) {
@@ -410,9 +412,9 @@ void room_templates_editor(game::Game &game, bool *show_window) {
             {
                 if (ImGui::Checkbox("Start room", &tags_start_room)) {
                     if (tags_start_room) {
-                        tags = tags | RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom;
+                        tags = tags | RoomTemplate::Tags::RoomTemplateTagsStartRoom;
                     } else {
-                        tags = tags ^ RoomTemplates::Template::Tags::RoomTemplateTagsStartRoom;
+                        tags = tags ^ RoomTemplate::Tags::RoomTemplateTagsStartRoom;
                     }
 
                     room_template->tags = tags;
@@ -422,9 +424,9 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
                 if (ImGui::Checkbox("Boss room", &tags_boss_room)) {
                     if (tags_boss_room) {
-                        tags = tags | RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom;
+                        tags = tags | RoomTemplate::Tags::RoomTemplateTagsBossRoom;
                     } else {
-                        tags = tags ^ RoomTemplates::Template::Tags::RoomTemplateTagsBossRoom;
+                        tags = tags ^ RoomTemplate::Tags::RoomTemplateTagsBossRoom;
                     }
 
                     room_template->tags = tags;
@@ -438,7 +440,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
 
                 ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
-                for (uint8_t i = 0; i < static_cast<uint8_t>(RoomTemplates::Template::TileType::Count); ++i) {
+                for (uint8_t i = 0; i < static_cast<uint8_t>(RoomTemplate::TileType::Count); ++i) {
                     char label[256] = {0};
                     snprintf(label, 256, "%c %s", tile_tool_label(i), tile_tool_description(i));
 
@@ -637,18 +639,18 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         if (ImGui::BeginMenu("Edit")) {
             if (ImGui::MenuItem("Copy")) {
                 if (selected_template_index >= 0) {
-                    // Array<RoomTemplates::Template *> room_templates_copy = game.room_templates->templates;
-                    // RoomTemplates::Template *selected_template = game.room_templates->templates[selected_template_index];
-                    // RoomTemplates::Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, RoomTemplates::Template, *selected_template);
+                    // Array<Template *> room_templates_copy = game.room_templates;
+                    // Template *selected_template = game.room_templates[selected_template_index];
+                    // Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, Template, *selected_template);
                     // string_stream::push(*selected_template_copy->name, "_copy", 5);
 
-                    // array::clear(game.room_templates->templates);
+                    // array::clear(game.room_templates);
 
                     // for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
-                    //     array::push_back(game.room_templates->templates, room_templates_copy[i]);
+                    //     array::push_back(game.room_templates, room_templates_copy[i]);
 
                     //     if (i == (uint32_t)selected_template_index) {
-                    //         array::push_back(game.room_templates->templates, selected_template_copy);
+                    //         array::push_back(game.room_templates, selected_template_copy);
                     //     }
                     // }
 
@@ -662,7 +664,7 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndMenuBar();
     }
 
-    // if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates->templates))) {
+    // if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates))) {
     //     selected_template_index = -1;
     //     memset(template_name, 0, 256);
     // }

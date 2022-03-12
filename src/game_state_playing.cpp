@@ -36,6 +36,7 @@ const float MOB_WALK_SPEED = 0.1f;
 
 namespace game {
 using namespace math;
+using namespace foundation;
 
 /// Return the world position of the center of a tile at coord.
 const Vector2 tile_index_to_world_position(const Game &game, const int32_t index) {

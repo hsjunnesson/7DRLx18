@@ -18,7 +18,6 @@ struct Sprite;
 } // namespace engine
 
 namespace game {
-using namespace foundation;
 
 class GameParams;
 class ActionBinds;
@@ -61,16 +60,16 @@ enum class GameState {
 
 // The game state.
 struct Game {
-    Game(Allocator &allocator);
+    Game(foundation::Allocator &allocator);
     ~Game();
 
-    Allocator &allocator;
+    foundation::Allocator &allocator;
     GameParams *params;
     ActionBinds *action_binds;
     GameState game_state;
     Level *level;
     RoomTemplates *room_templates;
-    Array<MobTemplate> *mob_templates;
+    foundation::Array<MobTemplate> *mob_templates;
 
     Mob *player_mob;
 
@@ -86,7 +85,7 @@ struct Game {
     bool camera_locked_on_player;
 
     // These animations catch up mobs and synchronized effects. We wait until these complete before allowing player input.
-    Hash<bool> processing_animations;
+    foundation::Hash<bool> processing_animations;
 
     ActionBindEntry_Action queued_action;
 };

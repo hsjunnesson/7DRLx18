@@ -1,6 +1,7 @@
 #include "dungen.h"
 #include "game.h"
 #include "line.hpp"
+#include "room.h"
 
 #pragma warning(push, 0)
 #include "rnd.h"
@@ -29,217 +30,10 @@
 #include <thread>
 #pragma warning(pop)
 
-namespace {
-const char *room_templates_header = "ROOMTEMPLATES";
-const size_t room_templates_header_len = strlen(room_templates_header);
-} // namespace
-
 namespace game {
 using namespace foundation;
 using engine::coord;
 using engine::index;
-
-RoomTemplates::Template::Template(Allocator &allocator)
-: allocator(allocator)
-, name(nullptr)
-, rarity(1)
-, tags(0)
-, rows(0)
-, columns(0)
-, tiles(nullptr) {
-    name = MAKE_NEW(allocator, string_stream::Buffer, allocator);
-    tiles = MAKE_NEW(allocator, Array<uint8_t>, allocator);
-}
-
-RoomTemplates::Template::Template(const Template &other)
-: allocator(other.allocator)
-, name(nullptr)
-, rarity(1)
-, tags(0)
-, rows(other.rows)
-, columns(other.columns)
-, tiles(nullptr) {
-    const Array<char> &other_name = *other.name;
-    const Array<uint8_t> &other_data = *other.tiles;
-
-    name = MAKE_NEW(allocator, string_stream::Buffer, other_name);
-    tiles = MAKE_NEW(allocator, Array<uint8_t>, other_data);
-}
-
-RoomTemplates::Template::~Template() {
-    MAKE_DELETE(allocator, Array, name);
-    MAKE_DELETE(allocator, Array, tiles);
-}
-
-RoomTemplates::RoomTemplates(Allocator &allocator)
-: allocator(allocator)
-, templates(allocator) {}
-
-RoomTemplates::~RoomTemplates() {
-    for (RoomTemplates::Template **it = array::begin(templates); it != array::end(templates); ++it) {
-        MAKE_DELETE(allocator, Template, *it);
-    }
-}
-
-void RoomTemplates::read(const char *filename) {
-    assert(filename != nullptr);
-
-    // Clear
-    {
-        for (RoomTemplates::Template **it = array::begin(this->templates); it != array::end(templates); ++it) {
-            MAKE_DELETE(this->allocator, Template, *it);
-        }
-
-        array::clear(this->templates);
-    }
-
-    TempAllocator2048 ta;
-    string_stream::Buffer file_buffer(ta);
-    if (!engine::file::read(file_buffer, filename)) {
-        log_fatal("Could not parse: %s", filename);
-    }
-
-    if (array::size(file_buffer) < room_templates_header_len + 1) { // Account for additional version byte
-        log_info("Empty file: %s", filename);
-        return;
-    }
-
-    char *p = array::begin(file_buffer);
-    const char *pe = array::end(file_buffer);
-
-    // Header
-    {
-        char header_buf[256];
-        memcpy(header_buf, p, room_templates_header_len);
-        if (strncmp(room_templates_header, header_buf, room_templates_header_len) != 0) {
-            log_fatal("Could not parse: %s invalid header", filename);
-        }
-
-        p = p + room_templates_header_len;
-    }
-
-    const uint8_t version = *p;
-    ++p;
-
-    // Version 1 original
-    // Version 2 added rarity and tags
-    const uint8_t max_version = 2;
-    const uint8_t min_version = 1;
-
-    if (version > max_version) {
-        log_fatal("Could not parse: %s version %u not supported, max version is %u", version, max_version);
-    }
-
-    if (version < min_version) {
-        log_fatal("Could not parse: %s version %u not supported, min version is %u", version, min_version);
-    }
-
-    while (p < pe) {
-        const uint8_t name_length = *p;
-        ++p;
-
-        if (p >= pe) {
-            log_fatal("Could not parse: %s invalid file format", filename);
-        }
-
-        string_stream::Buffer *name_buffer = MAKE_NEW(this->allocator, Array<char>, this->allocator);
-        string_stream::push(*name_buffer, p, name_length);
-
-        p = p + name_length;
-
-        if (p >= pe) {
-            log_fatal("Could not parse: %s invalid file format", filename);
-        }
-
-        uint8_t rarity = 1;
-        if (version >= 2) {
-            rarity = *p;
-            ++p;
-
-            if (p >= pe) {
-                log_fatal("Could not parse: %s invalid file format", filename);
-            }
-        }
-
-        uint8_t tags = 0;
-        if (version >= 2) {
-            tags = *p;
-            ++p;
-
-            if (p >= pe) {
-                log_fatal("Could not parse: %s invalid file format", filename);
-            }
-        }
-
-        const uint8_t rows = *p;
-        ++p;
-
-        if (p >= pe) {
-            log_fatal("Could not parse: %s invalid file format", filename);
-        }
-
-        const uint8_t columns = *p;
-        ++p;
-
-        if (p >= pe) {
-            log_fatal("Could not parse: %s invalid file format", filename);
-        }
-
-        const uint16_t data_length = rows * columns;
-
-        Array<uint8_t> *data = MAKE_NEW(this->allocator, Array<uint8_t>, this->allocator);
-        array::resize(*data, data_length);
-        memcpy(array::begin(*data), p, data_length);
-
-        p = p + data_length;
-
-        Template *room_template = MAKE_NEW(this->allocator, Template, this->allocator);
-        MAKE_DELETE(this->allocator, Array, room_template->name);
-        room_template->name = name_buffer;
-        room_template->rarity = rarity;
-        room_template->tags = tags;
-        room_template->rows = rows;
-        room_template->columns = columns;
-        MAKE_DELETE(this->allocator, Array, room_template->tiles);
-        room_template->tiles = data;
-
-        array::push_back(this->templates, room_template);
-    }
-}
-
-void RoomTemplates::write(const char *filename) {
-    assert(filename != nullptr);
-
-    FILE *file = nullptr;
-    if (fopen_s(&file, filename, "wb") != 0) {
-        log_fatal("Could not write: %s", filename);
-    }
-
-    // Header
-    fwrite(room_templates_header, room_templates_header_len, 1, file);
-
-    // Version
-    const uint8_t version = 2;
-    fwrite(&version, sizeof(uint8_t), 1, file);
-
-    // Write rooms
-    for (RoomTemplates::Template **it = array::begin(this->templates); it != array::end(templates); ++it) {
-        RoomTemplates::Template *room_template = *it;
-        const uint8_t name_length = (uint8_t)array::size(*room_template->name);
-        fwrite(&name_length, sizeof(uint8_t), 1, file);
-
-        fwrite(array::begin(*room_template->name), sizeof(char), name_length, file);
-
-        fwrite(&room_template->rarity, sizeof(uint8_t), 1, file);
-        fwrite(&room_template->tags, sizeof(uint8_t), 1, file);
-        fwrite(&room_template->rows, sizeof(uint8_t), 1, file);
-        fwrite(&room_template->columns, sizeof(uint8_t), 1, file);
-
-        fwrite(array::begin(*room_template->tiles), sizeof(uint8_t), array::size(*room_template->tiles), file);
-    }
-
-    fclose(file);
-}
 
 enum class ConnectionDirection {
     North,
@@ -248,11 +42,11 @@ enum class ConnectionDirection {
     West
 };
 
-void connections_from_direction(const RoomTemplates::Template &room_template, ConnectionDirection direction, Array<int32_t> &coordinates) {
+void connections_from_direction(const RoomTemplate &room_template, ConnectionDirection direction, Array<int32_t> &coordinates) {
     TempAllocator128 ta;
     Hash<int32_t> side_data(ta);
-    uint8_t empty_tile_type = static_cast<uint8_t>(RoomTemplates::Template::TileType::Empty);
-    uint8_t connection_tile_type = static_cast<uint8_t>(RoomTemplates::Template::TileType::Connection);
+    uint8_t empty_tile_type = static_cast<uint8_t>(RoomTemplate::TileType::Empty);
+    uint8_t connection_tile_type = static_cast<uint8_t>(RoomTemplate::TileType::Connection);
 
     switch (direction) {
     case ConnectionDirection::North:
@@ -362,6 +156,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     rnd_pcg_t random_device;
     unsigned int seed = (unsigned int)time(nullptr);
+
     rnd_pcg_seed(&random_device, seed);
 
     log_debug("Dungen seeded with %u", seed);
@@ -381,17 +176,17 @@ void dungen(engine::Engine *engine, game::Game *game) {
     Hash<int32_t> common_room_indices_by_rarity(allocator);
 
     {
-        for (int32_t i = 0; i < (int32_t)array::size(game->room_templates->templates); ++i) {
-            RoomTemplates::Template *room_template = game->room_templates->templates[i];
+        for (int32_t i = 0; i < (int32_t)array::size(game->room_templates->room_templates); ++i) {
+            RoomTemplate *room_template = game->room_templates->room_templates[i];
             bool common_room = true;
             uint8_t tags = room_template->tags;
 
-            if ((tags & RoomTemplates::Template::RoomTemplateTagsStartRoom) != 0) {
+            if ((tags & RoomTemplate::RoomTemplateTagsStartRoom) != 0) {
                 array::push_back(start_room_template_indices, i);
                 common_room = false;
             }
 
-            if ((tags & RoomTemplates::Template::RoomTemplateTagsBossRoom) != 0) {
+            if ((tags & RoomTemplate::RoomTemplateTagsBossRoom) != 0) {
                 array::push_back(boss_room_template_indices, i);
                 common_room = false;
             }
@@ -528,7 +323,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
                 }
             }
 
-            const RoomTemplates::Template &room_template = *game->room_templates->templates[room_template_index];
+            const RoomTemplate &room_template = *game->room_templates->room_templates[room_template_index];
 
             // TODO: Randomize positions in section
 
@@ -716,25 +511,25 @@ void dungen(engine::Engine *engine, game::Game *game) {
     {
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             const Room &room = iter->value;
-            const RoomTemplates::Template &room_template = *game->room_templates->templates[room.room_template_index];
+            const RoomTemplate &room_template = *game->room_templates->room_templates[room.room_template_index];
 
             for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
                 Tile tile = Tile::None;
-                RoomTemplates::Template::TileType tile_type = static_cast<RoomTemplates::Template::TileType>((*room_template.tiles)[i]);
+                RoomTemplate::TileType tile_type = static_cast<RoomTemplate::TileType>((*room_template.tiles)[i]);
 
                 int32_t x, y;
                 coord(i, x, y, room_template.columns);
                 y = room_template.rows - y - 1;
 
                 switch (tile_type) {
-                case RoomTemplates::Template::TileType::Empty:
+                case RoomTemplate::TileType::Empty:
                     tile = Tile::None;
                     break;
-                case RoomTemplates::Template::TileType::Floor:
+                case RoomTemplate::TileType::Floor:
                     tile = Tile::Floor;
                     break;
-                case RoomTemplates::Template::TileType::Wall:
-                case RoomTemplates::Template::TileType::Connection:
+                case RoomTemplate::TileType::Wall:
+                case RoomTemplate::TileType::Connection:
                     tile = Tile::Wall;
                     break;
                 default:
@@ -754,10 +549,10 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
         Room start_room = hash::get(rooms, start_room_index, {});
         if (start_room.start_room) {
-            const RoomTemplates::Template &room_template = *game->room_templates->templates[start_room.room_template_index];
+            const RoomTemplate &room_template = *game->room_templates->room_templates[start_room.room_template_index];
             for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
                 uint8_t tile_type = (*room_template.tiles)[i];
-                if (RoomTemplates::Template::TileType::Stair == static_cast<RoomTemplates::Template::TileType>(tile_type)) {
+                if (RoomTemplate::TileType::Stair == static_cast<RoomTemplate::TileType>(tile_type)) {
                     int32_t x, y;
                     coord(i, x, y, room_template.columns);
                     y = room_template.rows - y - 1;
@@ -770,13 +565,13 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
         Room boss_room = hash::get(rooms, boss_room_index, {});
         if (boss_room.boss_room) {
-            const RoomTemplates::Template &room_template = *game->room_templates->templates[boss_room.room_template_index];
-            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
-                uint8_t tile_type = (*room_template.tiles)[i];
-                if (RoomTemplates::Template::TileType::Stair == static_cast<RoomTemplates::Template::TileType>(tile_type)) {
+            const RoomTemplate *room_template = game->room_templates->room_templates[boss_room.room_template_index];
+            for (uint32_t i = 0; i < array::size(*room_template->tiles); ++i) {
+                uint8_t tile_type = (*room_template->tiles)[i];
+                if (RoomTemplate::TileType::Stair == static_cast<RoomTemplate::TileType>(tile_type)) {
                     int32_t x, y;
-                    coord(i, x, y, room_template.columns);
-                    y = room_template.rows - y - 1;
+                    coord(i, x, y, room_template->columns);
+                    y = room_template->rows - y - 1;
                     stairs_down_index = index(boss_room.x + x, boss_room.y + y, map_width);
                     hash::set(terrain_tiles, stairs_down_index, {stairs_down_tile});
                     break;
@@ -801,8 +596,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
                 const Room start_room = hash::get(rooms, corridor.from_room_index, {});
                 const Room to_room = hash::get(rooms, corridor.to_room_index, {});
-                const RoomTemplates::Template &start_room_template = *game->room_templates->templates[start_room.room_template_index];
-                const RoomTemplates::Template &to_room_template = *game->room_templates->templates[to_room.room_template_index];
+                const RoomTemplate &start_room_template = *game->room_templates->room_templates[start_room.room_template_index];
+                const RoomTemplate &to_room_template = *game->room_templates->room_templates[to_room.room_template_index];
 
                 line::Coordinate start_coordinate, to_coordinate;
 
@@ -917,6 +712,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
             // Valid next and prev
             if (prev.x >= 0 && next.x >= 0) {
                 if (prev.x != next.x && prev.y == next.y) { // Horizontal line
+                    assert(coord.y > 0);
+
                     int32_t above = index(coord.x, coord.y - 1, map_width);
                     int32_t below = index(coord.x, coord.y + 1, map_width);
 
@@ -928,6 +725,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
                         hash::set(placeholder_walls, below, true);
                     }
                 } else if (prev.x == next.x && prev.y != next.y) { // Vertical line
+                    assert(coord.x > 0);
+
                     int32_t left = index(coord.x - 1, coord.y, map_width);
                     int32_t right = index(coord.x + 1, coord.y, map_width);
 

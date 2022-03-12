@@ -16,7 +16,7 @@ struct Mob {
 
 struct MobTemplate {
     MobTemplate(foundation::Allocator &allocator);
-    MobTemplate(const MobTemplate &other) = delete;
+    MobTemplate(const MobTemplate &other);
     MobTemplate &operator=(const MobTemplate &) = delete;
     ~MobTemplate();
 
