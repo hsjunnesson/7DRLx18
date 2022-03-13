@@ -77,6 +77,11 @@ Game::Game(Allocator &allocator)
         room_templates = MAKE_NEW(allocator, RoomTemplates, allocator);
     }
 
+    // mob templates
+    {
+        mob_templates = MAKE_NEW(allocator, MobTemplates, allocator);
+    }
+
     // dungen
     {
         dungen_mutex = MAKE_NEW(allocator, std::mutex);
@@ -107,8 +112,7 @@ Game::~Game() {
     }
 
     if (mob_templates) {
-        // TODO: Deallocate individual rooms.
-        MAKE_DELETE(allocator, Array, mob_templates);
+        MAKE_DELETE(allocator, MobTemplates, mob_templates);
     }
 
     if (dungen_thread) {
@@ -280,10 +284,8 @@ void transition(engine::Engine &engine, void *game_object, GameState game_state)
         log_info("Initializing");
         engine::init_sprites(*engine.sprites, game->params->game_atlas_filename().c_str());
 
-        MAKE_DELETE(game->allocator, Array, game->mob_templates);
-
         game->room_templates->read(game->params->room_templates_filename().c_str());
-        game->mob_templates = init_mob_templates(game->allocator, game->params->mob_templates_filename().c_str());
+        game->mob_templates->read(game->params->mob_templates_filename().c_str());
         
         transition(engine, game_object, GameState::Menus);
         break;

@@ -23,6 +23,7 @@ class GameParams;
 class ActionBinds;
 struct Level;
 struct RoomTemplates;
+struct MobTemplates;
 struct Mob;
 struct MobTemplate;
 enum ActionBindEntry_Action : int;
@@ -69,7 +70,7 @@ struct Game {
     GameState game_state;
     Level *level;
     RoomTemplates *room_templates;
-    foundation::Array<MobTemplate> *mob_templates;
+    MobTemplates *mob_templates;
 
     Mob *player_mob;
 

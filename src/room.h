@@ -69,13 +69,13 @@ struct RoomTemplate {
 };
 
 struct RoomTemplates {
-    foundation::Allocator &allocator;
-    foundation::Array<RoomTemplate *> room_templates;
-
     RoomTemplates(foundation::Allocator &allocator);
     ~RoomTemplates();
     RoomTemplates(const RoomTemplates &) = delete;
     RoomTemplates &operator=(const RoomTemplates &) = delete;
+
+    foundation::Allocator &allocator;
+    foundation::Array<RoomTemplate *> room_templates;
 
     void read(const char *filename);
     void write(const char *filename);

@@ -15,16 +15,35 @@ struct Mob {
 };
 
 struct MobTemplate {
-    MobTemplate(foundation::Allocator &allocator);
-    MobTemplate(const MobTemplate &other);
+    enum Tags {
+        MobTemplateTagsNone = 0,
+        MobTemplateTagsBoss = 1 << 0,
+    };
+
+    explicit MobTemplate(foundation::Allocator &allocator);
+    explicit MobTemplate(const MobTemplate &other);
+    MobTemplate(MobTemplate &&) noexcept = delete;
     MobTemplate &operator=(const MobTemplate &) = delete;
+    MobTemplate &operator=(MobTemplate &&) noexcept = delete;
     ~MobTemplate();
 
     foundation::Allocator &allocator;
     foundation::Array<char> *name;
+    uint8_t rarity;
+    uint8_t tags;
 };
 
-foundation::Array<MobTemplate> *init_mob_templates(foundation::Allocator &allocator, const char *filename);
-void write_mob_templates(foundation::Array<MobTemplate> *mob_templates, const char *filename);
+struct MobTemplates {
+    MobTemplates(foundation::Allocator &allocator);
+    ~MobTemplates();
+    MobTemplates(const MobTemplates &) = delete;
+    MobTemplates &operator=(const MobTemplates &) = delete;
+
+    foundation::Allocator &allocator;
+    foundation::Array<MobTemplate *> mob_templates;
+
+    void read(const char *filename);
+    void write(const char *filename);
+};
 
 } // namespace game
