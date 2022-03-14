@@ -2,6 +2,7 @@
 #include "dungen.h"
 #include "game.h"
 #include "room.h"
+#include "mob.h"
 
 #pragma warning(push, 0)
 #include <array.h>
@@ -603,6 +604,10 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
     }
 
     static int32_t selected_template_index = -1;
+    static char template_name[256] = {'\0'};
+    static int rarity = 0;
+    static uint8_t tags = 0;
+    static bool tags_boss = false;
 
     const char *menu_label = nullptr;
     if (mob_templates_dirty) {
@@ -621,15 +626,15 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
     if (ImGui::BeginMenuBar()) {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Open")) {
-                // const char *filename = game.params->room_templates_filename().c_str();
-                // game.room_templates->read(filename);
-                room_templates_did_reset = true;
+                const char *filename = game.params->mob_templates_filename().c_str();
+                game.mob_templates->read(filename);
+                mob_templates_did_reset = true;
                 mob_templates_dirty = false;
             }
 
-            if (ImGui::MenuItem("Save", nullptr, false, room_templates_dirty)) {
-                // const char *filename = game.params->room_templates_filename().c_str();
-                // game.room_templates->write(filename);
+            if (ImGui::MenuItem("Save", nullptr, false, mob_templates_dirty)) {
+                const char *filename = game.params->mob_templates_filename().c_str();
+                game.mob_templates->write(filename);
                 mob_templates_dirty = false;
             }
 
@@ -639,20 +644,20 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         if (ImGui::BeginMenu("Edit")) {
             if (ImGui::MenuItem("Copy")) {
                 if (selected_template_index >= 0) {
-                    // Array<Template *> room_templates_copy = game.room_templates;
-                    // Template *selected_template = game.room_templates[selected_template_index];
-                    // Template *selected_template_copy = MAKE_NEW(game.room_templates->allocator, Template, *selected_template);
-                    // string_stream::push(*selected_template_copy->name, "_copy", 5);
+                    Array<MobTemplate *> mob_templates_copy = game.mob_templates->mob_templates;
+                    MobTemplate *selected_template = game.mob_templates->mob_templates[selected_template_index];
+                    MobTemplate *selected_template_copy = MAKE_NEW(game.mob_templates->allocator, MobTemplate, *selected_template);
+                    string_stream::push(*selected_template_copy->name, "_copy", 5);
 
-                    // array::clear(game.room_templates);
+                    array::clear(game.mob_templates->mob_templates);
 
-                    // for (uint32_t i = 0; i < array::size(room_templates_copy); ++i) {
-                    //     array::push_back(game.room_templates, room_templates_copy[i]);
+                    for (uint32_t i = 0; i < array::size(mob_templates_copy); ++i) {
+                        array::push_back(game.mob_templates->mob_templates, mob_templates_copy[i]);
 
-                    //     if (i == (uint32_t)selected_template_index) {
-                    //         array::push_back(game.room_templates, selected_template_copy);
-                    //     }
-                    // }
+                        if (i == (uint32_t)selected_template_index) {
+                            array::push_back(game.mob_templates->mob_templates, selected_template_copy);
+                        }
+                    }
 
                     mob_templates_dirty = true;
                 }
@@ -664,10 +669,124 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndMenuBar();
     }
 
-    // if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.room_templates))) {
-    //     selected_template_index = -1;
-    //     memset(template_name, 0, 256);
-    // }
+    if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.mob_templates->mob_templates))) {
+        selected_template_index = -1;
+        memset(template_name, 0, 256);
+    }
+
+    // Left
+    {
+        if (ImGui::Button("Add")) {
+            MobTemplate *t = MAKE_NEW(game.mob_templates->allocator, MobTemplate, game.mob_templates->allocator);
+            string_stream::push(*t->name, "Mob", 4);
+            t->rarity = 1;
+            t->tags = 0;
+
+            array::push_back(game.mob_templates->mob_templates, t);
+            mob_templates_dirty = true;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Delete")) {
+            if (selected_template_index >= 0) {
+                Array<MobTemplate *> mob_templates_copy = game.mob_templates->mob_templates;
+                MobTemplate *selected_template = game.mob_templates->mob_templates[selected_template_index];
+
+                array::clear(game.mob_templates->mob_templates);
+
+                for (uint32_t i = 0; i < array::size(mob_templates_copy); ++i) {
+                    if (i != (uint32_t)selected_template_index) {
+                        array::push_back(game.mob_templates->mob_templates, mob_templates_copy[i]);
+                    }
+                }
+
+                MAKE_DELETE(game.mob_templates->allocator, MobTemplate, selected_template);
+                selected_template = nullptr;
+
+                --selected_template_index;
+
+                mob_templates_dirty = true;
+            }
+        }
+
+        ImGui::BeginChild("mob_templates_left_pane", ImVec2(150, 0), true);
+
+        int32_t i = 0;
+        for (MobTemplate **it = array::begin(game.mob_templates->mob_templates); it != array::end(game.mob_templates->mob_templates); ++it) {
+            const MobTemplate *mob_template = *it;
+            string_stream::Buffer *name_buffer = mob_template->name;
+            const char *name = string_stream::c_str(*name_buffer);
+            ImGui::PushID(i);
+            if (ImGui::Selectable(name, selected_template_index == i)) {
+                selected_template_index = i;
+                memset(template_name, 0, 256);
+                memcpy(template_name, name, strlen(name));
+                rarity = mob_template->rarity;
+                tags = mob_template->tags;
+                tags_boss = (tags & MobTemplate::Tags::MobTemplateTagsBoss) != 0;
+            }
+            ImGui::PopID();
+
+            if (ImGui::BeginPopupContextItem()) {
+                ImGuiSelectableFlags flags = ImGuiSelectableFlags_None;
+                if (i == 0) {
+                    flags = ImGuiSelectableFlags_Disabled;
+                }
+
+                if (ImGui::Selectable("Move up", false, flags)) {
+                    Array<MobTemplate *> mob_templates_copy = game.mob_templates->mob_templates;
+                    array::clear(game.mob_templates->mob_templates);
+
+                    for (uint32_t n = 0; n < array::size(mob_templates_copy); ++n) {
+                        uint32_t index = n;
+
+                        if (n == (uint32_t)i - 1) {
+                            index = i;
+                        } else if (n == (uint32_t)i) {
+                            index = i - 1;
+                        }
+
+                        array::push_back(game.mob_templates->mob_templates, mob_templates_copy[index]);
+                    }
+
+                    --selected_template_index;
+                    mob_templates_dirty = true;
+                }
+
+                flags = ImGuiSelectableFlags_None;
+                if (i == (int32_t)array::size(game.mob_templates->mob_templates) - 1) {
+                    flags = ImGuiSelectableFlags_Disabled;
+                }
+
+                if (ImGui::Selectable("Move down", false, flags)) {
+                    Array<MobTemplate *> mob_templates_copy = game.mob_templates->mob_templates;
+                    array::clear(game.mob_templates->mob_templates);
+
+                    for (int32_t n = 0; (uint32_t)n < array::size(mob_templates_copy); ++n) {
+                        int32_t index = n;
+
+                        if (n == i + 1) {
+                            index = i;
+                        } else if (n == i) {
+                            index = i + 1;
+                        }
+
+                        array::push_back(game.mob_templates->mob_templates, mob_templates_copy[index]);
+                    }
+
+                    ++selected_template_index;
+                    mob_templates_dirty = true;
+                }
+
+                ImGui::EndPopup();
+            }
+
+            ++i;
+        }
+
+        ImGui::EndChild();
+    }
 
     ImGui::End();
 }

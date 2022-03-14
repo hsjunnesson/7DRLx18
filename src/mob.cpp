@@ -99,11 +99,11 @@ void MobTemplates::read(const char *filename) {
     const uint8_t min_version = 1;
 
     if (version > max_version) {
-        log_fatal("Could not parse: %s version %u not supported, max version is %u", version, max_version);
+        log_fatal("Could not parse: %s version %u not supported, max version is %u", filename, version, max_version);
     }
 
     if (version < min_version) {
-        log_fatal("Could not parse: %s version %u not supported, min version is %u", version, min_version);
+        log_fatal("Could not parse: %s version %u not supported, min version is %u", filename, version, min_version);
     }
 
     while (p < pe) {
@@ -123,24 +123,18 @@ void MobTemplates::read(const char *filename) {
             log_fatal("Could not parse: %s invalid file format", filename);
         }
 
-        uint8_t rarity = 1;
-        if (version >= 2) {
-            rarity = *p;
-            ++p;
+        uint8_t rarity = *p;
+        ++p;
 
-            if (p >= pe) {
-                log_fatal("Could not parse: %s invalid file format", filename);
-            }
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
         }
 
-        uint8_t tags = 0;
-        if (version >= 2) {
-            tags = *p;
-            ++p;
+        uint8_t tags = *p;
+        ++p;
 
-            if (p >= pe) {
-                log_fatal("Could not parse: %s invalid file format", filename);
-            }
+        if (p > pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
         }
 
         MobTemplate *mob_template = MAKE_NEW(allocator, MobTemplate, allocator);
@@ -165,7 +159,7 @@ void MobTemplates::write(const char *filename) {
     fwrite(mob_templates_header, mob_templates_header_len, 1, file);
 
     // Version
-    const uint8_t version = 2;
+    const uint8_t version = 1;
     fwrite(&version, sizeof(uint8_t), 1, file);
 
     // Write rooms

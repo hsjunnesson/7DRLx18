@@ -109,11 +109,11 @@ void RoomTemplates::read(const char *filename) {
     const uint8_t min_version = 1;
 
     if (version > max_version) {
-        log_fatal("Could not parse: %s version %u not supported, max version is %u", version, max_version);
+        log_fatal("Could not parse: %s version %u not supported, max version is %u", filename, version, max_version);
     }
 
     if (version < min_version) {
-        log_fatal("Could not parse: %s version %u not supported, min version is %u", version, min_version);
+        log_fatal("Could not parse: %s version %u not supported, min version is %u", filename, version, min_version);
     }
 
     while (p < pe) {
