@@ -29,6 +29,7 @@ struct MobTemplate {
 
     foundation::Allocator &allocator;
     foundation::Array<char> *name;
+    foundation::Array<char> *sprite_name;
     uint8_t rarity;
     uint8_t tags;
 };

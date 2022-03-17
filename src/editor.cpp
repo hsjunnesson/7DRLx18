@@ -7,6 +7,8 @@
 #pragma warning(push, 0)
 #include <array.h>
 #include <engine/engine.h>
+#include <engine/sprites.h>
+#include <engine/atlas.h>
 #include <engine/log.h>
 #include <imgui.h>
 #include <proto/game.pb.h>
@@ -308,10 +310,11 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     string_stream::push(*name, template_name, (uint32_t)strlen(template_name));
                     room_templates_dirty = true;
                 }
+            }
 
-                ImGui::SameLine();
-
-                ImGui::PushItemWidth(80);
+            // Rarity
+            {
+                ImGui::PushItemWidth(100);
                 if (ImGui::InputInt("Rarity", &rarity)) {
                     room_templates_dirty = true;
                     if (rarity <= 0) {
@@ -419,6 +422,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     }
 
                     room_template->tags = tags;
+                    room_templates_dirty = true;
                 }
 
                 ImGui::SameLine();
@@ -431,6 +435,7 @@ void room_templates_editor(game::Game &game, bool *show_window) {
                     }
 
                     room_template->tags = tags;
+                    room_templates_dirty = true;
                 }
             }
 
@@ -598,7 +603,7 @@ void gamestate_controls_window(engine::Engine &engine, game::Game &game, bool *s
     ImGui::End();
 }
 
-void mob_templates_editor(game::Game &game, bool *show_window) {
+void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_window) {
     if (*show_window == false) {
         return;
     }
@@ -608,7 +613,8 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
     static int rarity = 0;
     static uint8_t tags = 0;
     static bool tags_boss = false;
-
+    static char sprite_name[256] = {'\0'};
+    
     const char *menu_label = nullptr;
     if (mob_templates_dirty) {
         menu_label = "Mob Templates*###MobTemplatesWindow";
@@ -672,6 +678,7 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
     if (mob_templates_did_reset || (selected_template_index >= 0 && selected_template_index > (int32_t)array::size(game.mob_templates->mob_templates))) {
         selected_template_index = -1;
         memset(template_name, 0, 256);
+        memset(sprite_name, 0, 256);
     }
 
     // Left
@@ -715,16 +722,15 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         int32_t i = 0;
         for (MobTemplate **it = array::begin(game.mob_templates->mob_templates); it != array::end(game.mob_templates->mob_templates); ++it) {
             const MobTemplate *mob_template = *it;
-            string_stream::Buffer *name_buffer = mob_template->name;
-            const char *name = string_stream::c_str(*name_buffer);
+            const char *name = string_stream::c_str(*mob_template->name);
             ImGui::PushID(i);
             if (ImGui::Selectable(name, selected_template_index == i)) {
                 selected_template_index = i;
-                memset(template_name, 0, 256);
-                memcpy(template_name, name, strlen(name));
+                strncpy_s(template_name, name, 256);
                 rarity = mob_template->rarity;
                 tags = mob_template->tags;
                 tags_boss = (tags & MobTemplate::Tags::MobTemplateTagsBoss) != 0;
+                strncpy_s(sprite_name, string_stream::c_str(*mob_template->sprite_name), 256);
             }
             ImGui::PopID();
 
@@ -788,6 +794,89 @@ void mob_templates_editor(game::Game &game, bool *show_window) {
         ImGui::EndChild();
     }
 
+    ImGui::SameLine();
+
+    // Right
+    {
+        MobTemplate *mob_template = nullptr;
+        if (selected_template_index >= 0) {
+            mob_template = game.mob_templates->mob_templates[selected_template_index];
+        }
+
+        if (mob_template) {
+            ImGui::BeginGroup();
+
+            // Name
+            {
+                ImGui::PushItemWidth(240);
+                if (ImGui::InputText("Name", template_name, 256, ImGuiInputTextFlags_CharsNoBlank)) {
+                    string_stream::Buffer *name = mob_template->name;
+                    array::clear(*name);
+                    string_stream::push(*name, template_name, (uint32_t)strlen(template_name));
+                    mob_templates_dirty = true;
+                }
+            }
+
+            // Rarity
+            {
+                ImGui::PushItemWidth(100);
+                if (ImGui::InputInt("Rarity", &rarity)) {
+                    mob_templates_dirty = true;
+                    if (rarity <= 0) {
+                        rarity = 1;
+                    }
+
+                    if (rarity > 4) {
+                        rarity = 4;
+                    }
+
+                    mob_template->rarity = (uint8_t)rarity;
+                }
+            }
+
+            // Tags
+            {
+                if (ImGui::Checkbox("Boss", &tags_boss)) {
+                    if (tags_boss) {
+                        tags = tags | MobTemplate::Tags::MobTemplateTagsBoss;
+                    } else {
+                        tags = tags ^ MobTemplate::Tags::MobTemplateTagsBoss;
+                    }
+
+                    mob_template->tags = tags;
+                    mob_templates_dirty = true;
+                }
+            }
+
+            // Sprite
+            {
+                static ImGuiComboFlags flags = 0;
+                const Array<Buffer *> &sprite_names = *engine.sprites->atlas->sprite_names;
+
+                if (ImGui::BeginCombo("Sprite", sprite_name, flags)) {
+                    for (auto it = array::begin(sprite_names); it != array::end(sprite_names); ++it) {
+                        const char *selectable_sprite_name = string_stream::c_str(**it);
+                        const bool is_selected = strncmp(sprite_name, selectable_sprite_name, 256) == 0;
+                        if (ImGui::Selectable(selectable_sprite_name, is_selected)) {
+                            strncpy_s(sprite_name, selectable_sprite_name, 256);
+                            array::clear(*mob_template->sprite_name);
+                            string_stream::push(*mob_template->sprite_name, selectable_sprite_name, strnlen(selectable_sprite_name, 256));
+                            mob_templates_dirty = true;
+                        }                        
+
+                        if (is_selected) {
+                            ImGui::SetItemDefaultFocus();
+                        }
+                    }
+
+                    ImGui::EndCombo();
+                }
+            }
+
+            ImGui::EndGroup();
+        }
+    }
+
     ImGui::End();
 }
 
@@ -821,7 +910,7 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
 
     gamestate_controls_window(engine, game, &show_gamestate_controls_window);
     room_templates_editor(game, &show_room_templates_window);
-    mob_templates_editor(game, &show_mob_templates_window);
+    mob_templates_editor(engine, game, &show_mob_templates_window);
 
     room_templates_did_reset = false;
     mob_templates_did_reset = false;

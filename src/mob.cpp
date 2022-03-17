@@ -23,24 +23,28 @@ using namespace foundation::string_stream;
 MobTemplate::MobTemplate(foundation::Allocator &allocator)
 : allocator(allocator)
 , name(nullptr)
+, sprite_name(nullptr)
 , rarity(1)
 , tags(0)
 {
     name = MAKE_NEW(allocator, string_stream::Buffer, allocator);
+    sprite_name = MAKE_NEW(allocator, string_stream::Buffer, allocator);
 }
 
 MobTemplate::MobTemplate(const MobTemplate &other)
 : allocator(allocator)
 , name(nullptr)
+, sprite_name(nullptr)
 , rarity(other.rarity)
 , tags(other.tags)
 {
-    const Array<char> &other_name = *other.name;
-    name = MAKE_NEW(allocator, string_stream::Buffer, other_name);
+    name = MAKE_NEW(allocator, string_stream::Buffer, *other.name);
+    sprite_name = MAKE_NEW(allocator, string_stream::Buffer, *other.sprite_name);
 }
 
 MobTemplate::~MobTemplate() {
     MAKE_DELETE(allocator, Array, name);
+    MAKE_DELETE(allocator, Array, sprite_name);
 }
 
 MobTemplates::MobTemplates(Allocator &allocator)
@@ -133,8 +137,26 @@ void MobTemplates::read(const char *filename) {
         uint8_t tags = *p;
         ++p;
 
+        if (p >= pe) {
+            log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        const uint8_t sprite_name_length = *p;
+        ++p;
+
         if (p > pe) {
             log_fatal("Could not parse: %s invalid file format", filename);
+        }
+
+        string_stream::Buffer *sprite_name_buffer = MAKE_NEW(allocator, Array<char>, allocator);
+        if (sprite_name_length > 0) {
+            string_stream::push(*sprite_name_buffer, p, sprite_name_length);
+
+            p += sprite_name_length;
+            
+            if (p > pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
         }
 
         MobTemplate *mob_template = MAKE_NEW(allocator, MobTemplate, allocator);
@@ -142,6 +164,8 @@ void MobTemplates::read(const char *filename) {
         mob_template->name = name_buffer;
         mob_template->rarity = rarity;
         mob_template->tags = tags;
+        MAKE_DELETE(allocator, Array, mob_template->sprite_name);
+        mob_template->sprite_name = sprite_name_buffer;
 
         array::push_back(mob_templates, mob_template);
     }
@@ -162,16 +186,21 @@ void MobTemplates::write(const char *filename) {
     const uint8_t version = 1;
     fwrite(&version, sizeof(uint8_t), 1, file);
 
-    // Write rooms
+    // Write mobs
     for (MobTemplate **iter = array::begin(mob_templates); iter != array::end(mob_templates); ++iter) {
         MobTemplate *mob_template = *iter;
+
         const uint8_t name_length = (uint8_t)array::size(*mob_template->name);
         fwrite(&name_length, sizeof(uint8_t), 1, file);
-
         fwrite(array::begin(*mob_template->name), sizeof(char), name_length, file);
 
         fwrite(&mob_template->rarity, sizeof(uint8_t), 1, file);
+
         fwrite(&mob_template->tags, sizeof(uint8_t), 1, file);
+
+        const uint8_t sprite_name_length = (uint8_t)array::size(*mob_template->sprite_name);
+        fwrite(&sprite_name_length, sizeof(uint8_t), 1, file);
+        fwrite(array::begin(*mob_template->sprite_name), sizeof(char), sprite_name_length, file);
     }
 
     fclose(file);
