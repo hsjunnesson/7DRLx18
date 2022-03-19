@@ -1,4 +1,5 @@
 #include "mob.h"
+#include "color.inl"
 
 #include <engine/file.h>
 #include <engine/log.h>
@@ -24,6 +25,7 @@ MobTemplate::MobTemplate(foundation::Allocator &allocator)
 : allocator(allocator)
 , name(nullptr)
 , sprite_name(nullptr)
+, sprite_color(color::white)
 , rarity(1)
 , tags(0)
 {
@@ -35,6 +37,7 @@ MobTemplate::MobTemplate(const MobTemplate &other)
 : allocator(allocator)
 , name(nullptr)
 , sprite_name(nullptr)
+, sprite_color(other.sprite_color)
 , rarity(other.rarity)
 , tags(other.tags)
 {
@@ -99,7 +102,8 @@ void MobTemplates::read(const char *filename) {
     ++p;
 
     // Version 1 original
-    const uint8_t max_version = 1;
+    // Version 2 sprite_color added
+    const uint8_t max_version = 2;
     const uint8_t min_version = 1;
 
     if (version > max_version) {
@@ -141,6 +145,34 @@ void MobTemplates::read(const char *filename) {
             log_fatal("Could not parse: %s invalid file format", filename);
         }
 
+        color::Color4f sprite_color;
+        if (version >= 2) {
+            // TODO: rewrite this, yikes.
+            memcpy(&sprite_color.r, p, sizeof(float));
+            p += sizeof(float);
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
+
+            memcpy(&sprite_color.g, p, sizeof(float));
+            p += sizeof(float);
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
+
+            memcpy(&sprite_color.b, p, sizeof(float));
+            p += sizeof(float);
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
+
+            memcpy(&sprite_color.a, p, sizeof(float));
+            p += sizeof(float);
+            if (p >= pe) {
+                log_fatal("Could not parse: %s invalid file format", filename);
+            }
+        }
+
         const uint8_t sprite_name_length = *p;
         ++p;
 
@@ -166,6 +198,7 @@ void MobTemplates::read(const char *filename) {
         mob_template->tags = tags;
         MAKE_DELETE(allocator, Array, mob_template->sprite_name);
         mob_template->sprite_name = sprite_name_buffer;
+        mob_template->sprite_color = sprite_color;
 
         array::push_back(mob_templates, mob_template);
     }
@@ -183,7 +216,7 @@ void MobTemplates::write(const char *filename) {
     fwrite(mob_templates_header, mob_templates_header_len, 1, file);
 
     // Version
-    const uint8_t version = 1;
+    const uint8_t version = 2;
     fwrite(&version, sizeof(uint8_t), 1, file);
 
     // Write mobs
@@ -197,6 +230,11 @@ void MobTemplates::write(const char *filename) {
         fwrite(&mob_template->rarity, sizeof(uint8_t), 1, file);
 
         fwrite(&mob_template->tags, sizeof(uint8_t), 1, file);
+
+        fwrite(&mob_template->sprite_color.r, sizeof(float), 1, file);
+        fwrite(&mob_template->sprite_color.g, sizeof(float), 1, file);
+        fwrite(&mob_template->sprite_color.b, sizeof(float), 1, file);
+        fwrite(&mob_template->sprite_color.a, sizeof(float), 1, file);
 
         const uint8_t sprite_name_length = (uint8_t)array::size(*mob_template->sprite_name);
         fwrite(&sprite_name_length, sizeof(uint8_t), 1, file);

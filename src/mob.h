@@ -1,6 +1,7 @@
 #pragma once
 
 #pragma warning(push, 0)
+#include <engine/math.inl>
 #include <stdint.h>
 #include <collection_types.h>
 #pragma warning(pop)
@@ -30,6 +31,7 @@ struct MobTemplate {
     foundation::Allocator &allocator;
     foundation::Array<char> *name;
     foundation::Array<char> *sprite_name;
+    math::Color4f sprite_color;
     uint8_t rarity;
     uint8_t tags;
 };

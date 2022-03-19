@@ -3,6 +3,7 @@
 #include "game.h"
 #include "room.h"
 #include "mob.h"
+#include "color.inl"
 
 #pragma warning(push, 0)
 #include <array.h>
@@ -47,6 +48,8 @@ char tile_tool_label(uint8_t tile_type) {
     default:
         log_fatal("Unsupported TileType %u", tile_type);
     }
+
+    return 0;
 }
 
 const char *tile_tool_description(uint8_t tile_type) {
@@ -64,6 +67,8 @@ const char *tile_tool_description(uint8_t tile_type) {
     default:
         log_fatal("Unsupported TileType %u", tile_type);
     }
+
+    return nullptr;
 }
 
 ImVec4 tile_tool_color(uint8_t tile_type) {
@@ -84,6 +89,8 @@ ImVec4 tile_tool_color(uint8_t tile_type) {
     default:
         log_fatal("Unsupported TileType %u", tile_type);
     }
+
+    return ImVec4();
 }
 
 void room_templates_editor(game::Game &game, bool *show_window) {
@@ -617,6 +624,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
     static uint8_t tags = 0;
     static bool tags_boss = false;
     static char sprite_name[256] = {'\0'};
+    static ImVec4 sprite_color;
     bool did_select_this_frame = false;
 
     const char *menu_label = nullptr;
@@ -683,6 +691,10 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
         selected_template_index = -1;
         memset(template_name, 0, 256);
         memset(sprite_name, 0, 256);
+        sprite_color.x = color::white.r;
+        sprite_color.y = color::white.g;
+        sprite_color.z = color::white.b;
+        sprite_color.w = color::white.a;
     }
 
     // Left
@@ -735,6 +747,12 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                 tags = mob_template->tags;
                 tags_boss = (tags & MobTemplate::Tags::MobTemplateTagsBoss) != 0;
                 strncpy_s(sprite_name, string_stream::c_str(*mob_template->sprite_name), 256);
+
+                sprite_color.x = mob_template->sprite_color.r;
+                sprite_color.y = mob_template->sprite_color.g;
+                sprite_color.z = mob_template->sprite_color.b;
+                sprite_color.w = mob_template->sprite_color.a;
+
                 did_select_this_frame = true;
             }
             ImGui::PopID();
@@ -852,6 +870,75 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
 
                     mob_template->tags = tags;
                     mob_templates_dirty = true;
+                }
+            }
+
+            // Color
+            {
+                static bool saved_palette_init = true;
+                const int palette_count = 16;
+                static ImVec4 saved_palette[palette_count] = {};
+                if (saved_palette_init) {
+                    auto add_color = [](int i, math::Color4f color) {
+                        saved_palette[i] = {color.r, color.g, color.b, color.a};
+                    };
+                    add_color(0, color::black);
+                    add_color(1, color::storm);
+                    add_color(2, color::wine);
+                    add_color(3, color::moss);
+                    add_color(4, color::tan);
+                    add_color(5, color::slate);
+                    add_color(6, color::silver);
+                    add_color(7, color::white);
+                    add_color(8, color::ember);
+                    add_color(9, color::orange);
+                    add_color(10, color::lemon);
+                    add_color(11, color::lime);
+                    add_color(12, color::sky);
+                    add_color(13, color::dusk);
+                    add_color(14, color::pink);
+                    add_color(15, color::peach);
+
+                    saved_palette_init = false;
+                }
+                
+                ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoSidePreview ;
+                bool open_popup = ImGui::ColorButton("Color#b", sprite_color, flags);
+                ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
+                open_popup |= ImGui::Button("Color");
+
+                if (open_popup) {
+                    ImGui::OpenPopup("sprite_color_picker");
+                }
+
+                if (ImGui::BeginPopup("sprite_color_picker")) {
+                    ImGui::ColorPicker4("##picker", (float*)&sprite_color, flags);
+                    ImGui::SameLine();
+                    ImGui::BeginGroup();
+
+                    for (int i = 0; i < palette_count; ++i) {
+                        ImGui::PushID(i);
+                        if ((i % 8) != 0) {
+                            ImGui::SameLine(0.0f, ImGui::GetStyle().ItemSpacing.y);
+                        }
+
+                        ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
+                        if (ImGui::ColorButton("##palette", saved_palette[i], palette_button_flags, ImVec2(20, 20))) {
+                            sprite_color = ImVec4(saved_palette[i].x, saved_palette[i].y, saved_palette[i].z, sprite_color.w);
+
+                            mob_template->sprite_color.r = sprite_color.x;
+                            mob_template->sprite_color.g = sprite_color.y;
+                            mob_template->sprite_color.b = sprite_color.z;
+                            mob_template->sprite_color.a = sprite_color.w;
+
+                            mob_templates_dirty = true;
+                        }
+
+                        ImGui::PopID();
+                    }
+
+                    ImGui::EndGroup();
+                    ImGui::EndPopup();
                 }
             }
 
