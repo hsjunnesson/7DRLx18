@@ -6,10 +6,13 @@
 
 #pragma warning(push, 0)
 #include <array.h>
+#include <hash.h>
+#include <murmur_hash.h>
 #include <engine/engine.h>
 #include <engine/sprites.h>
 #include <engine/atlas.h>
 #include <engine/log.h>
+#include <engine/texture.h>
 #include <imgui.h>
 #include <proto/game.pb.h>
 #include <string_stream.h>
@@ -614,7 +617,8 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
     static uint8_t tags = 0;
     static bool tags_boss = false;
     static char sprite_name[256] = {'\0'};
-    
+    bool did_select_this_frame = false;
+
     const char *menu_label = nullptr;
     if (mob_templates_dirty) {
         menu_label = "Mob Templates*###MobTemplatesWindow";
@@ -731,6 +735,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                 tags = mob_template->tags;
                 tags_boss = (tags & MobTemplate::Tags::MobTemplateTagsBoss) != 0;
                 strncpy_s(sprite_name, string_stream::c_str(*mob_template->sprite_name), 256);
+                did_select_this_frame = true;
             }
             ImGui::PopID();
 
@@ -758,6 +763,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
 
                     --selected_template_index;
                     mob_templates_dirty = true;
+                    did_select_this_frame = true;
                 }
 
                 flags = ImGuiSelectableFlags_None;
@@ -783,6 +789,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
 
                     ++selected_template_index;
                     mob_templates_dirty = true;
+                    did_select_this_frame = true;
                 }
 
                 ImGui::EndPopup();
@@ -853,23 +860,63 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                 static ImGuiComboFlags flags = 0;
                 const Array<Buffer *> &sprite_names = *engine.sprites->atlas->sprite_names;
 
-                if (ImGui::BeginCombo("Sprite", sprite_name, flags)) {
+                if (ImGui::BeginListBox("", ImVec2(200, 465))) {
+                    int i = 0;
+
                     for (auto it = array::begin(sprite_names); it != array::end(sprite_names); ++it) {
+                        ImGui::PushID(i);
+                        bool did_select = false;
+
                         const char *selectable_sprite_name = string_stream::c_str(**it);
                         const bool is_selected = strncmp(sprite_name, selectable_sprite_name, 256) == 0;
+
+                        static math::Rect default_sprite_rect;
+                        uint64_t key = murmur_hash_64(selectable_sprite_name, strnlen_s(selectable_sprite_name, 256), 0);
+                        if (hash::has(*engine.sprites->atlas->frames, key)) {
+                            const math::Rect &rect = hash::get(*engine.sprites->atlas->frames, key, default_sprite_rect);
+
+                            float texture_width = (float)engine.sprites->atlas->texture->width;
+                            float texture_height = (float)engine.sprites->atlas->texture->height;
+
+                            ImTextureID tex_id = (void *)(intptr_t)engine.sprites->atlas->texture->texture;
+
+                            ImVec2 texture_size = ImVec2(32.0f, 32.0f);
+                            ImVec2 uv_min = ImVec2(rect.origin.x / texture_width, rect.origin.y / texture_height);
+                            ImVec2 uv_max = ImVec2((rect.origin.x + rect.size.x) / texture_width, (rect.origin.y + rect.size.y) / texture_height);
+                            ImVec4 bg_col = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+                            ImVec4 tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+                            if (ImGui::ImageButton(tex_id, texture_size, uv_min, uv_max, -1, bg_col, tint)) {
+                                did_select = true;
+                            }
+                        }
+
+                        ImGui::SameLine();
+
                         if (ImGui::Selectable(selectable_sprite_name, is_selected)) {
+                            did_select = true;
+                        }
+
+                        if (is_selected) {
+                            ImGui::SetItemDefaultFocus();
+
+                            if (did_select_this_frame) {
+                                ImGui::SetScrollHereY();
+                            }
+                        }
+
+                        if (did_select) {
                             strncpy_s(sprite_name, selectable_sprite_name, 256);
                             array::clear(*mob_template->sprite_name);
                             string_stream::push(*mob_template->sprite_name, selectable_sprite_name, strnlen(selectable_sprite_name, 256));
                             mob_templates_dirty = true;
-                        }                        
-
-                        if (is_selected) {
-                            ImGui::SetItemDefaultFocus();
                         }
+
+                        ++i;
+
+                        ImGui::PopID();
                     }
 
-                    ImGui::EndCombo();
+                    ImGui::EndListBox();
                 }
             }
 
@@ -887,6 +934,7 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     static bool show_gamestate_controls_window = true;
     static bool show_room_templates_window = true;
     static bool show_mob_templates_window = true;
+    static bool show_metrics_window = false;
 
     if (ImGui::BeginMainMenuBar()) {
         if (ImGui::BeginMenu("Windows")) {
@@ -902,6 +950,10 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
                 show_mob_templates_window = !show_mob_templates_window;
             }
 
+            if (ImGui::MenuItem("Show Metrics", nullptr, show_metrics_window)) {
+                show_metrics_window = !show_metrics_window;
+            }
+
             ImGui::EndMenu();
         }
 
@@ -911,6 +963,10 @@ void render_imgui(engine::Engine &engine, game::Game &game, EditorState &state) 
     gamestate_controls_window(engine, game, &show_gamestate_controls_window);
     room_templates_editor(game, &show_room_templates_window);
     mob_templates_editor(engine, game, &show_mob_templates_window);
+
+    if (show_metrics_window) {
+        ImGui::ShowMetricsWindow();
+    }
 
     room_templates_did_reset = false;
     mob_templates_did_reset = false;
