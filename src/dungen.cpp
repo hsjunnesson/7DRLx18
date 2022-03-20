@@ -2,6 +2,7 @@
 #include "game.h"
 #include "line.hpp"
 #include "room.h"
+#include "mob.h"
 
 #pragma warning(push, 0)
 #include "rnd.h"
@@ -853,6 +854,73 @@ void dungen(engine::Engine *engine, game::Game *game) {
         }
     }
 
+    // Add mobs
+    {
+        for (auto it = hash::begin(game->enemy_mobs); it != hash::end(game->enemy_mobs); ++it) {
+            MAKE_DELETE(game->allocator, Mob, it->value);
+        }
+
+        uint64_t mob_id = 0;
+        int non_boss_monster_count = 0;
+        int boss_monster_count = 0;
+
+        for (MobTemplate **it = array::begin(game->mob_templates->mob_templates); it != array::end(game->mob_templates->mob_templates); ++it) {
+            if (((*it)->tags & MobTemplate::Tags::MobTemplateTagsBoss) == MobTemplate::Tags::MobTemplateTagsBoss) {
+                ++boss_monster_count;
+            } else {
+                ++non_boss_monster_count;
+            }
+        }
+
+        for (auto it = hash::begin(rooms); it != hash::end(rooms); ++it) {
+            const Room &room = it->value;
+
+            if (!room.start_room) {
+                Mob *mob = MAKE_NEW(game->allocator, Mob);
+                ++mob_id;
+
+                hash::set(game->enemy_mobs, mob_id, mob);
+
+                mob->tile_index = index(room.x + room.w / 2, room.y + room.h / 2, map_width);
+
+                {
+                    int mob_template_index;
+
+                    if (room.boss_room) {
+                        mob_template_index = rnd_pcg_range(&random_device, 0, boss_monster_count - 1);
+                    } else {
+                        mob_template_index = rnd_pcg_range(&random_device, 0, non_boss_monster_count - 1);
+                    }
+
+                    int mob_template_count = 0;
+
+                    for (MobTemplate **mob_template_it = array::begin(game->mob_templates->mob_templates); mob_template_it != array::end(game->mob_templates->mob_templates); ++mob_template_it) {
+                        if (((*mob_template_it)->tags & MobTemplate::Tags::MobTemplateTagsBoss) == MobTemplate::Tags::MobTemplateTagsBoss) {
+                            if (!room.boss_room) {
+                                continue;
+                            }
+                        } else {
+                            if (room.boss_room) {
+                                continue;
+                            }
+                        }
+
+                        if (mob_template_count == mob_template_index) {
+                            mob->mob_template = *mob_template_it;
+                            break;
+                        }
+
+                        ++mob_template_count;
+                    }
+
+                    if (!mob->mob_template) {
+                        log_fatal("Missing mob template");
+                    }
+                }
+            }
+        }
+    }
+
     // Finalize and output.
     {
         std::scoped_lock lock(*game->dungen_mutex);
@@ -865,6 +933,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
         game->level->max_width = map_width;
         game->level->stairs_up_index = stairs_up_index;
         game->level->stairs_down_index = stairs_down_index;
+
         game->dungen_done = true;
     }
 }

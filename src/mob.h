@@ -8,13 +8,6 @@
 
 namespace game {
 
-struct Mob {
-    uint64_t sprite_id;
-    int32_t template_index;
-    int32_t tile_index;
-    float energy;
-};
-
 struct MobTemplate {
     enum Tags {
         MobTemplateTagsNone = 0,
@@ -47,6 +40,13 @@ struct MobTemplates {
 
     void read(const char *filename);
     void write(const char *filename);
+};
+
+struct Mob {
+    uint64_t sprite_id = 0;
+    MobTemplate *mob_template = nullptr;
+    int32_t tile_index = 0;
+    int8_t energy = 0;
 };
 
 } // namespace game

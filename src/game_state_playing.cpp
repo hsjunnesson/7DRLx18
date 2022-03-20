@@ -13,6 +13,7 @@
 
 #include <array.h>
 #include <hash.h>
+#include <string_stream.h>
 
 #include <cassert>
 #include <imgui.h>
@@ -177,6 +178,15 @@ void game_state_playing_enter(engine::Engine &engine, Game &game) {
             Color4f color = stairs_sprite->color;
             color.a = 0.0f;
             engine::color_sprite(*engine.sprites, stairs_sprite_id, color);
+        }
+    }
+
+    // Create enemy sprites
+    {
+        for (auto it = hash::begin(game.enemy_mobs); it != hash::end(game.enemy_mobs); ++it) {
+            Mob &mob = *it->value;
+            uint64_t sprite_id = add_sprite(*engine.sprites, string_stream::c_str(*mob.mob_template->sprite_name), game.params->tilesize(), mob.tile_index, game.level->max_width, MOB_Z_LAYER, mob.mob_template->sprite_color);
+            mob.sprite_id = sprite_id;
         }
     }
 }
@@ -371,7 +381,7 @@ void game_state_playing_update(engine::Engine &engine, Game &game, float t, floa
         game.queued_action = ActionBindEntry_Action_ACTION_UNKNOWN;
 
         if (!invalid_action) {
-            game.player_mob->energy = 0.0f;
+            game.player_mob->energy = 0;
             game.processing_turn = true;
         }
     }

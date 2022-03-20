@@ -74,6 +74,11 @@ struct Game {
 
     Mob *player_mob;
 
+    foundation::Hash<Mob *> enemy_mobs;
+
+    // A mapping of mob ids to room ids.
+    foundation::Hash<uint64_t> mob_rooms;
+
     std::mutex *dungen_mutex;
     std::thread *dungen_thread;
     bool dungen_done;
