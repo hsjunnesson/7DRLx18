@@ -902,7 +902,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                     saved_palette_init = false;
                 }
                 
-                ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoSidePreview ;
+                ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoOptions | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_AlphaPreview;
                 bool open_popup = ImGui::ColorButton("Color#b", sprite_color, flags);
                 ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
                 open_popup |= ImGui::Button("Color");
@@ -912,7 +912,15 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                 }
 
                 if (ImGui::BeginPopup("sprite_color_picker")) {
-                    ImGui::ColorPicker4("##picker", (float*)&sprite_color, flags);
+                    if (ImGui::ColorPicker4("##picker", (float*)&sprite_color, flags)) {
+                            mob_template->sprite_color.r = sprite_color.x;
+                            mob_template->sprite_color.g = sprite_color.y;
+                            mob_template->sprite_color.b = sprite_color.z;
+                            mob_template->sprite_color.a = sprite_color.w;
+
+                            mob_templates_dirty = true;
+                    }
+
                     ImGui::SameLine();
                     ImGui::BeginGroup();
 
@@ -922,7 +930,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                             ImGui::SameLine(0.0f, ImGui::GetStyle().ItemSpacing.y);
                         }
 
-                        ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
+                        ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
                         if (ImGui::ColorButton("##palette", saved_palette[i], palette_button_flags, ImVec2(20, 20))) {
                             sprite_color = ImVec4(saved_palette[i].x, saved_palette[i].y, saved_palette[i].z, sprite_color.w);
 
@@ -971,8 +979,7 @@ void mob_templates_editor(engine::Engine &engine, game::Game &game, bool *show_w
                             ImVec2 uv_min = ImVec2(rect.origin.x / texture_width, rect.origin.y / texture_height);
                             ImVec2 uv_max = ImVec2((rect.origin.x + rect.size.x) / texture_width, (rect.origin.y + rect.size.y) / texture_height);
                             ImVec4 bg_col = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-                            ImVec4 tint = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-                            if (ImGui::ImageButton(tex_id, texture_size, uv_min, uv_max, -1, bg_col, tint)) {
+                            if (ImGui::ImageButton(tex_id, texture_size, uv_min, uv_max, -1, bg_col, sprite_color)) {
                                 did_select = true;
                             }
                         }

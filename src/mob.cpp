@@ -63,7 +63,7 @@ MobTemplates::~MobTemplates() {
 
 void MobTemplates::read(const char *filename) {
     assert(filename != nullptr);
-
+    
     // Clear old templates
     {
         for (MobTemplate **iter = array::begin(mob_templates); iter != array::end(mob_templates); ++iter) {
