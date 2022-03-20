@@ -4,6 +4,7 @@
 #define RND_IMPLEMENTATION
 #include "rnd.h"
 
+#include <engine/log.h>
 #include <engine/engine.h>
 #include <engine/input.h>
 
@@ -19,6 +20,23 @@
 int main(int argc, char *argv[]) {
     (void)argc;
     (void)argv;
+
+    // Validate platform
+    {
+        unsigned int x = 1;
+        char *c = (char*) &x;
+        if ((int)*c == 0) {
+            log_fatal("Unsupported platform: big endian");
+        }
+
+        if constexpr(sizeof(char) != sizeof(uint8_t)) {
+            log_fatal("Unsupported platform: invalid char size");
+        }
+
+        if constexpr(sizeof(float) != 4) {
+            log_fatal("Unsupported platform: invalid float size");
+        }
+    }
 
 #if defined(LIVE_PP)
     HMODULE livePP = lpp::lppLoadAndRegister(L"LivePP", "AGroupName");
