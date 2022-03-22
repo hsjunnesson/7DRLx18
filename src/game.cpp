@@ -117,6 +117,10 @@ Game::~Game() {
         MAKE_DELETE(allocator, MobTemplates, mob_templates);
     }
 
+    for (auto it = hash::begin(enemy_mobs); it != hash::end(enemy_mobs); ++it) {
+        MAKE_DELETE(allocator, Mob, it->value);
+    }
+
     if (dungen_thread) {
         std::scoped_lock lock(*dungen_mutex);
         MAKE_DELETE(allocator, thread, dungen_thread);
