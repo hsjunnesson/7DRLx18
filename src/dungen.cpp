@@ -53,10 +53,11 @@ void connections_from_direction(const RoomTemplate &room_template, ConnectionDir
     case ConnectionDirection::North:
     case ConnectionDirection::South: {
         int32_t start_row = direction == ConnectionDirection::North ? 0 : room_template.rows - 1;
+        int32_t end_row = direction == ConnectionDirection::North ? room_template.rows : 0;
         int32_t row_offset = direction == ConnectionDirection::North ? 1 : -1;
 
         for (int32_t column = 0; column < room_template.columns; ++column) {
-            for (int32_t row = start_row; row < room_template.rows; row += row_offset) {
+            for (int32_t row = start_row; row != end_row; row += row_offset) {
                 int32_t index = math::index(column, row, room_template.columns);
                 uint8_t tile_type = (*room_template.tiles)[index];
                 if (tile_type == empty_tile_type) {
@@ -74,10 +75,11 @@ void connections_from_direction(const RoomTemplate &room_template, ConnectionDir
     case ConnectionDirection::West:
     case ConnectionDirection::East: {
         int32_t start_column = direction == ConnectionDirection::West ? 0 : room_template.columns - 1;
+        int32_t end_column = direction == ConnectionDirection::West ? room_template.columns : 0;
         int32_t column_offset = direction == ConnectionDirection::West ? 1 : -1;
 
         for (int32_t row = 0; row < room_template.rows; ++row) {
-            for (int32_t column = start_column; column < room_template.columns; column += column_offset) {
+            for (int32_t column = start_column; column != end_column; column += column_offset) {
                 int32_t index = math::index(column, row, room_template.columns);
                 uint8_t tile_type = (*room_template.tiles)[index];
                 if (tile_type == empty_tile_type) {
@@ -256,6 +258,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
         // Validate rarities
         bool valid_rarities = true;
+        // TODO: Find max rarity from templates
         const int32_t max_rarity = 4;
 
         for (int32_t i = 1; i <= max_rarity; ++i) {
@@ -501,6 +504,10 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         }
 
+        // Add a border of one spaces.
+        --min_x;
+        --min_y;
+
         for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
             Room &room = iter->value;
             room.x -= min_x;
@@ -646,12 +653,14 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
                         int32_t start_connection_x, start_connection_y;
                         coord(start_connections[start_connection_index], start_connection_x, start_connection_y, start_room_template.columns);
+                        start_connection_y = start_room_template.rows - start_connection_y - 1;
 
                         int32_t to_connection_x, to_connection_y;
                         coord(to_connections[to_connection_index], to_connection_x, to_connection_y, to_room_template.columns);
+                        to_connection_y = to_room_template.rows - to_connection_y - 1;
 
-                        start_coordinate = {(int32_t)start_room.x + (int32_t)start_connection_x, (int32_t)start_room.y + start_room_template.rows - (int32_t)start_connection_y - 1};
-                        to_coordinate = {(int32_t)to_room.x + (int32_t)to_connection_x, (int32_t)to_room.y + to_room_template.rows - (int32_t)to_connection_y - 1};
+                        start_coordinate = {(int32_t)start_room.x + (int32_t)start_connection_x, (int32_t)start_room.y + start_connection_y};
+                        to_coordinate = {(int32_t)to_room.x + (int32_t)to_connection_x, (int32_t)to_room.y + to_connection_y};
                     }
                 }
 
@@ -667,24 +676,6 @@ void dungen(engine::Engine *engine, game::Game *game) {
                     }
 
                     line::Coordinate coord = coordinates[line_i];
-
-                    // Don't place corridors if we're inside the start or to room.
-                    // But place corridor in the wall of the rooms.
-                    bool inside_start_room =
-                        coord.x > start_room.x &&
-                        coord.y > start_room.y &&
-                        coord.x < start_room.x + start_room.w - 1 &&
-                        coord.y < start_room.y + start_room.h - 1;
-
-                    bool inside_to_room =
-                        coord.x > to_room.x &&
-                        coord.y > to_room.y &&
-                        coord.x < to_room.x + to_room.w - 1 &&
-                        coord.y < to_room.y + to_room.h - 1;
-
-                    if (inside_start_room || inside_to_room) {
-                        continue;
-                    }
 
                     line::Coordinate next;
                     if (line_i < (int32_t)array::size(coordinates) - 1) {
@@ -856,6 +847,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Add mobs
     {
+        std::scoped_lock lock(*game->dungen_mutex);
+
         for (auto it = hash::begin(game->enemy_mobs); it != hash::end(game->enemy_mobs); ++it) {
             MAKE_DELETE(game->allocator, Mob, it->value);
         }
@@ -872,46 +865,106 @@ void dungen(engine::Engine *engine, game::Game *game) {
             }
         }
 
+        /**
+         * @brief A function to return a pointer to random MobTemplate.
+         * 
+         */
+        auto random_mob = [&](bool is_boss) -> MobTemplate * {
+            int mob_template_index;
+
+            if (is_boss) {
+                mob_template_index = rnd_pcg_range(&random_device, 0, boss_monster_count - 1);
+            } else {
+                mob_template_index = rnd_pcg_range(&random_device, 0, non_boss_monster_count - 1);
+            }
+
+            int mob_template_count = 0;
+
+            for (MobTemplate **mob_template_it = array::begin(game->mob_templates->mob_templates); mob_template_it != array::end(game->mob_templates->mob_templates); ++mob_template_it) {
+                if (((*mob_template_it)->tags & MobTemplate::Tags::MobTemplateTagsBoss) == MobTemplate::Tags::MobTemplateTagsBoss) {
+                    if (!is_boss) {
+                        continue;
+                    }
+                } else {
+                    if (is_boss) {
+                        continue;
+                    }
+                }
+
+                if (mob_template_count == mob_template_index) {
+                    return *mob_template_it;
+                    break;
+                }
+
+                ++mob_template_count;
+            }
+
+            return nullptr;
+        };
+
         for (auto it = hash::begin(rooms); it != hash::end(rooms); ++it) {
             const Room &room = it->value;
+            if (room.start_room) {
+                continue;
+            }
 
-            if (!room.start_room) {
-                Mob *mob = MAKE_NEW(game->allocator, Mob);
-                ++mob_id;
+            const RoomTemplate &room_template = *game->room_templates->room_templates[room.room_template_index];
 
-                hash::set(game->enemy_mobs, mob_id, mob);
+            Array<uint32_t> floor_indices(allocator);
 
-                mob->tile_index = index(room.x + room.w / 2, room.y + room.h / 2, map_width);
+            for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+                RoomTemplate::TileType tile_type = static_cast<RoomTemplate::TileType>((*room_template.tiles)[i]);
 
-                {
-                    int mob_template_index;
+                if (tile_type == RoomTemplate::TileType::Floor) {
+                    array::push_back(floor_indices, i);
+                }
+            }
 
-                    if (room.boss_room) {
-                        mob_template_index = rnd_pcg_range(&random_device, 0, boss_monster_count - 1);
-                    } else {
-                        mob_template_index = rnd_pcg_range(&random_device, 0, non_boss_monster_count - 1);
-                    }
+            // Boss spawn
+            if (room.boss_room) {
+                for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
+                    RoomTemplate::TileType tile_type = static_cast<RoomTemplate::TileType>((*room_template.tiles)[i]);
 
-                    int mob_template_count = 0;
+                    if (tile_type == RoomTemplate::TileType::Stair) {
+                        int32_t x, y;
+                        coord(i, x, y, room_template.columns);
+                        y = room_template.rows - y - 1;
 
-                    for (MobTemplate **mob_template_it = array::begin(game->mob_templates->mob_templates); mob_template_it != array::end(game->mob_templates->mob_templates); ++mob_template_it) {
-                        if (((*mob_template_it)->tags & MobTemplate::Tags::MobTemplateTagsBoss) == MobTemplate::Tags::MobTemplateTagsBoss) {
-                            if (!room.boss_room) {
-                                continue;
-                            }
-                        } else {
-                            if (room.boss_room) {
-                                continue;
-                            }
+                        Mob *mob = MAKE_NEW(game->allocator, Mob);
+                        ++mob_id;
+
+                        hash::set(game->enemy_mobs, mob_id, mob);
+
+                        mob->tile_index = index(room.x + x, room.y + y, map_width);
+                        mob->mob_template = random_mob(true);
+
+                        if (!mob->mob_template) {
+                            log_fatal("Missing mob template");
                         }
 
-                        if (mob_template_count == mob_template_index) {
-                            mob->mob_template = *mob_template_it;
-                            break;
-                        }
-
-                        ++mob_template_count;
+                        break;
                     }
+                }
+            }
+
+            // Regular mob spawns
+            {
+                // TODO: Don't overwrite spawn points
+                int num_spawns = rnd_pcg_range(&random_device, 1, 3);
+
+                for (int i = 0; i < num_spawns; ++i) {
+                    int floor_index = rnd_pcg_range(&random_device, 0, array::size(floor_indices) - 1);
+                    int32_t x, y;
+                    coord(floor_indices[floor_index], x, y, room_template.columns);
+                    y = room_template.rows - y - 1;
+
+                    Mob *mob = MAKE_NEW(game->allocator, Mob);
+                    ++mob_id;
+
+                    hash::set(game->enemy_mobs, mob_id, mob);
+
+                    mob->tile_index = index(room.x + x, room.y + y, map_width);
+                    mob->mob_template = random_mob(false);
 
                     if (!mob->mob_template) {
                         log_fatal("Missing mob template");
