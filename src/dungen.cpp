@@ -15,6 +15,7 @@
 #include "engine/sprites.h"
 #include "proto/game.pb.h"
 
+#include <algorithm>
 #include <array.h>
 #include <hash.h>
 #include <memory.h>
@@ -133,12 +134,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
     assert(engine);
     assert(game);
 
-    TempAllocator1024 allocator;
+    TempAllocator1024 ta;
 
     DungenParams params;
     engine::config::read(game->params->dungen_params_filename().c_str(), &params);
 
-    Hash<Tile> terrain_tiles = Hash<Tile>(allocator);
+    Hash<Tile> terrain_tiles = Hash<Tile>(ta);
 
     const int32_t map_width = params.map_width();
     const int32_t room_count = params.room_count();
@@ -146,6 +147,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     const int32_t rooms_count_tall = (int32_t)ceil(sqrt(room_count));
     const int32_t section_width = map_width / rooms_count_wide;
     const int32_t section_height = map_width / rooms_count_tall;
+    const int32_t max_room_spawns = 4;
 
     log_debug("Dungen rooms count %u", room_count);
     log_debug("Dungen rooms count wide %u", rooms_count_wide);
@@ -171,12 +173,12 @@ void dungen(engine::Engine *engine, game::Game *game) {
     int32_t stairs_down_index = 0;
 
     // Collections of room templates
-    Array<int32_t> common_room_template_indices(allocator);
-    Array<int32_t> start_room_template_indices(allocator);
-    Array<int32_t> boss_room_template_indices(allocator);
+    Array<int32_t> common_room_template_indices(ta);
+    Array<int32_t> start_room_template_indices(ta);
+    Array<int32_t> boss_room_template_indices(ta);
 
     // Multi hash of room indices by rarity.
-    Hash<int32_t> common_room_indices_by_rarity(allocator);
+    Hash<int32_t> common_room_indices_by_rarity(ta);
 
     {
         for (int32_t i = 0; i < (int32_t)array::size(game->room_templates->room_templates); ++i) {
@@ -202,8 +204,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
     }
 
     // Rooms and corridors collections
-    Hash<Room> rooms = Hash<Room>(allocator);
-    Array<Corridor> corridors = Array<Corridor>(allocator);
+    Hash<Room> rooms = Hash<Room>(ta);
+    Array<Corridor> corridors = Array<Corridor>(ta);
 
     // Decide whether main orientation is vertical or horizontal
     {
@@ -254,7 +256,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Place rooms in grids sections, referenced by their index.
     {
-        Array<int32_t> indices(allocator);
+        Array<int32_t> indices(ta);
 
         // Validate rarities
         bool valid_rarities = true;
@@ -368,7 +370,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
         int32_t boss_room_x, boss_room_y;
         coord(boss_room_index, boss_room_x, boss_room_y, rooms_count_wide);
 
-        Array<line::Coordinate> shortest_line_path = line::zig_zag(allocator, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
+        Array<line::Coordinate> shortest_line_path = line::zig_zag(ta, {(int32_t)start_room_x, (int32_t)start_room_y}, {(int32_t)boss_room_x, (int32_t)boss_room_y});
 
         for (int32_t i = 0; i < (int32_t)array::size(shortest_line_path) - 1; ++i) {
             line::Coordinate from = shortest_line_path[i];
@@ -383,14 +385,14 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
     // Expand some branches
     {
-        Array<Corridor> branches = Array<Corridor>(allocator);
+        Array<Corridor> branches = Array<Corridor>(ta);
 
         // Returns a corridor to a random adjacent room, which isn't already connected to this room.
         auto expand = [&](int32_t room_index) {
             int32_t room_x, room_y;
             coord(room_index, room_x, room_y, rooms_count_wide);
 
-            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(allocator);
+            Array<int32_t> available_adjacent_room_indices = Array<int32_t>(ta);
 
             auto adjacent_coordinates = {
                 line::Coordinate{(int32_t)room_x + 1, (int32_t)room_y},
@@ -465,7 +467,8 @@ void dungen(engine::Engine *engine, game::Game *game) {
     // TODO: Prune rooms that aren't connected to main path.
     // Clusters of connected rooms aren't pruned properly.
     {
-        Queue<int32_t> disconnected_room_indices = Queue<int32_t>(allocator);
+        Hash<Room> saved_rooms = Hash<Room>(ta);
+
         for (int32_t i = 0; i < room_count; ++i) {
             bool found = false;
 
@@ -477,15 +480,13 @@ void dungen(engine::Engine *engine, game::Game *game) {
                 }
             }
 
-            if (!found) {
-                queue::push_front(disconnected_room_indices, i);
+            if (found) {
+                Room room = hash::get(rooms, i, Room());
+                hash::set(saved_rooms, i, room);
             }
         }
 
-        for (uint32_t i = 0; i < queue::size(disconnected_room_indices); ++i) {
-            int32_t index = disconnected_room_indices[i];
-            hash::remove(rooms, index);
-        }
+        rooms = saved_rooms;
     }
 
     // Move map to origin
@@ -512,6 +513,16 @@ void dungen(engine::Engine *engine, game::Game *game) {
             Room &room = iter->value;
             room.x -= min_x;
             room.y -= min_y;
+        }
+    }
+
+    // Print rooms
+    {
+        for (auto iter = hash::begin(rooms); iter != hash::end(rooms); ++iter) {
+            const Room &room = iter->value;
+            const RoomTemplate &room_template = *game->room_templates->room_templates[room.room_template_index];
+
+            log_debug("Room %s %u,%u", string_stream::c_str(*room_template.name), room.x, room.y);
         }
     }
 
@@ -591,7 +602,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
     // Draw corridors as terrain_tiles
     {
         // Added walls which needs to be properly placed.
-        Hash<bool> placeholder_walls = Hash<bool>(allocator);
+        Hash<bool> placeholder_walls = Hash<bool>(ta);
 
         int line_draw_count = 0;
 
@@ -664,7 +675,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
                     }
                 }
 
-                Array<line::Coordinate> coordinates = line::zig_zag(allocator, start_coordinate, to_coordinate);
+                Array<line::Coordinate> coordinates = line::zig_zag(ta, start_coordinate, to_coordinate);
 
                 for (int32_t line_i = 0; line_i < (int32_t)array::size(coordinates); ++line_i) {
                     line::Coordinate prev;
@@ -910,7 +921,7 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
             const RoomTemplate &room_template = *game->room_templates->room_templates[room.room_template_index];
 
-            Array<uint32_t> floor_indices(allocator);
+            Array<uint32_t> floor_indices(ta);
 
             for (uint32_t i = 0; i < array::size(*room_template.tiles); ++i) {
                 RoomTemplate::TileType tile_type = static_cast<RoomTemplate::TileType>((*room_template.tiles)[i]);
@@ -949,11 +960,19 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
             // Regular mob spawns
             {
-                // TODO: Don't overwrite spawn points
-                int num_spawns = rnd_pcg_range(&random_device, 1, 3);
+                const int32_t max_spawns = array::size(floor_indices) < max_room_spawns ? array::size(floor_indices) : max_room_spawns;
+                const int32_t num_spawns = rnd_pcg_range(&random_device, 1, max_spawns);
 
-                for (int i = 0; i < num_spawns; ++i) {
+                int count_spawns = 0;
+                Hash<bool> spawned_indices(ta);
+                while (count_spawns < num_spawns) {
                     int floor_index = rnd_pcg_range(&random_device, 0, array::size(floor_indices) - 1);
+                    if (hash::has(spawned_indices, floor_index)) {
+                        continue;
+                    } else {
+                        hash::set(spawned_indices, floor_index, true);
+                    }
+
                     int32_t x, y;
                     coord(floor_indices[floor_index], x, y, room_template.columns);
                     y = room_template.rows - y - 1;
@@ -968,6 +987,13 @@ void dungen(engine::Engine *engine, game::Game *game) {
 
                     if (!mob->mob_template) {
                         log_fatal("Missing mob template");
+                    }
+
+                    ++count_spawns;
+
+                    if (count_spawns > 255) {
+                        log_error("Could not place %u spaws in room %s", num_spawns, string_stream::c_str(*room_template.name));
+                        break;
                     }
                 }
             }

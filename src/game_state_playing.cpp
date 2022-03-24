@@ -201,6 +201,12 @@ void game_state_playing_leave(engine::Engine &engine, Game &game) {
         game.level = nullptr;
     }
 
+    for (auto it = hash::begin(game.enemy_mobs); it != hash::end(game.enemy_mobs); ++it) {
+        engine::remove_sprite(*engine.sprites, it->value->sprite_id);
+        MAKE_DELETE(game.allocator, Mob, it->value);
+    }
+    hash::clear(game.enemy_mobs);
+
     if (game.player_mob) {
         engine::remove_sprite(*engine.sprites, game.player_mob->sprite_id);
         MAKE_DELETE(game.allocator, Mob, game.player_mob);
