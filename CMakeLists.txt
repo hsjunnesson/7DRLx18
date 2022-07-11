@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(LIVE_PP True)
+set(LIVE_PP False)
 
 # Find locally installed dependencies. Tip: Use VCPKG for these.
 
